@@ -1,0 +1,52 @@
+name: Daily Discovery
+
+on:
+  schedule:
+    # 06:00 Beijing = 22:00 UTC previous day
+    - cron: "0 22 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: discover
+  cancel-in-progress: false
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install deps (optional Claude scoring)
+        run: |
+          if [ -n "$ANTHROPIC_API_KEY" ]; then
+            pip install --quiet anthropic
+          else
+            echo "ANTHROPIC_API_KEY not set — running without LLM scoring"
+          fi
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+      - name: Run discovery
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python3 scripts/discover.py
+
+      - name: Commit findings
+        run: |
+          git config user.name "discovery-bot"
+          git config user.email "discovery-bot@users.noreply.github.com"
+          git add discoveries/ state/
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Daily discovery $(date -u +%Y-%m-%d)"
+            git push
+          fi

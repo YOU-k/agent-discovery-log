@@ -1,0 +1,548 @@
+{
+  "JuliusBrussee/caveman": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 79188,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "blader/humanizer": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 27141,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "VoltAgent/awesome-claude-code-subagents": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 22698,
+    "matched_query": "claude code subagent",
+    "score": null,
+    "one_liner": null
+  },
+  "alirezarezvani/claude-skills": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 19625,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "op7418/Humanizer-zh": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 12156,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "HKUDS/AutoAgent": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 9412,
+    "matched_query": "llm agent framework",
+    "score": null,
+    "one_liner": null
+  },
+  "virgiliojr94/book-to-skill": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 7442,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "kyegomez/swarms": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 6909,
+    "matched_query": "multi-agent orchestration framework",
+    "score": null,
+    "one_liner": null
+  },
+  "open-multi-agent/open-multi-agent": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 6479,
+    "matched_query": "multi-agent orchestration framework",
+    "score": null,
+    "one_liner": null
+  },
+  "SimoneAvogadro/android-reverse-engineering-skill": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 6287,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "trailofbits/skills": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 5956,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "zarazhangrui/codebase-to-course": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 5099,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "VRSEN/agency-swarm": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 4467,
+    "matched_query": "multi-agent orchestration framework",
+    "score": null,
+    "one_liner": null
+  },
+  "glitternetwork/pinme": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 3698,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "taishi-i/awesome-ChatGPT-repositories": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 3119,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "nowork-studio/NotFair": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 3034,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "lackeyjb/playwright-skill": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 2851,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "elementalsouls/Claude-BugHunter": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 2828,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "dominikmartn/nothing-design-skill": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 2568,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "Agentchengfeng/chengfeng-videocut-skills": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 2468,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "heshengtao/comfyui_LLM_party": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 2294,
+    "matched_query": "llm agent framework",
+    "score": null,
+    "one_liner": null
+  },
+  "tradermonty/claude-trading-skills": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 2210,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "yctimlin/mcp_excalidraw": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 2119,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "Kocoro-lab/Shannon": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 2065,
+    "matched_query": "multi-agent orchestration framework",
+    "score": null,
+    "one_liner": null
+  },
+  "kaushikb11/awesome-llm-agents": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 1520,
+    "matched_query": "llm agent framework",
+    "score": null,
+    "one_liner": null
+  },
+  "P4nda0s/reverse-skills": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 1464,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "skills-directory/skill-codex": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 1339,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "onvoyage-ai/gtm-engineer-skills": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 1244,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "daymade/claude-code-skills": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 1237,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "NeoLabHQ/context-engineering-kit": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 1195,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "adamlyttleapps/claude-skill-app-onboarding-questionnaire": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 1086,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "Aaronontheweb/dotnet-skills": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 1039,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "CharlesWiltgen/Axiom": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 1010,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "bevibing/tutor-skills": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 997,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "taishi-i/awesome-japanese-nlp-resources": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 986,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "0xfurai/claude-code-subagents": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 946,
+    "matched_query": "claude code subagent",
+    "score": null,
+    "one_liner": null
+  },
+  "aiwithremy/claude-skills-llm-council": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 900,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "alchaincyf/huashu-md-html": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 824,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "alirezarezvani/claude-code-skill-factory": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 821,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "wshuyi/x-article-publisher-skill": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 819,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "deusyu/translate-book": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 817,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "komal-SkyNET/claude-skill-homeassistant": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 733,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "zsyggg/paper-craft-skills": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 732,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "yunshu0909/yunshu_skillshub": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 691,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "mohi-devhub/antivibe": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 652,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "mhattingpete/claude-skills-marketplace": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 635,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "zhuyansen/wx-favorites-report": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 619,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "anthropics/launch-your-agent": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 600,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "iamzifei/show-me-the-money": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 598,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "lijigang/ljg-skill-xray-paper": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 587,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "Wechat-ggGitHub/wechat-claude-code": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 578,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "xiaopu-ai/web-design": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 567,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "blader/napkin": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 564,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "DanMcInerney/architect-loop": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 550,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "u7079256/paperjury": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 529,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "ksimback/tech-debt-skill": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 528,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "ArtemXTech/personal-os-skills": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 513,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "laolaoshiren/claude-code-skills-zh": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 510,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "levnikolaevich/claude-code-skills": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 506,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "PaddlePaddle/ERNIE-SDK": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 376,
+    "matched_query": "llm agent framework",
+    "score": null,
+    "one_liner": null
+  },
+  "rahulvrane/awesome-claude-agents": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 359,
+    "matched_query": "claude code subagent",
+    "score": null,
+    "one_liner": null
+  },
+  "dsifry/metaswarm": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 335,
+    "matched_query": "multi-agent orchestration framework",
+    "score": null,
+    "one_liner": null
+  },
+  "foreveryh/mentis": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 297,
+    "matched_query": "multi-agent orchestration framework",
+    "score": null,
+    "one_liner": null
+  },
+  "mubaidr/gem-team": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 182,
+    "matched_query": "multi-agent orchestration framework",
+    "score": null,
+    "one_liner": null
+  },
+  "The-Swarm-Corporation/swarms-rs": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 169,
+    "matched_query": "multi-agent orchestration framework",
+    "score": null,
+    "one_liner": null
+  },
+  "chefkannofriend-source/mbbb-baker-agent": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 144,
+    "matched_query": "claude code subagent",
+    "score": null,
+    "one_liner": null
+  },
+  "CyberTron957/agent-teams": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 140,
+    "matched_query": "multi-agent orchestration framework",
+    "score": null,
+    "one_liner": null
+  },
+  "jwangkun/Pi-Multi-Agent": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 121,
+    "matched_query": "multi-agent orchestration framework",
+    "score": null,
+    "one_liner": null
+  },
+  "WHU-MYTH-Lab/humanus.cpp": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 121,
+    "matched_query": "llm agent framework",
+    "score": null,
+    "one_liner": null
+  },
+  "rubenzantingh/claude-code-magento-agents": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 114,
+    "matched_query": "claude code subagent",
+    "score": null,
+    "one_liner": null
+  },
+  "doiito/gliding_horse": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 106,
+    "matched_query": "multi-agent orchestration framework",
+    "score": null,
+    "one_liner": null
+  },
+  "martymcenroe/AssemblyZero": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 105,
+    "matched_query": "multi-agent orchestration framework",
+    "score": null,
+    "one_liner": null
+  },
+  "bijutharakan/multi-agent-squad": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 87,
+    "matched_query": "multi-agent orchestration framework",
+    "score": null,
+    "one_liner": null
+  },
+  "sanghun0724/awesome-swift-claude-code-subagents": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 71,
+    "matched_query": "claude code subagent",
+    "score": null,
+    "one_liner": null
+  },
+  "Filip-Podstavec/claude-leverage": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 66,
+    "matched_query": "claude code subagent",
+    "score": null,
+    "one_liner": null
+  },
+  "rshah515/claude-code-subagents": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 61,
+    "matched_query": "claude code subagent",
+    "score": null,
+    "one_liner": null
+  },
+  "ryanthedev/oberskills": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 52,
+    "matched_query": "prompt engineering agent",
+    "score": null,
+    "one_liner": null
+  },
+  "Dingent/Dingent": {
+    "first_seen": "2026-07-02",
+    "stars_at_first_seen": 51,
+    "matched_query": "llm agent framework",
+    "score": null,
+    "one_liner": null
+  }
+}
