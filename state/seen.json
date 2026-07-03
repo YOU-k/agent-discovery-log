@@ -544,5 +544,12 @@
     "matched_query": "llm agent framework",
     "score": null,
     "one_liner": null
+  },
+  "MyuriKanao/src-hunter-skill": {
+    "first_seen": "2026-07-03",
+    "stars_at_first_seen": 515,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
   }
 }
