@@ -558,5 +558,12 @@
     "matched_query": "claude code skill",
     "score": null,
     "one_liner": null
+  },
+  "nutthouse/tutti": {
+    "first_seen": "2026-07-06",
+    "stars_at_first_seen": 52,
+    "matched_query": "agent orchestration cli",
+    "score": null,
+    "one_liner": null
   }
 }
