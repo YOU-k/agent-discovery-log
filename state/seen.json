@@ -614,5 +614,19 @@
     "matched_query": "claude code skill",
     "score": null,
     "one_liner": null
+  },
+  "Spark-To-Paper-Skills/paperjury": {
+    "first_seen": "2026-08-09",
+    "stars_at_first_seen": 923,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "danyuchn/asd-ste100-skill": {
+    "first_seen": "2026-08-09",
+    "stars_at_first_seen": 617,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
   }
 }
