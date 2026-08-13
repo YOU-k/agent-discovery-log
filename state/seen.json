@@ -628,5 +628,19 @@
     "matched_query": "claude code skill",
     "score": null,
     "one_liner": null
+  },
+  "chaseai-yt/crucible": {
+    "first_seen": "2026-08-13",
+    "stars_at_first_seen": 1163,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
+  },
+  "Leutenegger/book-to-skill": {
+    "first_seen": "2026-08-13",
+    "stars_at_first_seen": 1022,
+    "matched_query": "claude code skill",
+    "score": null,
+    "one_liner": null
   }
 }
