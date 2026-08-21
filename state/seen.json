@@ -649,5 +649,12 @@
     "matched_query": "claude code skill",
     "score": null,
     "one_liner": null
+  },
+  "yylo-dev/yylo": {
+    "first_seen": "2026-08-21",
+    "stars_at_first_seen": 56,
+    "matched_query": "agent orchestration cli",
+    "score": null,
+    "one_liner": null
   }
 }
