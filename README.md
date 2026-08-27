@@ -5,14 +5,17 @@ Runs autonomously via GitHub Actions; findings sink into `discoveries/`.
 
 ## What gets scanned
 
-Three query channels (see `scripts/discover.py` for the full list):
+Three sources (see `scripts/discover.py` for details):
 
-- **主查询** — `claude code skill`、`multi-agent orchestration framework` 等 8 条，
-  按 stars 排序，全部带 `-awesome -list` 降噪
-- **Awesome-list 通道** — `awesome agent skills` / `awesome llm agents`，
-  专门把合集类 repo 收进来（viz 里归为 `资源合集`）
-- **新生项目通道** — 主关键词 + `created:>滚动60天`，捞按 stars 排序
-  永远轮不到的新 repo
+- **GitHub REST 搜索**（每日）— 8 条主查询按 stars 排序 + `created:>滚动60天`
+  新生项目通道（捞按 stars 排序永远轮不到的新 repo）+ awesome-list 专属通道。
+  合集类噪音（awesome/list）在**本地**按词边界过滤——GitHub 的 `-term` NOT
+  语法对部分词会静默返回 0 结果，不能写进查询串
+- **Hacker News**（每日）— Algolia API 按标题搜 `claude code`、`llm agent` 等，
+  ≥5 points 且链接到 GitHub repo 的收进来（HN 热度替代 STAR_MIN 门槛，
+  Show HN 往往比 GitHub trending 早几天）
+- **GraphQL 普查**（每周日）— 上周 `created:` 窗口内 `stars:>=50` 的全量扫描，
+  补足关键词采样的盲区；也可 `python3 scripts/discover.py --census` 手动触发
 
 Edit `scripts/discover.py` to change.
 

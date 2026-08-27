@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
 """Daily GitHub discovery for agent/skill/framework repos.
 
-Runs a curated set of queries against the GitHub search API, diffs against
-state/seen.json, and writes new findings to discoveries/YYYY-MM-DD.md.
+Sources (all diffed against state/seen.json):
+1. GitHub REST search — curated queries, three channels (main / awesome / created-window)
+2. Hacker News (Algolia API) — daily; Show HN often precedes GitHub trending by days
+3. GraphQL census — Sundays; exhaustive sweep of repos created in the last 7 days
+
+Findings go to discoveries/YYYY-MM-DD.md.
 
 Optional: if an LLM API key is set, each new repo gets a relevance score
 plus a plain-language Chinese analysis (类型 / 是什么 / 能做什么 /
@@ -14,7 +18,7 @@ Each run also refreshes star counts for all previously seen repos
 (stars_history in state/seen.json) and reports the biggest gainers.
 
 Usage:
-    python3 scripts/discover.py [--dry-run] [--backfill-days N [--force]]
+    python3 scripts/discover.py [--dry-run] [--backfill-days N [--force]] [--census]
 
 Env:
     GH_TOKEN or GITHUB_TOKEN      — required for gh API rate limits
@@ -29,8 +33,10 @@ import argparse
 import datetime as dt
 import json
 import os
+import re
 import subprocess
 import sys
+import urllib.parse
 import urllib.request
 from dataclasses import dataclass
 from pathlib import Path
@@ -43,22 +49,48 @@ DISCOVERIES = ROOT / "discoveries"
 # Curated queries — each with a weight (higher = more relevant to us).
 # Order matters: earlier queries dominate for repos that match multiple.
 QUERIES: list[tuple[str, int]] = [
-    ("claude code skill -awesome -list", 10),
-    ("claude code subagent -awesome -list", 10),
-    ("multi-agent orchestration framework -awesome -list", 9),
-    ("multi agent framework claude -awesome -list", 9),
-    ("agent orchestration cli -awesome -list", 8),
-    ("ai coding agent framework -awesome -list", 7),
-    ("llm agent framework -awesome -list", 6),
-    ("prompt engineering agent -awesome -list", 5),
-    # awesome-list 专属通道（主查询已用 -awesome -list 降噪）
+    ("claude code skill", 10),
+    ("claude code subagent", 10),
+    ("multi-agent orchestration framework", 9),
+    ("multi agent framework claude", 9),
+    ("agent orchestration cli", 8),
+    ("ai coding agent framework", 7),
+    ("llm agent framework", 6),
+    ("prompt engineering agent", 5),
+    # awesome-list 专属通道（主通道在本地用 NOISE_RE 降噪，见 is_noise）
     ("awesome agent skills", 4),
     ("awesome llm agents", 4),
     # 新生项目通道：主查询按 stars 排序永远偏向老项目，用 created:> 滚动窗口捞新
-    ("claude code skill created:>{created_since} -awesome -list", 8),
-    ("claude code subagent created:>{created_since} -awesome -list", 8),
-    ("multi-agent orchestration framework created:>{created_since} -awesome -list", 7),
-    ("agent orchestration cli created:>{created_since} -awesome -list", 7),
+    ("claude code skill created:>{created_since}", 8),
+    ("claude code subagent created:>{created_since}", 8),
+    ("multi-agent orchestration framework created:>{created_since}", 7),
+    ("agent orchestration cli created:>{created_since}", 7),
+]
+
+# 降噪：主通道在本地排除 awesome/list 类合集 repo。
+# 注意：GitHub 搜索的 `-term` NOT 语法对部分词（如 awesome）会静默返回 0 结果，
+# 所以必须在本地过滤，不能写进查询串。
+NOISE_RE = re.compile(r"\b(awesome|list)\b", re.IGNORECASE)
+
+# HN 信源：按标题搜索，points 即质量门槛（HN 来的豁免 STAR_MIN）
+HN_QUERIES: list[tuple[str, int]] = [
+    ("claude code", 10),
+    ("claude agent", 9),
+    ("llm agent", 8),
+    ("multi-agent", 7),
+]
+HN_MIN_POINTS = 5
+HN_MAX_PER_DAY = 10
+HN_SINCE_DAYS = 2  # 略大于 1 天，配合 seen 去重提高召回
+
+# 周日普查：上周新建 repo 的全量扫描（GraphQL search，每关键词封顶 100）
+CENSUS_DAY = 6  # Sunday
+CENSUS_QUERIES: list[tuple[str, int]] = [
+    ("claude code skill", 10),
+    ("claude code subagent", 10),
+    ("multi-agent framework", 9),
+    ("agent orchestration", 8),
+    ("llm agent framework", 6),
 ]
 
 # Filters
@@ -102,6 +134,13 @@ SCORE_PROMPT = """下面是一些 GitHub 仓库（名称、star 数、描述，�
 # A scored analysis for one repo.
 Score = dict[str, Any]  # keys: score, category, what, use_for, usage, example, compare
 
+GH_URL_RE = re.compile(r"github\.com/([A-Za-z0-9_.-]+)/([A-Za-z0-9_.-]+)")
+GH_BAD_OWNERS = {
+    "topics", "collections", "features", "login", "signup", "search",
+    "orgs", "sponsors", "settings", "notifications", "marketplace", "explore",
+}
+GH_BAD_NAMES = {"issues", "pull", "pulls", "blob", "wiki", "releases", "actions", "discussions"}
+
 
 @dataclass
 class Repo:
@@ -112,6 +151,9 @@ class Repo:
     updated_at: str
     matched_query: str
     matched_weight: int
+    source: str = "github"   # github | hn | census
+    hn_points: int = 0
+    hn_url: str = ""
 
 
 def gh_search(query: str) -> list[dict[str, Any]]:
@@ -128,6 +170,29 @@ def gh_search(query: str) -> list[dict[str, Any]]:
         print(f"[WARN] gh search failed for '{query}': {result.stderr}", file=sys.stderr)
         return []
     return json.loads(result.stdout)
+
+
+def gh_search_graphql(query: str, limit: int = 100) -> list[dict[str, Any]]:
+    """GraphQL search — used by the weekly census (exhaustive windows)."""
+    gql = """query($q: String!, $n: Int!) {
+  search(query: $q, type: REPOSITORY, first: $n) {
+    repositoryCount
+    nodes { ... on Repository { nameWithOwner description stargazerCount url updatedAt } }
+  }
+}"""
+    result = subprocess.run(
+        ["gh", "api", "graphql", "-f", f"query={gql}", "-F", f"q={query}", "-F", f"n={limit}"],
+        capture_output=True, text=True, timeout=60,
+    )
+    try:
+        search = (json.loads(result.stdout).get("data") or {}).get("search") or {}
+    except json.JSONDecodeError:
+        print(f"[WARN] graphql search failed for {query!r}: {result.stderr[:200]}", file=sys.stderr)
+        return []
+    count = search.get("repositoryCount") or 0
+    if count > limit:
+        print(f"[WARN] census window overflow for {query!r}: {count} repos > {limit} cap", file=sys.stderr)
+    return search.get("nodes") or []
 
 
 def gh_repo_meta(full_name: str) -> dict[str, Any] | None:
@@ -164,6 +229,93 @@ def filter_repo(r: dict[str, Any]) -> bool:
     if not r.get("description"):
         return False
     return True
+
+
+def is_noise(full_name: str, description: str) -> bool:
+    """awesome/list 类合集噪音（主通道用；词边界匹配，不误伤 specialist 等）。"""
+    return bool(NOISE_RE.search(full_name) or NOISE_RE.search(description or ""))
+
+
+def hn_search(query: str, since_days: int = HN_SINCE_DAYS) -> list[dict[str, Any]]:
+    """Search Hacker News stories via the Algolia API (title only)."""
+    since = int((dt.datetime.now(dt.timezone.utc) - dt.timedelta(days=since_days)).timestamp())
+    params = urllib.parse.urlencode({
+        "query": query,
+        "tags": "story",
+        "restrictSearchableAttributes": "title",
+        "numericFilters": f"created_at_i>{since},points>={HN_MIN_POINTS}",
+        "hitsPerPage": 50,
+    })
+    try:
+        with urllib.request.urlopen(f"https://hn.algolia.com/api/v1/search?{params}", timeout=30) as r:
+            return json.load(r).get("hits", [])
+    except (OSError, json.JSONDecodeError) as e:
+        print(f"[WARN] HN search failed for {query!r}: {e}", file=sys.stderr)
+        return []
+
+
+def hn_candidates(seen: dict[str, Any], existing: dict[str, Repo]) -> list[Repo]:
+    """HN stories linking to GitHub repos → candidates (HN points replace STAR_MIN)."""
+    repos: list[Repo] = []
+    for query, weight in HN_QUERIES:
+        print(f"[INFO] HN search: {query!r}", file=sys.stderr)
+        for hit in hn_search(query):
+            m = GH_URL_RE.search(hit.get("url") or "")
+            if not m:
+                continue
+            owner, name = m.group(1), m.group(2).removesuffix(".git")
+            if owner.lower() in GH_BAD_OWNERS or name.lower() in GH_BAD_NAMES:
+                continue
+            fn = f"{owner}/{name}"
+            if fn in seen or fn in existing or any(r.full_name == fn for r in repos):
+                continue
+            meta = gh_repo_meta(fn)
+            if not meta or not meta.get("description"):
+                continue
+            repos.append(Repo(
+                full_name=fn,
+                description=meta["description"],
+                stars=meta.get("stargazers_count") or 0,
+                url=meta.get("html_url") or f"https://github.com/{fn}",
+                updated_at=meta.get("updated_at") or "",
+                matched_query=f"hn: {(hit.get('title') or '')[:60]}",
+                matched_weight=weight,
+                source="hn",
+                hn_points=hit.get("points") or 0,
+                hn_url=f"https://news.ycombinator.com/item?id={hit.get('objectID')}",
+            ))
+            if len(repos) >= HN_MAX_PER_DAY:
+                return repos
+    return repos
+
+
+def census_candidates(seen: dict[str, Any], existing: dict[str, Repo]) -> list[Repo]:
+    """Weekly exhaustive sweep: repos created in the last 7 days per keyword."""
+    today = dt.date.today()
+    window = f"{(today - dt.timedelta(days=7)).isoformat()}..{today.isoformat()}"
+    repos: list[Repo] = []
+    for query, weight in CENSUS_QUERIES:
+        q = f"{query} created:{window} stars:>={STAR_MIN}"
+        print(f"[INFO] census: {q!r}", file=sys.stderr)
+        for n in gh_search_graphql(q):
+            fn = n["nameWithOwner"]
+            if fn in seen or fn in existing or any(r.full_name == fn for r in repos):
+                continue
+            if (n.get("stargazerCount") or 0) < STAR_MIN or not n.get("description"):
+                continue
+            if is_noise(fn, n["description"]):
+                continue
+            repos.append(Repo(
+                full_name=fn,
+                description=n["description"],
+                stars=n["stargazerCount"],
+                url=n["url"],
+                updated_at=n["updatedAt"],
+                matched_query=f"census: {query}",
+                matched_weight=weight,
+                source="census",
+            ))
+    return repos
 
 
 def llm_chat(prompt: str, max_tokens: int = 4000, json_mode: bool = True) -> str:
@@ -456,7 +608,7 @@ def render_daily(
     lines = [
         f"# Agent Discovery · {today}",
         "",
-        f"Found **{len(new_repos)} new repos** across {len(QUERIES)} queries.",
+        f"Found **{len(new_repos)} new repos** across {len(QUERIES)} queries + HN" + (" + census." if dt.date.today().weekday() == CENSUS_DAY else "."),
         "",
     ]
     if new_repos:
@@ -485,7 +637,11 @@ def render_daily(
                 lines += [f"- **{label}**: {s[key]}"]
         lines += [
             f"- Updated: {r.updated_at[:10]}",
-            f"- Query hit: `{r.matched_query}`",
+            f"- Source: `{r.source}` · Query hit: `{r.matched_query}`",
+        ]
+        if r.source == "hn":
+            lines += [f"- HN: [{r.hn_points} points]({r.hn_url})"]
+        lines += [
             f"- <{r.url}>",
             "",
         ]
@@ -513,6 +669,8 @@ def main() -> int:
                              "updates state only, then exits.")
     parser.add_argument("--force", action="store_true",
                         help="With --backfill-days: re-score even entries that already have analysis.")
+    parser.add_argument("--census", action="store_true",
+                        help="Force the weekly census today (otherwise Sundays only).")
     args = parser.parse_args()
 
     seen = load_seen()
@@ -536,6 +694,8 @@ def main() -> int:
             if not filter_repo(r):
                 continue
             fn = r["fullName"]
+            if not query.startswith("awesome") and is_noise(fn, r["description"]):
+                continue
             if fn in seen:
                 continue
             if fn in candidates:
@@ -550,12 +710,21 @@ def main() -> int:
                 matched_weight=weight,
             )
 
+    # HN 信源（每日）：Show HN 往往比 GitHub trending 早几天
+    for r in hn_candidates(seen, candidates):
+        candidates[r.full_name] = r
+
+    # 周日普查：上周新建 repo 的全量扫描（也可 --census 手动触发）
+    if args.census or dt.date.today().weekday() == CENSUS_DAY:
+        for r in census_candidates(seen, candidates):
+            candidates[r.full_name] = r
+
     new_repos = sorted(candidates.values(), key=lambda r: r.stars, reverse=True)
     print(f"[INFO] {len(new_repos)} new repos after dedup", file=sys.stderr)
 
     # Register new repos in state (analysis filled in below if scored)
     for r in new_repos:
-        seen[r.full_name] = {
+        entry: dict[str, Any] = {
             "first_seen": today_iso,
             "stars_at_first_seen": r.stars,
             "matched_query": r.matched_query,
@@ -563,6 +732,13 @@ def main() -> int:
             "one_liner": None,
             "stars_history": [[today_iso, r.stars]],
         }
+        if r.source != "github":
+            entry["source"] = r.source
+        if r.hn_points:
+            entry["hn_points"] = r.hn_points
+        if r.hn_url:
+            entry["hn_url"] = r.hn_url
+        seen[r.full_name] = entry
 
     # Score the top N new repos (with the tracked list as compare context)
     scores: dict[str, Score] = {}
