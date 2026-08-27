@@ -17,8 +17,12 @@ Curated queries (weighted by relevance):
 | `ai coding agent framework` | 7 |
 | `llm agent framework` | 6 |
 | `prompt engineering agent` | 5 |
+| `awesome agent skills` | 4 |
+| `awesome llm agents` | 4 |
 
-Edit `scripts/discover.py` to change.
+Edit `scripts/discover.py` to change. The two `awesome *` queries keep a
+self-maintaining meta-list of awesome-lists (they show up as
+`类型: 资源合集` in the viz).
 
 ## Filters
 
@@ -43,22 +47,42 @@ python3 scripts/discover.py --backfill-days 14   # re-score last 14 days, state 
 
 Without a key, findings are just sorted by stars.
 
-## Star velocity
+## Dynamic tracking
 
 Every run snapshots current stars for all previously seen repos into
-`stars_history` in `state/seen.json`. The daily report ends with a
-"Trending since first seen" table of the biggest gainers, so the log
-doubles as a trend tracker.
+`stars_history` in `state/seen.json`. On top of that history the daily
+Feishu card and the viz report three transparent, rule-based signals
+(no LLM judgment — thresholds live in `scripts/discover.py`):
+
+- **涨速榜** — top repos by average stars/day since first seen
+- **自动关注** 🔥 — `score ≥ 7 & 日均 ≥ 20`, or `日均 ≥ 100` regardless of score
+- **降温** — hot overall but nearly flat over the last 7 days (needs ≥ 8
+  days of history, so it appears about a week after tracking starts)
 
 ## Visualization
 
 `scripts/render_viz.py` renders `docs/index.html` — a self-contained
-page (no external assets) with top movers, discoveries per day, and the
-full tracking table. The daily workflow regenerates and commits it.
-Serve `/docs` via GitHub Pages, or just open the file locally.
+page (no external assets) with velocity/mover charts, discoveries per
+day, and the full tracking table (🔥 marks auto-watched repos). The
+daily workflow regenerates and commits it. Serve `/docs` via GitHub
+Pages, or just open the file locally.
 
 ```bash
 python3 scripts/render_viz.py --refresh   # re-fetch stars in-memory first
+```
+
+## Biomed watch (weekly branch)
+
+`scripts/biomed.py` watches PubMed for anti-aging drug research
+(senolytics, rapamycin, partial reprogramming, …), diffs against
+`state/biomed_seen.json`, gets a plain-language Chinese take per paper
+from the LLM, writes `discoveries/biomed/YYYY-MM-DD.md` and posts a
+separate Feishu card. Runs weekly via `.github/workflows/biomed.yml`
+(Mon 22:05 UTC). This is the second "track": different source (PubMed
+E-utilities instead of GitHub), same pipeline shape.
+
+```bash
+python3 scripts/biomed.py --dry-run
 ```
 
 ## Feishu notification (optional)
@@ -73,10 +97,18 @@ card carries it in the title). No webhook → the step no-ops quietly.
 ## Structure
 
 ```
-scripts/discover.py           # core script (Python 3.11+)
-state/seen.json               # persisted dedup memory
-discoveries/YYYY-MM-DD.md     # each day's report
+scripts/discover.py            # GitHub track: search, LLM analysis, star tracking
+scripts/render_viz.py          # docs/index.html generator
+scripts/notify.py              # Feishu card (+ Humanizer-zh de-AI pass)
+scripts/biomed.py              # PubMed track: weekly anti-aging drug watch
+scripts/humanize_rules.md      # de-AI-slop rewrite rules
+state/seen.json                # GitHub track dedup + star history
+state/biomed_seen.json         # PubMed track dedup memory
+discoveries/YYYY-MM-DD.md      # daily GitHub report
+discoveries/biomed/YYYY-MM-DD.md # weekly biomed report
+docs/index.html                # viz (GitHub Pages)
 .github/workflows/discover.yml # cron: 22:00 UTC daily
+.github/workflows/biomed.yml   # cron: Mon 22:05 UTC weekly
 ```
 
 ## Run locally

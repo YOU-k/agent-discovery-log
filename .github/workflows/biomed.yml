@@ -1,0 +1,45 @@
+name: Weekly Biomed Watch
+
+on:
+  schedule:
+    # Monday 22:05 UTC = Tuesday 06:05 Beijing
+    - cron: "5 22 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: biomed
+  cancel-in-progress: false
+
+jobs:
+  biomed:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run biomed watch
+        env:
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+          LLM_BASE_URL: ${{ vars.LLM_BASE_URL }}
+          LLM_MODEL: ${{ vars.LLM_MODEL }}
+          FEISHU_WEBHOOK: ${{ secrets.FEISHU_WEBHOOK }}
+          FEISHU_KEYWORD: ${{ vars.FEISHU_KEYWORD }}
+        run: python3 scripts/biomed.py
+
+      - name: Commit findings
+        run: |
+          git config user.name "discovery-bot"
+          git config user.email "discovery-bot@users.noreply.github.com"
+          git add discoveries/biomed/ state/biomed_seen.json
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Weekly biomed watch $(date -u +%Y-%m-%d)"
+            git push
+          fi

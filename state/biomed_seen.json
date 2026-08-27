@@ -1,0 +1,164 @@
+{
+  "42624300": {
+    "title": "From protection to progression: How CCT/TRiC shapes therapy-induced senescence in Glioblastoma multiforme.",
+    "journal": "Biochimica et biophysica acta. Molecular basis of disease",
+    "pubdate": "2026",
+    "first_seen": "2026-08-27",
+    "score": 4,
+    "what": "研究脑瘤中一种蛋白复合物如何影响治疗诱导的细胞衰老，可能影响肿瘤复发。",
+    "why": "为脑瘤治疗策略提供新思路，但与直接抗衰老药关联较弱。"
+  },
+  "42632547": {
+    "title": "Immunopharmacological reprogramming of innate immune memory in Alzheimer's disease: From microglial priming to therapeutic resilience.",
+    "journal": "Biochemical pharmacology",
+    "pubdate": "2026",
+    "first_seen": "2026-08-27",
+    "score": 7,
+    "what": "综述阿尔茨海默病中免疫记忆重编程，提及多种药物调节小胶质细胞功能。",
+    "why": "抗衰老药如二甲双胍、雷帕霉素等被提及，具转化潜力。"
+  },
+  "42627589": {
+    "title": "Systemic and local dysregulation of the complement system in glioma: a comprehensive systematic review.",
+    "journal": "Clinical & translational oncology : official publication of the Federation of Spanish Oncology Societies and of the National Cancer Institute of Mexico",
+    "pubdate": "2026",
+    "first_seen": "2026-08-27",
+    "score": 2,
+    "what": "系统回顾补体系统在胶质瘤中的异常，主要涉及肿瘤免疫逃逸。",
+    "why": "聚焦肿瘤机制，与抗衰老直接关联不大。"
+  },
+  "42632465": {
+    "title": "Exercise and p21 signaling in central nervous system aging and senescence: A context- and dose-dependent relationship.",
+    "journal": "Ageing research reviews",
+    "pubdate": "2026",
+    "first_seen": "2026-08-27",
+    "score": 5,
+    "what": "运动与衰老相关蛋白p21的关系，发现运动可减少或增加p21取决于情况。",
+    "why": "提示运动作为抗衰老干预的复杂性，常规进展。"
+  },
+  "42640108": {
+    "title": "Decoding the multidimensional landscape of skin aging: molecular pathways and next-generation diagnostics & therapeutics.",
+    "journal": "Tissue barriers",
+    "pubdate": "2026",
+    "first_seen": "2026-08-27",
+    "score": 5,
+    "what": "综述皮肤衰老的分子机制及下一代诊断和治疗方法。",
+    "why": "皮肤衰老是抗衰老领域热点，但多为综述，无新药。"
+  },
+  "42624351": {
+    "title": "Aging as cross-hallmark obstruction amplification: A sheaf-theoretic model of repair closure, senescence, inflammation, and regenerative failure.",
+    "journal": "Bio Systems",
+    "pubdate": "2026",
+    "first_seen": "2026-08-27",
+    "score": 2,
+    "what": "用数学模型解释衰老过程中修复能力丧失，涉及多个衰老标志。",
+    "why": "纯理论建模，非药物研究，相关性低。"
+  },
+  "42438973": {
+    "title": "Extracellular vesicles in senescence-associated chronic lung diseases.",
+    "journal": "Chinese medical journal",
+    "pubdate": "2026",
+    "first_seen": "2026-08-27",
+    "score": 6,
+    "what": "综述细胞外囊泡在慢性肺病衰老中的作用，并探讨治疗应用。",
+    "why": "囊泡递送抗衰老药物为新兴方向，但尚处早期。"
+  },
+  "42635645": {
+    "title": "Formononetin attenuates cellular senescence through a FOS-mediated mechanism.",
+    "journal": "Biogerontology",
+    "pubdate": "2026",
+    "first_seen": "2026-08-27",
+    "score": 7,
+    "what": "发现植物成分芒柄花素可让衰老细胞重新增殖，恢复线粒体功能。",
+    "why": "具有抗衰老药物潜力，机制新颖，值得关注。"
+  },
+  "42473972": {
+    "title": "Engineering biomaterial-mediated delivery for osteoarthritis: targeting aging mechanisms to reestablish joint homeostasis.",
+    "journal": "Nanoscale",
+    "pubdate": "2026",
+    "first_seen": "2026-08-27",
+    "score": 6,
+    "what": "综述生物材料靶向衰老机制治疗骨关节炎，实现局部给药。",
+    "why": "骨关节炎与衰老相关，递送系统增强药效，临床价值。"
+  },
+  "42269275": {
+    "title": "Fingolimod induces cytotoxic stress and apoptosis-like cell death in drug-sensitive and P-glycoprotein-overexpressing acute myeloid leukemia cells.",
+    "journal": "Biochemical and biophysical research communications",
+    "pubdate": "2026",
+    "first_seen": "2026-08-27",
+    "score": 3,
+    "what": "研究药物芬戈莫德对白血病细胞的杀伤作用，与衰老无关。",
+    "why": "聚焦抗癌，非抗衰老。"
+  },
+  "42607216": {
+    "title": "CXCR4-targeted dual softener for inducing senescence therapy in hepatic fibrosis.",
+    "journal": "Proceedings of the National Academy of Sciences of the United States of America",
+    "pubdate": "2026",
+    "first_seen": "2026-08-27",
+    "score": 6,
+    "what": "开发靶向肝星状细胞的纳米颗粒诱导衰老，治疗肝纤维化。",
+    "why": "抗衰老策略用于肝病，创新递送平台，有临床潜力。"
+  },
+  "42546696": {
+    "title": "The BAX/BAK apoptotic checkpoint polices entry to therapy-induced senescence.",
+    "journal": "Cell chemical biology",
+    "pubdate": "2026",
+    "first_seen": "2026-08-27",
+    "score": 4,
+    "what": "发现BAX/BAK蛋白控制细胞进入衰老的检查点，基因缺失增强衰老。",
+    "why": "理解衰老调控机制，但非直接药物，基础研究。"
+  },
+  "42627547": {
+    "title": "Icaritin improves pregnancy outcomes in endometriosis by inhibiting ovarian granulosa cell senescence.",
+    "journal": "Molecular biology reports",
+    "pubdate": "2026",
+    "first_seen": "2026-08-27",
+    "score": 6,
+    "what": "中药淫羊藿次苷可抑制卵巢颗粒细胞衰老，改善子宫内膜异位症生育。",
+    "why": "植物药改善生育与抗衰老，具应用前景。"
+  },
+  "42641619": {
+    "title": "Molecular targets in proliferative vitreoretinopathy: rethinking prevention, treatment and drug delivery after rhegmatogenous retinal detachment.",
+    "journal": "Expert opinion on therapeutic targets",
+    "pubdate": "2026",
+    "first_seen": "2026-08-27",
+    "score": 4,
+    "what": "综述增殖性玻璃体视网膜病变的药物靶点和递送挑战。",
+    "why": "眼科衰老相关病，但重点在预防治疗，非抗衰老药。"
+  },
+  "42360689": {
+    "title": "TORC1 inactivation induces a noncanonical, separase-independent cohesin degradation.",
+    "journal": "Bioscience, biotechnology, and biochemistry",
+    "pubdate": "2026",
+    "first_seen": "2026-08-27",
+    "score": 2,
+    "what": "研究酵母中TORC1失活导致染色体黏连蛋白降解机制。",
+    "why": "基础机制，不涉及药物或衰老干预。"
+  },
+  "42648451": {
+    "title": "Rapamycin attenuates age-related atrial remodeling and fibrillation by targeting HIF-1α-mediated metabolic dysregulation.",
+    "journal": "Biochimica et biophysica acta. Molecular basis of disease",
+    "pubdate": "2026",
+    "first_seen": "2026-08-27",
+    "score": 8,
+    "what": "雷帕霉素改善老年小鼠心房重构和房颤，机制涉及抑制HIF-1α。",
+    "why": "经典抗衰老药新适应症，动物实验证据，临床转化可能。"
+  },
+  "42644500": {
+    "title": "TCR Signal Strength and Duration In Primary Mouse CD8+ T Cell Activation and Differentiation: A Standardized In Vitro Approach.",
+    "journal": "Journal of visualized experiments : JoVE",
+    "pubdate": "2026",
+    "first_seen": "2026-08-27",
+    "score": 2,
+    "what": "标准化体外激活T细胞的方法，研究信号强度和时长影响。",
+    "why": "免疫学方法学，与抗衰老无关。"
+  },
+  "42519061": {
+    "title": "TRF2 enriched cytoplasmic chromatin drives cGAS-STAT1-mediated inflammation in senescence.",
+    "journal": "iScience",
+    "pubdate": "2026",
+    "first_seen": "2026-08-27",
+    "score": 6,
+    "what": "发现衰老细胞中端粒蛋白片段引发炎症，二甲双胍或JAK抑制剂可抑制。",
+    "why": "揭示衰老炎症机制，提供药物靶点，已有药可干预。"
+  }
+}

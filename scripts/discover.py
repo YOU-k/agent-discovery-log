@@ -51,6 +51,8 @@ QUERIES: list[tuple[str, int]] = [
     ("ai coding agent framework", 7),
     ("llm agent framework", 6),
     ("prompt engineering agent", 5),
+    ("awesome agent skills", 4),
+    ("awesome llm agents", 4),
 ]
 
 # Filters
@@ -382,6 +384,49 @@ def top_movers(seen: dict[str, dict[str, Any]], limit: int = 10) -> list[tuple[s
             rows.append((fn, e.get("first_seen", ""), then, now, now - then))
     rows.sort(key=lambda r: r[4], reverse=True)
     return rows[:limit]
+
+
+def daily_rate(entry: dict[str, Any]) -> float | None:
+    """Average stars/day over the tracked span. None if not enough history."""
+    hist = entry.get("stars_history") or []
+    if len(hist) < 2:
+        return None
+    d0 = dt.date.fromisoformat(hist[0][0])
+    d1 = dt.date.fromisoformat(hist[-1][0])
+    days = (d1 - d0).days
+    if days < 1:
+        return None
+    return (hist[-1][1] - hist[0][1]) / days
+
+
+# Auto-watch thresholds (transparent rules, not LLM judgment).
+WATCH_MIN_SCORE = 7    # high-relevance …
+WATCH_MIN_RATE = 20.0  # … and steadily rising, or
+WATCH_HOT_RATE = 100.0 # exploding regardless of score
+COOLING_MIN_RATE = 20.0      # was hot overall …
+COOLING_RECENT_RATIO = 0.2   # … but last-7d gain < 20% of expected
+
+
+def is_watched(entry: dict[str, Any]) -> bool:
+    """Auto-watch: high relevance + steady rise, or velocity explosion."""
+    rate = daily_rate(entry)
+    if rate is None:
+        return False
+    if rate >= WATCH_HOT_RATE:
+        return True
+    return (entry.get("score") or 0) >= WATCH_MIN_SCORE and rate >= WATCH_MIN_RATE
+
+
+def is_cooling(entry: dict[str, Any]) -> bool:
+    """Was hot overall but nearly flat over the last week. Needs ≥8 daily points."""
+    hist = entry.get("stars_history") or []
+    if len(hist) < 8:
+        return False
+    rate = daily_rate(entry)
+    if rate is None or rate < COOLING_MIN_RATE:
+        return False
+    recent_gain = hist[-1][1] - hist[-8][1]
+    return recent_gain < rate * 7 * COOLING_RECENT_RATIO
 
 
 def load_seen() -> dict[str, dict[str, Any]]:

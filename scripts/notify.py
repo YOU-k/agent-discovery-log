@@ -122,15 +122,52 @@ def build_card(seen: dict[str, dict[str, Any]]) -> dict[str, Any]:
     else:
         new_md = "**今天没有新 repo 通过过滤**"
 
-    movers = discover.top_movers(seen, limit=MAX_MOVERS_IN_MSG)
-    if movers:
-        mover_lines = [
-            f"[{fn}](https://github.com/{fn}) {then:,} → {now:,}（+{delta:,}）"
-            for fn, _fs, then, now, delta in movers
+    # 动态追踪：涨速榜（日均）、降温榜、自动关注
+    rated = []   # (fn, entry, daily_rate, stars_then, stars_now)
+    cooling = []
+    watched = []
+    for fn, e in seen.items():
+        if e.get("first_seen") == today:
+            continue
+        rate = discover.daily_rate(e)
+        if rate is None:
+            continue
+        hist = e.get("stars_history") or []
+        rated.append((fn, e, rate, hist[0][1], hist[-1][1]))
+        if discover.is_cooling(e):
+            cooling.append((fn, e, rate))
+        if discover.is_watched(e):
+            watched.append((fn, e, rate))
+    rated.sort(key=lambda r: r[2], reverse=True)
+    watched.sort(key=lambda r: r[2], reverse=True)
+
+    trend_parts = []
+    if rated:
+        lines = [
+            f"[{fn}](https://github.com/{fn}) 日均 +{rate:,.0f}（{then:,} → {now:,}）"
+            for fn, _e, rate, then, now in rated[:MAX_MOVERS_IN_MSG]
         ]
-        movers_md = "**Trending since first seen**\n" + "\n".join(mover_lines)
-    else:
-        movers_md = ""
+        trend_parts.append("**涨速榜（自首收日均）**\n" + "\n".join(lines))
+    if cooling:
+        lines = [
+            f"[{fn}](https://github.com/{fn}) 近一周基本持平（累计日均 +{rate:,.0f}）"
+            for fn, _e, rate in cooling[:3]
+        ]
+        trend_parts.append("**降温（旧 trending 现状）**\n" + "\n".join(lines))
+    if watched:
+        lines = []
+        for fn, e, rate in watched[:8]:
+            line = f"🔥 [{fn}](https://github.com/{fn}) 日均 +{rate:,.0f}"
+            if e.get("score"):
+                line += f" · {e['score']}/10"
+            lines.append(line)
+        trend_parts.append("**自动关注（高分稳涨或涨速爆表）**\n" + "\n".join(lines))
+    movers_md = "\n\n".join(trend_parts)
+    # trend_summary 仍按累计口径取 top（保持原有上下文格式）
+    movers = [
+        (fn, e.get("first_seen", ""), then, now, now - then)
+        for fn, e, _rate, then, now in rated[:MAX_MOVERS_IN_MSG]
+    ]
 
     # 近 N 天的其他发现（今天的新发现太少时用来垫底，免得卡片空荡荡）
     recent_md = ""
