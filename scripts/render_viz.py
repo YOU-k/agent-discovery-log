@@ -77,7 +77,9 @@ def repo_rows(seen: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
             "delta": (now or then) - then,
             "query": e.get("matched_query", ""),
             "score": e.get("score"),
+            "category": e.get("category") or "",
             "one_liner": e.get("one_liner") or "",
+            "use_for": e.get("use_for") or "",
         })
     rows.sort(key=lambda r: r["delta"], reverse=True)
     return rows
@@ -115,15 +117,16 @@ def render(seen: dict[str, dict[str, Any]]) -> str:
         delta_cls = "num pos" if r["delta"] > 0 else "num"
         delta_txt = f"+{r['delta']:,}" if r["delta"] > 0 else f"{r['delta']:,}"
         score_txt = f'<span class="score">{r["score"]}/10</span>' if r["score"] else ""
+        analysis = r["one_liner"] + (f"；{r['use_for']}" if r["use_for"] else "")
         table_row_list.append(
             "<tr>"
             f'<td><a href="https://github.com/{esc(r["full_name"])}">{esc(r["full_name"])}</a></td>'
             f'<td class="num">{esc(r["first_seen"])}</td>'
             f'<td class="num">{r["then"]:,} → {r["now"]:,}</td>'
             f'<td class="{delta_cls}">{delta_txt}</td>'
-            f"<td>{esc(r['query'])}</td>"
+            f"<td>{esc(r['category'])}</td>"
             f"<td>{score_txt}</td>"
-            f'<td class="one">{esc(r["one_liner"])}</td>'
+            f'<td class="one">{esc(analysis)}</td>'
             "</tr>"
         )
     table_rows = "\n".join(table_row_list)
@@ -150,7 +153,7 @@ def render(seen: dict[str, dict[str, Any]]) -> str:
 
 <h2>All tracked repos</h2>
 <table>
-<thead><tr><th>Repo</th><th>First seen</th><th>Stars then → now</th><th>Δ</th><th>Query</th><th>Score</th><th>One-liner</th></tr></thead>
+<thead><tr><th>Repo</th><th>First seen</th><th>Stars then → now</th><th>Δ</th><th>类型</th><th>Score</th><th>分析</th></tr></thead>
 <tbody>
 {table_rows}
 </tbody>

@@ -35,6 +35,8 @@ import discover  # noqa: E402  (for top_movers)
 
 WEBHOOK = os.environ.get("FEISHU_WEBHOOK", "")
 SECRET = os.environ.get("FEISHU_SECRET", "")
+# If the bot uses 自定义关键词 verification, every message must contain it.
+KEYWORD = os.environ.get("FEISHU_KEYWORD", "")
 
 MAX_NEW_IN_MSG = 5
 MAX_MOVERS_IN_MSG = 5
@@ -52,15 +54,23 @@ def build_card(seen: dict[str, dict[str, Any]]) -> dict[str, Any]:
     )
 
     if new_today:
-        lines = []
-        for fn, e in new_today[:MAX_NEW_IN_MSG]:
-            score = f" · score {e['score']}/10" if e.get("score") else ""
-            line = f"[{fn}](https://github.com/{fn}) ★{(e.get('stars_at_first_seen') or 0):,}{score}"
+        blocks = []
+        for i, (fn, e) in enumerate(new_today[:MAX_NEW_IN_MSG], 1):
+            head = f"**{i}. [{fn}](https://github.com/{fn})** ★{(e.get('stars_at_first_seen') or 0):,}"
+            if e.get("score"):
+                head += f" · {e['score']}/10"
+            if e.get("category"):
+                head += f" · {e['category']}"
+            body = []
             if e.get("one_liner"):
-                line += f"\n{e['one_liner']}"
-            lines.append(line)
-        more = f"\n…以及另外 {len(new_today) - MAX_NEW_IN_MSG} 个" if len(new_today) > MAX_NEW_IN_MSG else ""
-        new_md = f"**新发现 {len(new_today)} 个 repo**\n" + "\n".join(lines) + more
+                body.append(f"是什么：{e['one_liner']}")
+            if e.get("use_for"):
+                body.append(f"能做什么：{e['use_for']}")
+            if e.get("usage"):
+                body.append(f"大家怎么用：{e['usage']}")
+            blocks.append(head + ("\n" + "\n".join(body) if body else ""))
+        more = f"\n\n…以及另外 {len(new_today) - MAX_NEW_IN_MSG} 个" if len(new_today) > MAX_NEW_IN_MSG else ""
+        new_md = f"**新发现 {len(new_today)} 个 repo**\n" + "\n\n".join(blocks) + more
     else:
         new_md = "**今天没有新 repo 通过过滤**"
 
@@ -82,16 +92,19 @@ def build_card(seen: dict[str, dict[str, Any]]) -> dict[str, Any]:
             {"tag": "hr"},
             {"tag": "div", "text": {"tag": "lark_md", "content": movers_md}},
         ]
+    title = f"Agent Discovery · {today}"
+    if KEYWORD:
+        title = f"{KEYWORD} · {title}"
     elements.append({
         "tag": "note",
-        "elements": [{"tag": "plain_text", "content": f"共追踪 {len(seen)} 个 repo · agent-discovery-log"}],
+        "elements": [{"tag": "plain_text", "content": f"共追踪 {len(seen)} 个 repo · agent-discovery-log" + (f" · {KEYWORD}" if KEYWORD else "")}],
     })
 
     return {
         "msg_type": "interactive",
         "card": {
             "header": {
-                "title": {"tag": "plain_text", "content": f"Agent Discovery · {today}"},
+                "title": {"tag": "plain_text", "content": title},
                 "template": "blue",
             },
             "elements": elements,

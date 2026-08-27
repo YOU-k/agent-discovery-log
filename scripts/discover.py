@@ -5,15 +5,16 @@ Runs a curated set of queries against the GitHub search API, diffs against
 state/seen.json, and writes new findings to discoveries/YYYY-MM-DD.md.
 
 Optional: if an LLM API key is set, each new repo gets a relevance score
-and one-line summary. Any OpenAI-compatible endpoint works (default:
-DeepSeek); Anthropic is supported as a fallback. Without a key, findings
-are ranked by stars only.
+plus a short Chinese analysis (类型 / 是什么 / 能做什么 / 大家怎么用),
+grounded with a README excerpt. Any OpenAI-compatible endpoint works
+(default: DeepSeek); Anthropic is supported as a fallback. Without a key,
+findings are ranked by stars only.
 
 Each run also refreshes star counts for all previously seen repos
 (stars_history in state/seen.json) and reports the biggest gainers.
 
 Usage:
-    python3 scripts/discover.py [--dry-run]
+    python3 scripts/discover.py [--dry-run] [--backfill-days N]
 
 Env:
     GH_TOKEN or GITHUB_TOKEN      — required for gh API rate limits
@@ -61,19 +62,29 @@ LLM_API_KEY = os.environ.get("LLM_API_KEY") or os.environ.get("DEEPSEEK_API_KEY"
 LLM_BASE_URL = os.environ.get("LLM_BASE_URL") or "https://api.deepseek.com/v1"
 LLM_MODEL = os.environ.get("LLM_MODEL") or "deepseek-chat"
 
-SCORE_PROMPT = """Rate each GitHub repo below for relevance to a developer building
-a Python multi-agent orchestration framework that runs on top of Claude Code.
-High relevance: Claude Code skills, agent orchestration, prompt engineering
-patterns, multi-agent frameworks, agent design patterns.
+README_EXCERPT_CHARS = 1500
 
-Repos:
-{listing}
+SCORE_PROMPT = """下面是一些 GitHub 仓库（名称、star 数、描述，部分附 README 摘要）。
+请站在「在 Claude Code 之上构建 Python 多智能体编排框架的开发者」的视角评估每个仓库。
 
-Output JSON only (no prose, no code fences):
+对每个仓库输出（全部用中文，score 除外）：
+- score: 1-10 的相关性评分（Claude Code skills、agent 编排、prompt 工程模式、多智能体框架、agent 设计模式 = 高相关）
+- category: 类型，如 Claude Code skill / subagent / 多智能体框架 / 资源合集 / 工具 / 其他
+- what: 它是什么（≤20字）
+- use_for: 潜在用途，可以拿它做什么（≤40字）
+- usage: 典型场景，大家实际在怎么用它（≤40字；不知道就根据描述合理推断，不要编造具体用户）
+
+只输出 JSON（不要任何其他文字、不要代码围栏）：
 [
-  {{"full_name": "owner/name", "score": 1-10, "one_liner": "≤ 15 words"}},
+  {{"full_name": "owner/name", "score": 8, "category": "...", "what": "...", "use_for": "...", "usage": "..."}},
   ...
-]"""
+]
+
+仓库：
+{listing}"""
+
+# A scored analysis for one repo.
+Score = dict[str, Any]  # keys: score, category, what, use_for, usage
 
 
 @dataclass
@@ -103,6 +114,29 @@ def gh_search(query: str) -> list[dict[str, Any]]:
     return json.loads(result.stdout)
 
 
+def gh_repo_meta(full_name: str) -> dict[str, Any] | None:
+    """Fetch repo metadata (description, stars, url, updatedAt)."""
+    result = subprocess.run(
+        ["gh", "api", f"repos/{full_name}"],
+        capture_output=True, text=True, timeout=30,
+    )
+    if result.returncode != 0:
+        print(f"[WARN] gh api failed for {full_name}: {result.stderr[:120]}", file=sys.stderr)
+        return None
+    return json.loads(result.stdout)
+
+
+def gh_readme_excerpt(full_name: str) -> str:
+    """Fetch the first chars of a repo's README (raw), '' on failure."""
+    result = subprocess.run(
+        ["gh", "api", f"repos/{full_name}/readme", "-H", "Accept: application/vnd.github.raw"],
+        capture_output=True, text=True, timeout=30,
+    )
+    if result.returncode != 0:
+        return ""
+    return result.stdout[:README_EXCERPT_CHARS]
+
+
 def filter_repo(r: dict[str, Any]) -> bool:
     """Basic quality gate."""
     if r["stargazersCount"] < STAR_MIN:
@@ -116,30 +150,49 @@ def filter_repo(r: dict[str, Any]) -> bool:
     return True
 
 
-def _parse_scores(text: str) -> dict[str, tuple[int, str]]:
-    """Parse the LLM's JSON answer into {full_name: (score, one_liner)}."""
+def _parse_scores(text: str) -> dict[str, Score]:
+    """Parse the LLM's JSON answer into {full_name: analysis}."""
     text = text.strip()
     if text.startswith("```"):
         text = text.split("```", 2)[1]
         if text.startswith("json"):
             text = text[4:]
         text = text.rsplit("```", 1)[0]
-    data = json.loads(text)
-    return {item["full_name"]: (item["score"], item["one_liner"]) for item in data}
+    out: dict[str, Score] = {}
+    for item in json.loads(text):
+        if not isinstance(item, dict) or "full_name" not in item:
+            continue
+        try:
+            score = int(float(item.get("score") or 0))
+        except (TypeError, ValueError):
+            score = 0
+        out[item["full_name"]] = {
+            "score": score,
+            "category": str(item.get("category") or ""),
+            "what": str(item.get("what") or ""),
+            "use_for": str(item.get("use_for") or ""),
+            "usage": str(item.get("usage") or ""),
+        }
+    return out
 
 
-def score_with_llm(repos: list[Repo]) -> dict[str, tuple[int, str]]:
-    """Score repos with whatever LLM API is configured.
+def score_with_llm(repos: list[Repo]) -> dict[str, Score]:
+    """Score + analyze repos with whatever LLM API is configured.
 
     Priority: OpenAI-compatible endpoint (LLM_API_KEY / DEEPSEEK_API_KEY,
     LLM_BASE_URL, LLM_MODEL) → Anthropic (ANTHROPIC_API_KEY).
-    Returns {full_name: (score, one_liner)}; {} if nothing is configured.
+    Returns {full_name: analysis}; {} if nothing is configured.
     """
-    listing = "\n".join(
-        f"{i+1}. {r.full_name} (★{r.stars}) — {r.description}"
-        for i, r in enumerate(repos)
-    )
-    prompt = SCORE_PROMPT.format(listing=listing)
+    if not repos:
+        return {}
+    blocks = []
+    for i, r in enumerate(repos):
+        block = f"{i+1}. {r.full_name} (★{r.stars}) — {r.description}"
+        excerpt = gh_readme_excerpt(r.full_name)
+        if excerpt:
+            block += f"\n   README 摘要: {excerpt}"
+        blocks.append(block)
+    prompt = SCORE_PROMPT.format(listing="\n".join(blocks))
     try:
         if LLM_API_KEY:
             return _score_openai_compat(prompt)
@@ -150,7 +203,7 @@ def score_with_llm(repos: list[Repo]) -> dict[str, tuple[int, str]]:
     return {}
 
 
-def _score_openai_compat(prompt: str) -> dict[str, tuple[int, str]]:
+def _score_openai_compat(prompt: str) -> dict[str, Score]:
     req = urllib.request.Request(
         f"{LLM_BASE_URL.rstrip('/')}/chat/completions",
         data=json.dumps({
@@ -164,12 +217,12 @@ def _score_openai_compat(prompt: str) -> dict[str, tuple[int, str]]:
             "Content-Type": "application/json",
         },
     )
-    with urllib.request.urlopen(req, timeout=120) as r:
+    with urllib.request.urlopen(req, timeout=180) as r:
         resp = json.load(r)
     return _parse_scores(resp["choices"][0]["message"]["content"])
 
 
-def _score_anthropic(prompt: str) -> dict[str, tuple[int, str]]:
+def _score_anthropic(prompt: str) -> dict[str, Score]:
     try:
         from anthropic import Anthropic
     except ImportError:
@@ -184,6 +237,48 @@ def _score_anthropic(prompt: str) -> dict[str, tuple[int, str]]:
     )
     text = "".join(b.text for b in resp.content if b.type == "text").strip()
     return _parse_scores(text)
+
+
+def apply_score(entry: dict[str, Any], s: Score) -> None:
+    """Write an analysis into a seen.json entry."""
+    entry["score"] = s.get("score")
+    entry["one_liner"] = s.get("what") or entry.get("one_liner")
+    entry["category"] = s.get("category")
+    entry["use_for"] = s.get("use_for")
+    entry["usage"] = s.get("usage")
+
+
+def backfill_scores(seen: dict[str, dict[str, Any]], days: int, dry_run: bool = False) -> int:
+    """Re-score repos first_seen within the last N days that lack analysis."""
+    cutoff = (dt.date.today() - dt.timedelta(days=days)).isoformat()
+    targets: list[Repo] = []
+    for fn, e in sorted(seen.items(), key=lambda kv: kv[1].get("first_seen", ""), reverse=True):
+        if e.get("score") or e.get("first_seen", "") < cutoff:
+            continue
+        meta = gh_repo_meta(fn)
+        if not meta:
+            continue
+        targets.append(Repo(
+            full_name=fn,
+            description=meta.get("description") or "",
+            stars=meta.get("stargazers_count") or e.get("stars_at_first_seen") or 0,
+            url=meta.get("html_url") or f"https://github.com/{fn}",
+            updated_at=meta.get("updated_at") or "",
+            matched_query=e.get("matched_query", ""),
+            matched_weight=0,
+        ))
+        if len(targets) >= 20:
+            break
+    if not targets:
+        return 0
+    print(f"[INFO] backfilling analysis for {len(targets)} repos", file=sys.stderr)
+    results = score_with_llm(targets)
+    if dry_run:
+        print(json.dumps(results, ensure_ascii=False, indent=2))
+    for fn, s in results.items():
+        if fn in seen:
+            apply_score(seen[fn], s)
+    return len(results)
 
 
 def refresh_stars(seen: dict[str, dict[str, Any]]) -> None:
@@ -262,7 +357,7 @@ def save_seen(seen: dict[str, Any]) -> None:
 
 def render_daily(
     new_repos: list[Repo],
-    scores: dict[str, tuple[int, str]],
+    scores: dict[str, Score],
     movers: list[tuple[str, str, int, int, int]],
 ) -> str:
     today = dt.date.today().isoformat()
@@ -274,22 +369,22 @@ def render_daily(
     ]
     if new_repos:
         if scores:
-            new_repos.sort(key=lambda r: scores.get(r.full_name, (0, ""))[0], reverse=True)
+            new_repos.sort(key=lambda r: (scores.get(r.full_name) or {}).get("score", 0), reverse=True)
             lines += ["Sorted by LLM relevance score (higher = more relevant).", ""]
         else:
             new_repos.sort(key=lambda r: r.stars, reverse=True)
             lines += ["Sorted by stars (no LLM scoring; set LLM_API_KEY to enable).", ""]
 
     for r in new_repos:
-        score, one_liner = scores.get(r.full_name, (None, None))
-        badge = f"[score {score}/10] " if score else ""
-        lines += [
-            f"## {badge}{r.full_name}  ·  ★{r.stars}",
-            "",
-            f"- {r.description}",
-        ]
-        if one_liner:
-            lines += [f"- **LLM take**: {one_liner}"]
+        s = scores.get(r.full_name) or {}
+        badge = f"[score {s['score']}/10] " if s.get("score") else ""
+        lines += [f"## {badge}{r.full_name}  ·  ★{r.stars}", ""]
+        if s.get("category"):
+            lines += [f"- **类型**: {s['category']}"]
+        lines += [f"- {r.description}"]
+        for label, key in (("是什么", "what"), ("能做什么", "use_for"), ("大家怎么用", "usage")):
+            if s.get(key):
+                lines += [f"- **{label}**: {s[key]}"]
         lines += [
             f"- Updated: {r.updated_at[:10]}",
             f"- Query hit: `{r.matched_query}`",
@@ -315,10 +410,21 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--dry-run", action="store_true", help="Print instead of writing files.")
     parser.add_argument("--max-scored", type=int, default=20, help="Cap on LLM-scored repos.")
+    parser.add_argument("--backfill-days", type=int, default=0, metavar="N",
+                        help="Re-score repos first_seen in the last N days that lack analysis; "
+                             "updates state only, then exits.")
     args = parser.parse_args()
 
     seen = load_seen()
     today_iso = dt.date.today().isoformat()
+
+    # Maintenance mode: fill in analysis for recent repos that predate scoring.
+    if args.backfill_days:
+        n = backfill_scores(seen, args.backfill_days, args.dry_run)
+        print(f"[INFO] backfilled analysis for {n} repos", file=sys.stderr)
+        if not args.dry_run and n:
+            save_seen(seen)
+        return 0
 
     # Collect + dedupe candidates
     candidates: dict[str, Repo] = {}
@@ -345,7 +451,7 @@ def main() -> int:
     new_repos = sorted(candidates.values(), key=lambda r: r.stars, reverse=True)
     print(f"[INFO] {len(new_repos)} new repos after dedup", file=sys.stderr)
 
-    # Register new repos in state (score/one_liner filled in below if scored)
+    # Register new repos in state (analysis filled in below if scored)
     for r in new_repos:
         seen[r.full_name] = {
             "first_seen": today_iso,
@@ -357,12 +463,13 @@ def main() -> int:
         }
 
     # Score the top N new repos
-    scores: dict[str, tuple[int, str]] = {}
+    scores: dict[str, Score] = {}
     if new_repos:
+        print(f"[INFO] scoring {min(len(new_repos), args.max_scored)} repos", file=sys.stderr)
         scores = score_with_llm(new_repos[: args.max_scored])
-        for fn, (s, ol) in scores.items():
-            seen[fn]["score"] = s
-            seen[fn]["one_liner"] = ol
+        for fn, s in scores.items():
+            if fn in seen:
+                apply_score(seen[fn], s)
 
     # Snapshot current stars for everything we've ever seen
     refresh_stars(seen)

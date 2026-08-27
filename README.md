@@ -30,8 +30,16 @@ Edit `scripts/discover.py` to change.
 
 Any OpenAI-compatible API works — DeepSeek by default. Set `LLM_API_KEY`
 as a GitHub secret; optionally override `LLM_BASE_URL` / `LLM_MODEL` as
-repo variables. Each new repo gets a relevance score (1-10) and one-liner
-(~$0.001/day). `ANTHROPIC_API_KEY` also works as a fallback scorer.
+repo variables. Each new repo gets a relevance score (1-10) plus a short
+Chinese analysis (类型 / 是什么 / 能做什么 / 大家怎么用), grounded with
+a README excerpt (~$0.001/day). `ANTHROPIC_API_KEY` also works as a
+fallback scorer.
+
+Repos found before scoring was enabled can be analyzed retroactively:
+
+```bash
+python3 scripts/discover.py --backfill-days 14   # re-score last 14 days, state only
+```
 
 Without a key, findings are just sorted by stars.
 
@@ -57,9 +65,10 @@ python3 scripts/render_viz.py --refresh   # re-fetch stars in-memory first
 
 Add a 自定义机器人 to a Feishu group, then set its webhook URL as the
 `FEISHU_WEBHOOK` GitHub secret. After each run, `scripts/notify.py`
-posts a summary card (new repos + top movers) to the group. If the bot
-has 签名校验 enabled, also set `FEISHU_SECRET`. No secret → the step
-no-ops quietly.
+posts a summary card (new repos + top movers) to the group. Security
+settings supported both ways: 签名校验 → set the `FEISHU_SECRET`
+secret; 自定义关键词 → set the `FEISHU_KEYWORD` repo variable (every
+card carries it in the title). No webhook → the step no-ops quietly.
 
 ## Structure
 

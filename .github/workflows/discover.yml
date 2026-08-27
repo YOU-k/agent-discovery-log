@@ -49,6 +49,7 @@ jobs:
         env:
           FEISHU_WEBHOOK: ${{ secrets.FEISHU_WEBHOOK }}
           FEISHU_SECRET: ${{ secrets.FEISHU_SECRET }}
+          FEISHU_KEYWORD: ${{ vars.FEISHU_KEYWORD }}
         run: python3 scripts/notify.py
 
       - name: Commit findings

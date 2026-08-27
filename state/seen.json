@@ -633,8 +633,11 @@
     "first_seen": "2026-08-13",
     "stars_at_first_seen": 1163,
     "matched_query": "claude code skill",
-    "score": null,
-    "one_liner": null
+    "score": 8,
+    "one_liner": "四阶段方案加固的skill",
+    "category": "Claude Code skill",
+    "use_for": "用双模型对抗审查来硬化计划，再分工构建",
+    "usage": "在Claude Code中加载skill，用于复杂任务的计划制定与构建"
   },
   "Leutenegger/book-to-skill": {
     "first_seen": "2026-08-13",
@@ -647,35 +650,50 @@
     "first_seen": "2026-08-19",
     "stars_at_first_seen": 601,
     "matched_query": "claude code skill",
-    "score": null,
-    "one_liner": null
+    "score": 3,
+    "one_liner": "照片转字体生成skill",
+    "category": "Claude Code skill",
+    "use_for": "将手写照片快速转换为TTF字体文件",
+    "usage": "在Claude Code中处理手写字体图像，生成定制字体"
   },
   "yylo-dev/yylo": {
     "first_seen": "2026-08-21",
     "stars_at_first_seen": 56,
     "matched_query": "agent orchestration cli",
-    "score": null,
-    "one_liner": null
+    "score": 7,
+    "one_liner": "AI编码agent编排CLI",
+    "category": "工具",
+    "use_for": "编排多个coding agent与结构化工作流",
+    "usage": "作为CLI工具，配合YYLO Ledger和Benchmark管理开发任务"
   },
   "chaseai-yt/claudex-loop": {
     "first_seen": "2026-08-24",
     "stars_at_first_seen": 1196,
     "matched_query": "claude code skill",
-    "score": null,
-    "one_liner": null
+    "score": 8,
+    "one_liner": "四阶段方案加固的skill",
+    "category": "Claude Code skill",
+    "use_for": "用双模型对抗审查来硬化计划，再分工构建",
+    "usage": "在Claude Code中加载skill，用于复杂任务的计划制定与构建"
   },
   "nateherkai/scroll-craft": {
     "first_seen": "2026-08-24",
     "stars_at_first_seen": 618,
     "matched_query": "claude code skill",
-    "score": null,
-    "one_liner": null
+    "score": 4,
+    "one_liner": "生成滚动驱动网站的skill",
+    "category": "Claude Code skill",
+    "use_for": "快速构建高质量、滚动叙事网站",
+    "usage": "在Claude Code中调用，用于前端网站开发"
   },
   "limenagent/prodagent": {
     "first_seen": "2026-08-27",
     "stars_at_first_seen": 51,
     "matched_query": "llm agent framework",
-    "score": null,
-    "one_liner": null
+    "score": 9,
+    "one_liner": "生产级LLM Agent框架",
+    "category": "多智能体框架",
+    "use_for": "构建带预算、恢复等机制的多智能体系统",
+    "usage": "直接作为生产级框架使用，参考其设计模式"
   }
 }
