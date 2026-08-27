@@ -40,10 +40,27 @@ KEYWORD = os.environ.get("FEISHU_KEYWORD", "")
 
 MAX_NEW_IN_MSG = 5
 MAX_MOVERS_IN_MSG = 5
+MAX_RECENT_IN_MSG = 5
+RECENT_DAYS = 7
+
+
+def trend_summary(new_today: list[tuple[str, dict[str, Any]]], movers: list) -> str:
+    """2-3 句大白话趋势小结，由 LLM 归纳方向（而不是罗列项目）。'' 如果不可用。"""
+    movers_txt = "；".join(f"{fn} 涨了 {delta:,} 星" for fn, _fs, _t, _n, delta in movers[:5]) or "暂无数据"
+    new_txt = "；".join(
+        f"{fn}（{e.get('category') or '未知类型'}）" for fn, e in new_today[:5]
+    ) or "今天无新发现"
+    prompt = f"""你在维护一个追踪 GitHub 上 AI agent / Claude Code skill 项目的日报。
+今天的新发现：{new_txt}
+自首次收录以来涨星最多的项目：{movers_txt}
+请用中文大白话写 2-3 句趋势小结（≤80字）：最近这个领域什么方向最火？有什么值得普通开发者关注的信号？
+要求：归纳方向和现象，不要罗列项目名，不要用术语。只输出小结正文，不要标题。"""
+    return discover.llm_chat(prompt, max_tokens=400, json_mode=False)
 
 
 def build_card(seen: dict[str, dict[str, Any]]) -> dict[str, Any]:
     today = dt.date.today().isoformat()
+    week_ago = (dt.date.today() - dt.timedelta(days=RECENT_DAYS)).isoformat()
 
     new_today = [
         (fn, e) for fn, e in seen.items() if e.get("first_seen") == today
@@ -68,6 +85,8 @@ def build_card(seen: dict[str, dict[str, Any]]) -> dict[str, Any]:
                 body.append(f"能做什么：{e['use_for']}")
             if e.get("usage"):
                 body.append(f"大家怎么用：{e['usage']}")
+            if e.get("example"):
+                body.append(f"举个例子：{e['example']}")
             blocks.append(head + ("\n" + "\n".join(body) if body else ""))
         more = f"\n\n…以及另外 {len(new_today) - MAX_NEW_IN_MSG} 个" if len(new_today) > MAX_NEW_IN_MSG else ""
         new_md = f"**新发现 {len(new_today)} 个 repo**\n" + "\n\n".join(blocks) + more
@@ -84,14 +103,45 @@ def build_card(seen: dict[str, dict[str, Any]]) -> dict[str, Any]:
     else:
         movers_md = ""
 
+    # 近 N 天的其他发现（今天的新发现太少时用来垫底，免得卡片空荡荡）
+    recent_md = ""
+    if len(new_today) < 3:
+        recent = [
+            (fn, e) for fn, e in seen.items()
+            if week_ago <= e.get("first_seen", "") < today
+        ]
+        recent.sort(
+            key=lambda kv: (kv[1].get("score") or 0, kv[1].get("first_seen", "")),
+            reverse=True,
+        )
+        if recent:
+            lines = []
+            for fn, e in recent[:MAX_RECENT_IN_MSG]:
+                line = f"[{fn}](https://github.com/{fn})"
+                if e.get("score"):
+                    line += f" {e['score']}/10"
+                if e.get("one_liner"):
+                    line += f" — {e['one_liner']}"
+                lines.append(line)
+            recent_md = f"**近 {RECENT_DAYS} 天的其他发现**\n" + "\n".join(lines)
+
     elements: list[dict[str, Any]] = [
         {"tag": "div", "text": {"tag": "lark_md", "content": new_md}},
     ]
-    if movers_md:
+    for section in (movers_md, recent_md):
+        if section:
+            elements += [
+                {"tag": "hr"},
+                {"tag": "div", "text": {"tag": "lark_md", "content": section}},
+            ]
+
+    summary = trend_summary(new_today, movers)
+    if summary:
         elements += [
             {"tag": "hr"},
-            {"tag": "div", "text": {"tag": "lark_md", "content": movers_md}},
+            {"tag": "div", "text": {"tag": "lark_md", "content": f"**趋势小结**\n{summary}"}},
         ]
+
     title = f"Agent Discovery · {today}"
     if KEYWORD:
         title = f"{KEYWORD} · {title}"

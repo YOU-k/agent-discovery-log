@@ -5,16 +5,16 @@ Runs a curated set of queries against the GitHub search API, diffs against
 state/seen.json, and writes new findings to discoveries/YYYY-MM-DD.md.
 
 Optional: if an LLM API key is set, each new repo gets a relevance score
-plus a short Chinese analysis (类型 / 是什么 / 能做什么 / 大家怎么用),
-grounded with a README excerpt. Any OpenAI-compatible endpoint works
-(default: DeepSeek); Anthropic is supported as a fallback. Without a key,
-findings are ranked by stars only.
+plus a plain-language Chinese analysis (类型 / 是什么 / 能做什么 /
+大家怎么用 / 举个例子), grounded with a README excerpt. Any
+OpenAI-compatible endpoint works (default: DeepSeek); Anthropic is
+supported as a fallback. Without a key, findings are ranked by stars only.
 
 Each run also refreshes star counts for all previously seen repos
 (stars_history in state/seen.json) and reports the biggest gainers.
 
 Usage:
-    python3 scripts/discover.py [--dry-run] [--backfill-days N]
+    python3 scripts/discover.py [--dry-run] [--backfill-days N [--force]]
 
 Env:
     GH_TOKEN or GITHUB_TOKEN      — required for gh API rate limits
@@ -65,18 +65,20 @@ LLM_MODEL = os.environ.get("LLM_MODEL") or "deepseek-chat"
 README_EXCERPT_CHARS = 1500
 
 SCORE_PROMPT = """下面是一些 GitHub 仓库（名称、star 数、描述，部分附 README 摘要）。
-请站在「在 Claude Code 之上构建 Python 多智能体编排框架的开发者」的视角评估每个仓库。
+请站在「想给日常工作找好用 AI 工具的普通开发者」的视角评估，全程用大白话，
+避免术语黑话，让不关注 AI 圈的人也能看懂。
 
 对每个仓库输出（全部用中文，score 除外）：
-- score: 1-10 的相关性评分（Claude Code skills、agent 编排、prompt 工程模式、多智能体框架、agent 设计模式 = 高相关）
+- score: 1-10 的相关性评分（Claude Code skills、agent 编排、prompt 工程模式、多智能体框架 = 高相关）
 - category: 类型，如 Claude Code skill / subagent / 多智能体框架 / 资源合集 / 工具 / 其他
-- what: 它是什么（≤20字）
-- use_for: 潜在用途，可以拿它做什么（≤40字）
-- usage: 典型场景，大家实际在怎么用它（≤40字；不知道就根据描述合理推断，不要编造具体用户）
+- what: 它是什么（≤25字，大白话）
+- use_for: 能拿它做什么（≤45字）
+- usage: 大家实际怎么用它（≤45字；不知道就根据 README 合理推断，不要编造具体用户或数字）
+- example: 一个具体使用例子（≤60字：谁来用、输入什么、得到什么结果，例如「在 Claude Code 里输入 /xx，它会……」）
 
 只输出 JSON（不要任何其他文字、不要代码围栏）：
 [
-  {{"full_name": "owner/name", "score": 8, "category": "...", "what": "...", "use_for": "...", "usage": "..."}},
+  {{"full_name": "owner/name", "score": 8, "category": "...", "what": "...", "use_for": "...", "usage": "...", "example": "..."}},
   ...
 ]
 
@@ -84,7 +86,7 @@ SCORE_PROMPT = """下面是一些 GitHub 仓库（名称、star 数、描述，�
 {listing}"""
 
 # A scored analysis for one repo.
-Score = dict[str, Any]  # keys: score, category, what, use_for, usage
+Score = dict[str, Any]  # keys: score, category, what, use_for, usage, example
 
 
 @dataclass
@@ -150,6 +152,34 @@ def filter_repo(r: dict[str, Any]) -> bool:
     return True
 
 
+def llm_chat(prompt: str, max_tokens: int = 4000, json_mode: bool = True) -> str:
+    """Raw chat completion via the OpenAI-compatible endpoint. '' if unconfigured/failed."""
+    if not LLM_API_KEY:
+        return ""
+    body: dict[str, Any] = {
+        "model": LLM_MODEL,
+        "messages": [{"role": "user", "content": prompt}],
+        "max_tokens": max_tokens,
+    }
+    if json_mode:
+        body["response_format"] = {"type": "json_object"}
+    req = urllib.request.Request(
+        f"{LLM_BASE_URL.rstrip('/')}/chat/completions",
+        data=json.dumps(body).encode(),
+        headers={
+            "Authorization": f"Bearer {LLM_API_KEY}",
+            "Content-Type": "application/json",
+        },
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=180) as r:
+            resp = json.load(r)
+        return resp["choices"][0]["message"]["content"].strip()
+    except (OSError, KeyError, json.JSONDecodeError) as e:
+        print(f"[WARN] LLM chat failed: {e}", file=sys.stderr)
+        return ""
+
+
 def _parse_scores(text: str) -> dict[str, Score]:
     """Parse the LLM's JSON answer into {full_name: analysis}."""
     text = text.strip()
@@ -172,6 +202,7 @@ def _parse_scores(text: str) -> dict[str, Score]:
             "what": str(item.get("what") or ""),
             "use_for": str(item.get("use_for") or ""),
             "usage": str(item.get("usage") or ""),
+            "example": str(item.get("example") or ""),
         }
     return out
 
@@ -195,31 +226,12 @@ def score_with_llm(repos: list[Repo]) -> dict[str, Score]:
     prompt = SCORE_PROMPT.format(listing="\n".join(blocks))
     try:
         if LLM_API_KEY:
-            return _score_openai_compat(prompt)
+            return _parse_scores(llm_chat(prompt))
         if os.environ.get("ANTHROPIC_API_KEY"):
             return _score_anthropic(prompt)
     except (json.JSONDecodeError, KeyError, TypeError, ValueError, OSError) as e:
         print(f"[WARN] LLM scoring failed: {e}", file=sys.stderr)
     return {}
-
-
-def _score_openai_compat(prompt: str) -> dict[str, Score]:
-    req = urllib.request.Request(
-        f"{LLM_BASE_URL.rstrip('/')}/chat/completions",
-        data=json.dumps({
-            "model": LLM_MODEL,
-            "messages": [{"role": "user", "content": prompt}],
-            "max_tokens": 4000,
-            "response_format": {"type": "json_object"},
-        }).encode(),
-        headers={
-            "Authorization": f"Bearer {LLM_API_KEY}",
-            "Content-Type": "application/json",
-        },
-    )
-    with urllib.request.urlopen(req, timeout=180) as r:
-        resp = json.load(r)
-    return _parse_scores(resp["choices"][0]["message"]["content"])
 
 
 def _score_anthropic(prompt: str) -> dict[str, Score]:
@@ -246,14 +258,25 @@ def apply_score(entry: dict[str, Any], s: Score) -> None:
     entry["category"] = s.get("category")
     entry["use_for"] = s.get("use_for")
     entry["usage"] = s.get("usage")
+    entry["example"] = s.get("example")
 
 
-def backfill_scores(seen: dict[str, dict[str, Any]], days: int, dry_run: bool = False) -> int:
-    """Re-score repos first_seen within the last N days that lack analysis."""
+def backfill_scores(
+    seen: dict[str, dict[str, Any]],
+    days: int,
+    dry_run: bool = False,
+    force: bool = False,
+) -> int:
+    """Re-score repos first_seen within the last N days.
+
+    Skips entries that already have analysis unless force=True.
+    """
     cutoff = (dt.date.today() - dt.timedelta(days=days)).isoformat()
     targets: list[Repo] = []
     for fn, e in sorted(seen.items(), key=lambda kv: kv[1].get("first_seen", ""), reverse=True):
-        if e.get("score") or e.get("first_seen", "") < cutoff:
+        if not force and e.get("score"):
+            continue
+        if e.get("first_seen", "") < cutoff:
             continue
         meta = gh_repo_meta(fn)
         if not meta:
@@ -382,7 +405,12 @@ def render_daily(
         if s.get("category"):
             lines += [f"- **类型**: {s['category']}"]
         lines += [f"- {r.description}"]
-        for label, key in (("是什么", "what"), ("能做什么", "use_for"), ("大家怎么用", "usage")):
+        for label, key in (
+            ("是什么", "what"),
+            ("能做什么", "use_for"),
+            ("大家怎么用", "usage"),
+            ("举个例子", "example"),
+        ):
             if s.get(key):
                 lines += [f"- **{label}**: {s[key]}"]
         lines += [
@@ -413,6 +441,8 @@ def main() -> int:
     parser.add_argument("--backfill-days", type=int, default=0, metavar="N",
                         help="Re-score repos first_seen in the last N days that lack analysis; "
                              "updates state only, then exits.")
+    parser.add_argument("--force", action="store_true",
+                        help="With --backfill-days: re-score even entries that already have analysis.")
     args = parser.parse_args()
 
     seen = load_seen()
@@ -420,7 +450,7 @@ def main() -> int:
 
     # Maintenance mode: fill in analysis for recent repos that predate scoring.
     if args.backfill_days:
-        n = backfill_scores(seen, args.backfill_days, args.dry_run)
+        n = backfill_scores(seen, args.backfill_days, args.dry_run, args.force)
         print(f"[INFO] backfilled analysis for {n} repos", file=sys.stderr)
         if not args.dry_run and n:
             save_seen(seen)
