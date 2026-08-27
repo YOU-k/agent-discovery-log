@@ -42,11 +42,20 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: python3 scripts/discover.py
 
+      - name: Render viz
+        run: python3 scripts/render_viz.py
+
+      - name: Notify (Feishu)
+        env:
+          FEISHU_WEBHOOK: ${{ secrets.FEISHU_WEBHOOK }}
+          FEISHU_SECRET: ${{ secrets.FEISHU_SECRET }}
+        run: python3 scripts/notify.py
+
       - name: Commit findings
         run: |
           git config user.name "discovery-bot"
           git config user.email "discovery-bot@users.noreply.github.com"
-          git add discoveries/ state/
+          git add discoveries/ state/ docs/
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else

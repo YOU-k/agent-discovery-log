@@ -42,6 +42,25 @@ Every run snapshots current stars for all previously seen repos into
 "Trending since first seen" table of the biggest gainers, so the log
 doubles as a trend tracker.
 
+## Visualization
+
+`scripts/render_viz.py` renders `docs/index.html` — a self-contained
+page (no external assets) with top movers, discoveries per day, and the
+full tracking table. The daily workflow regenerates and commits it.
+Serve `/docs` via GitHub Pages, or just open the file locally.
+
+```bash
+python3 scripts/render_viz.py --refresh   # re-fetch stars in-memory first
+```
+
+## Feishu notification (optional)
+
+Add a 自定义机器人 to a Feishu group, then set its webhook URL as the
+`FEISHU_WEBHOOK` GitHub secret. After each run, `scripts/notify.py`
+posts a summary card (new repos + top movers) to the group. If the bot
+has 签名校验 enabled, also set `FEISHU_SECRET`. No secret → the step
+no-ops quietly.
+
 ## Structure
 
 ```
