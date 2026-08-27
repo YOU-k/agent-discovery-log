@@ -28,10 +28,19 @@ Edit `scripts/discover.py` to change.
 
 ## LLM scoring (optional)
 
-Set `ANTHROPIC_API_KEY` as a GitHub secret. Each new repo gets a
-relevance score (1-10) and one-liner from Claude Haiku (~$0.001/day).
+Any OpenAI-compatible API works — DeepSeek by default. Set `LLM_API_KEY`
+as a GitHub secret; optionally override `LLM_BASE_URL` / `LLM_MODEL` as
+repo variables. Each new repo gets a relevance score (1-10) and one-liner
+(~$0.001/day). `ANTHROPIC_API_KEY` also works as a fallback scorer.
 
 Without a key, findings are just sorted by stars.
+
+## Star velocity
+
+Every run snapshots current stars for all previously seen repos into
+`stars_history` in `state/seen.json`. The daily report ends with a
+"Trending since first seen" table of the biggest gainers, so the log
+doubles as a trend tracker.
 
 ## Structure
 
