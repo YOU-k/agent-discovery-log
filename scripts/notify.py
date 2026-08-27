@@ -2,9 +2,10 @@
 """Push the daily discovery summary to a Feishu (Lark) group bot.
 
 Builds the message from state/seen.json — repos first_seen today are
-"new", plus the top star movers. Posts an interactive card to the bot
-webhook. No-ops quietly when FEISHU_WEBHOOK is unset, so the workflow
-step is safe to run before the secret is configured.
+"new", plus dynamic tracking (velocity / auto-watch / cooling), plus
+full-block highlights from the last 7 days when today is thin. Posts an
+interactive card to the bot webhook. No-ops quietly when FEISHU_WEBHOOK
+is unset, so the workflow step is safe to run before the secret exists.
 
 Usage:
     python3 scripts/notify.py [--dry-run]
@@ -40,7 +41,7 @@ KEYWORD = os.environ.get("FEISHU_KEYWORD", "")
 
 MAX_NEW_IN_MSG = 5
 MAX_MOVERS_IN_MSG = 5
-MAX_RECENT_IN_MSG = 5
+MAX_RECENT_IN_MSG = 3   # full blocks; bigger than the old one-liner list
 RECENT_DAYS = 7
 
 HUMANIZE_RULES = ""
@@ -84,6 +85,27 @@ def trend_summary(new_today: list[tuple[str, dict[str, Any]]], movers: list) -> 
     return humanize_text(out) if out else ""
 
 
+def repo_block(i: int, fn: str, e: dict[str, Any]) -> str:
+    """Full analysis block for one repo (新发现 and 本周精选 share this)."""
+    head = f"**{i}. [{fn}](https://github.com/{fn})** ★{(e.get('stars_at_first_seen') or 0):,}"
+    if e.get("score"):
+        head += f" · {e['score']}/10"
+    if e.get("category"):
+        head += f" · {e['category']}"
+    body = []
+    if e.get("one_liner"):
+        body.append(f"是什么：{e['one_liner']}")
+    if e.get("use_for"):
+        body.append(f"能做什么：{e['use_for']}")
+    if e.get("usage"):
+        body.append(f"大家怎么用：{e['usage']}")
+    if e.get("example"):
+        body.append(f"举个例子：{e['example']}")
+    if e.get("compare"):
+        body.append(f"和已有项目比：{e['compare']}")
+    return head + ("\n" + "\n".join(body) if body else "")
+
+
 def build_card(seen: dict[str, dict[str, Any]]) -> dict[str, Any]:
     today = dt.date.today().isoformat()
     week_ago = (dt.date.today() - dt.timedelta(days=RECENT_DAYS)).isoformat()
@@ -97,25 +119,7 @@ def build_card(seen: dict[str, dict[str, Any]]) -> dict[str, Any]:
     )
 
     if new_today:
-        blocks = []
-        for i, (fn, e) in enumerate(new_today[:MAX_NEW_IN_MSG], 1):
-            head = f"**{i}. [{fn}](https://github.com/{fn})** ★{(e.get('stars_at_first_seen') or 0):,}"
-            if e.get("score"):
-                head += f" · {e['score']}/10"
-            if e.get("category"):
-                head += f" · {e['category']}"
-            body = []
-            if e.get("one_liner"):
-                body.append(f"是什么：{e['one_liner']}")
-            if e.get("use_for"):
-                body.append(f"能做什么：{e['use_for']}")
-            if e.get("usage"):
-                body.append(f"大家怎么用：{e['usage']}")
-            if e.get("example"):
-                body.append(f"举个例子：{e['example']}")
-            if e.get("compare"):
-                body.append(f"和已有项目比：{e['compare']}")
-            blocks.append(head + ("\n" + "\n".join(body) if body else ""))
+        blocks = [repo_block(i, fn, e) for i, (fn, e) in enumerate(new_today[:MAX_NEW_IN_MSG], 1)]
         more = f"\n\n…以及另外 {len(new_today) - MAX_NEW_IN_MSG} 个" if len(new_today) > MAX_NEW_IN_MSG else ""
         new_md = f"**新发现 {len(new_today)} 个 repo**\n" + "\n\n".join(blocks) + more
         new_md = humanize_text(new_md)
@@ -169,7 +173,8 @@ def build_card(seen: dict[str, dict[str, Any]]) -> dict[str, Any]:
         for fn, e, _rate, then, now in rated[:MAX_MOVERS_IN_MSG]
     ]
 
-    # 近 N 天的其他发现（今天的新发现太少时用来垫底，免得卡片空荡荡）
+    # 近 N 天精选：今天的新发现太少时用完整块展开（分析早已存在 state 里，
+    # 渲染零成本），免得整张卡片只有一行带过的一条。
     recent_md = ""
     if len(new_today) < 3:
         recent = [
@@ -181,15 +186,9 @@ def build_card(seen: dict[str, dict[str, Any]]) -> dict[str, Any]:
             reverse=True,
         )
         if recent:
-            lines = []
-            for fn, e in recent[:MAX_RECENT_IN_MSG]:
-                line = f"[{fn}](https://github.com/{fn})"
-                if e.get("score"):
-                    line += f" {e['score']}/10"
-                if e.get("one_liner"):
-                    line += f" — {e['one_liner']}"
-                lines.append(line)
-            recent_md = f"**近 {RECENT_DAYS} 天的其他发现**\n" + "\n".join(lines)
+            blocks = [repo_block(i, fn, e) for i, (fn, e) in enumerate(recent[:MAX_RECENT_IN_MSG], 1)]
+            recent_md = f"**近 {RECENT_DAYS} 天精选**\n" + "\n\n".join(blocks)
+            recent_md = humanize_text(recent_md)
 
     elements: list[dict[str, Any]] = [
         {"tag": "div", "text": {"tag": "lark_md", "content": new_md}},

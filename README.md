@@ -71,15 +71,15 @@ Pages, or just open the file locally.
 python3 scripts/render_viz.py --refresh   # re-fetch stars in-memory first
 ```
 
-## Biomed watch (weekly branch)
+## Biomed watch (weekly branch — 目前暂停)
 
 `scripts/biomed.py` watches PubMed for anti-aging drug research
 (senolytics, rapamycin, partial reprogramming, …), diffs against
 `state/biomed_seen.json`, gets a plain-language Chinese take per paper
 from the LLM, writes `discoveries/biomed/YYYY-MM-DD.md` and posts a
-separate Feishu card. Runs weekly via `.github/workflows/biomed.yml`
-(Mon 22:05 UTC). This is the second "track": different source (PubMed
-E-utilities instead of GitHub), same pipeline shape.
+separate Feishu card. The weekly workflow is currently removed (branch
+paused); run it manually or restore `.github/workflows/biomed.yml` from
+git history to re-enable.
 
 ```bash
 python3 scripts/biomed.py --dry-run
