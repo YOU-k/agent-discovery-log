@@ -6,8 +6,8 @@ state/seen.json, and writes new findings to discoveries/YYYY-MM-DD.md.
 
 Optional: if an LLM API key is set, each new repo gets a relevance score
 plus a plain-language Chinese analysis (类型 / 是什么 / 能做什么 /
-大家怎么用 / 举个例子), grounded with a README excerpt. Any
-OpenAI-compatible endpoint works (default: DeepSeek); Anthropic is
+大家怎么用 / 举个例子 / 和已有项目比), grounded with a README excerpt.
+Any OpenAI-compatible endpoint works (default: DeepSeek); Anthropic is
 supported as a fallback. Without a key, findings are ranked by stars only.
 
 Each run also refreshes star counts for all previously seen repos
@@ -75,18 +75,23 @@ SCORE_PROMPT = """下面是一些 GitHub 仓库（名称、star 数、描述，�
 - use_for: 能拿它做什么（≤45字）
 - usage: 大家实际怎么用它（≤45字；不知道就根据 README 合理推断，不要编造具体用户或数字）
 - example: 一个具体使用例子（≤60字：谁来用、输入什么、得到什么结果，例如「在 Claude Code 里输入 /xx，它会……」）
+- compare: 和「已在追踪的项目」（见末尾列表）中同类的相比，它的差异或创新点是什么、
+  为什么值得用它而不是已有的（≤50字；没有完全可比的，就写它填补了哪类空白）
 
 只输出 JSON（不要任何其他文字、不要代码围栏）：
 [
-  {{"full_name": "owner/name", "score": 8, "category": "...", "what": "...", "use_for": "...", "usage": "...", "example": "..."}},
+  {{"full_name": "owner/name", "score": 8, "category": "...", "what": "...", "use_for": "...", "usage": "...", "example": "...", "compare": "..."}},
   ...
 ]
 
 仓库：
-{listing}"""
+{listing}
+
+已在追踪的项目（仅供 compare 字段对比用）：
+{tracked}"""
 
 # A scored analysis for one repo.
-Score = dict[str, Any]  # keys: score, category, what, use_for, usage, example
+Score = dict[str, Any]  # keys: score, category, what, use_for, usage, example, compare
 
 
 @dataclass
@@ -203,11 +208,21 @@ def _parse_scores(text: str) -> dict[str, Score]:
             "use_for": str(item.get("use_for") or ""),
             "usage": str(item.get("usage") or ""),
             "example": str(item.get("example") or ""),
+            "compare": str(item.get("compare") or ""),
         }
     return out
 
 
-def score_with_llm(repos: list[Repo]) -> dict[str, Score]:
+def tracked_summary(seen: dict[str, dict[str, Any]], limit: int = 80) -> str:
+    """One-line-per-repo list of everything already tracked (for compare prompts)."""
+    entries = sorted(seen.items(), key=lambda kv: kv[1].get("stars_at_first_seen") or 0, reverse=True)
+    parts = []
+    for fn, e in entries[:limit]:
+        parts.append(f"{fn}（{e['one_liner']}）" if e.get("one_liner") else fn)
+    return "；".join(parts)
+
+
+def score_with_llm(repos: list[Repo], tracked: str = "") -> dict[str, Score]:
     """Score + analyze repos with whatever LLM API is configured.
 
     Priority: OpenAI-compatible endpoint (LLM_API_KEY / DEEPSEEK_API_KEY,
@@ -223,7 +238,7 @@ def score_with_llm(repos: list[Repo]) -> dict[str, Score]:
         if excerpt:
             block += f"\n   README 摘要: {excerpt}"
         blocks.append(block)
-    prompt = SCORE_PROMPT.format(listing="\n".join(blocks))
+    prompt = SCORE_PROMPT.format(listing="\n".join(blocks), tracked=tracked or "（暂无）")
     try:
         if LLM_API_KEY:
             return _parse_scores(llm_chat(prompt))
@@ -259,6 +274,7 @@ def apply_score(entry: dict[str, Any], s: Score) -> None:
     entry["use_for"] = s.get("use_for")
     entry["usage"] = s.get("usage")
     entry["example"] = s.get("example")
+    entry["compare"] = s.get("compare")
 
 
 def backfill_scores(
@@ -272,6 +288,7 @@ def backfill_scores(
     Skips entries that already have analysis unless force=True.
     """
     cutoff = (dt.date.today() - dt.timedelta(days=days)).isoformat()
+    tracked = tracked_summary(seen)
     targets: list[Repo] = []
     for fn, e in sorted(seen.items(), key=lambda kv: kv[1].get("first_seen", ""), reverse=True):
         if not force and e.get("score"):
@@ -295,7 +312,7 @@ def backfill_scores(
     if not targets:
         return 0
     print(f"[INFO] backfilling analysis for {len(targets)} repos", file=sys.stderr)
-    results = score_with_llm(targets)
+    results = score_with_llm(targets, tracked)
     if dry_run:
         print(json.dumps(results, ensure_ascii=False, indent=2))
     for fn, s in results.items():
@@ -410,6 +427,7 @@ def render_daily(
             ("能做什么", "use_for"),
             ("大家怎么用", "usage"),
             ("举个例子", "example"),
+            ("和已有项目比", "compare"),
         ):
             if s.get(key):
                 lines += [f"- **{label}**: {s[key]}"]
@@ -492,11 +510,11 @@ def main() -> int:
             "stars_history": [[today_iso, r.stars]],
         }
 
-    # Score the top N new repos
+    # Score the top N new repos (with the tracked list as compare context)
     scores: dict[str, Score] = {}
     if new_repos:
         print(f"[INFO] scoring {min(len(new_repos), args.max_scored)} repos", file=sys.stderr)
-        scores = score_with_llm(new_repos[: args.max_scored])
+        scores = score_with_llm(new_repos[: args.max_scored], tracked_summary(seen))
         for fn, s in scores.items():
             if fn in seen:
                 apply_score(seen[fn], s)

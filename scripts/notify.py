@@ -43,6 +43,31 @@ MAX_MOVERS_IN_MSG = 5
 MAX_RECENT_IN_MSG = 5
 RECENT_DAYS = 7
 
+HUMANIZE_RULES = ""
+_rules_path = ROOT / "scripts" / "humanize_rules.md"
+if _rules_path.exists():
+    HUMANIZE_RULES = _rules_path.read_text(encoding="utf-8")
+
+
+def humanize_text(text: str) -> str:
+    """去 AI 味改写（Humanizer-zh 规则）。失败或无 LLM 时返回原文。"""
+    if not text or not RULES_OK():
+        return text
+    prompt = f"""你是中文文字编辑。把下面的日报文案改写得更像真人随手写的，遵循这些规则：
+{HUMANIZE_RULES}
+
+硬性要求：保留所有 [名称](链接)、★ 和数字、**加粗** 标记、原有换行分节结构；
+不增删事实，不加 emoji；只输出改写后的文案本身。
+
+文案：
+{text}"""
+    out = discover.llm_chat(prompt, max_tokens=2000, json_mode=False)
+    return out or text
+
+
+def RULES_OK() -> bool:
+    return bool(HUMANIZE_RULES) and bool(discover.LLM_API_KEY)
+
 
 def trend_summary(new_today: list[tuple[str, dict[str, Any]]], movers: list) -> str:
     """2-3 句大白话趋势小结，由 LLM 归纳方向（而不是罗列项目）。'' 如果不可用。"""
@@ -55,7 +80,8 @@ def trend_summary(new_today: list[tuple[str, dict[str, Any]]], movers: list) -> 
 自首次收录以来涨星最多的项目：{movers_txt}
 请用中文大白话写 2-3 句趋势小结（≤80字）：最近这个领域什么方向最火？有什么值得普通开发者关注的信号？
 要求：归纳方向和现象，不要罗列项目名，不要用术语。只输出小结正文，不要标题。"""
-    return discover.llm_chat(prompt, max_tokens=400, json_mode=False)
+    out = discover.llm_chat(prompt, max_tokens=400, json_mode=False)
+    return humanize_text(out) if out else ""
 
 
 def build_card(seen: dict[str, dict[str, Any]]) -> dict[str, Any]:
@@ -87,9 +113,12 @@ def build_card(seen: dict[str, dict[str, Any]]) -> dict[str, Any]:
                 body.append(f"大家怎么用：{e['usage']}")
             if e.get("example"):
                 body.append(f"举个例子：{e['example']}")
+            if e.get("compare"):
+                body.append(f"和已有项目比：{e['compare']}")
             blocks.append(head + ("\n" + "\n".join(body) if body else ""))
         more = f"\n\n…以及另外 {len(new_today) - MAX_NEW_IN_MSG} 个" if len(new_today) > MAX_NEW_IN_MSG else ""
         new_md = f"**新发现 {len(new_today)} 个 repo**\n" + "\n\n".join(blocks) + more
+        new_md = humanize_text(new_md)
     else:
         new_md = "**今天没有新 repo 通过过滤**"
 

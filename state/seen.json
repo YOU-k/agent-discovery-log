@@ -1533,12 +1533,12 @@
     "first_seen": "2026-08-13",
     "stars_at_first_seen": 1163,
     "matched_query": "claude code skill",
-    "score": 9,
-    "one_liner": "与claudex-loop类似的技能，强化计划审查",
+    "score": 10,
+    "one_liner": "与claudex-loop类似的技能，强化计划审查。",
     "category": "Claude Code skill",
-    "use_for": "编码前用多模型审查计划，减少错误，尤其适合复杂项目",
-    "usage": "作为Claude Code插件，执行四阶段流程，确保计划可行",
-    "example": "团队开发新功能，用crucible让Claude和Codex互相审查设计，避免返工",
+    "use_for": "在编写代码前，用双模型审查计划确保可行性。",
+    "usage": "在Claude Code中启动，自动执行计划强化流程。",
+    "example": "程序员用“/crucible”提出功能需求，两个AI模型交替审查并优化方案。",
     "stars_history": [
       [
         "2026-08-13",
@@ -1548,7 +1548,8 @@
         "2026-08-27",
         1333
       ]
-    ]
+    ],
+    "compare": "与claudex-loop几乎相同，但可能更侧重某些场景，提升计划质量。"
   },
   "Leutenegger/book-to-skill": {
     "first_seen": "2026-08-13",
@@ -1567,12 +1568,12 @@
     "first_seen": "2026-08-19",
     "stars_at_first_seen": 601,
     "matched_query": "claude code skill",
-    "score": 6,
-    "one_liner": "将手写照片转换为真实字体的工具和Claude技能",
-    "category": "Claude Code skill",
-    "use_for": "快速生成个人手写字体，支持TTF等格式，本地处理保护隐私",
-    "usage": "在Claude Code中调用技能，上传手写照片，自动生成字体文件",
-    "example": "设计师拍手写字母表，输入“作成字体”，得到TTF文件和预览，可调整风格",
+    "score": 5,
+    "one_liner": "将手写照片转换为字体文件的工具。",
+    "category": "工具",
+    "use_for": "个人定制字体，用于设计或文档。",
+    "usage": "上传手写字母照片，本地生成TTF/WOFF字体，无需联网。",
+    "example": "设计师拍下手写字母，用此工具生成个性化字体，应用到自己的作品中。",
     "stars_history": [
       [
         "2026-08-19",
@@ -1582,18 +1583,19 @@
         "2026-08-27",
         617
       ]
-    ]
+    ],
+    "compare": "填补了手写字体生成的空白，简单易用，无需上传保护隐私。"
   },
   "yylo-dev/yylo": {
     "first_seen": "2026-08-21",
     "stars_at_first_seen": 56,
     "matched_query": "agent orchestration cli",
     "score": 7,
-    "one_liner": "编排AI编程代理和开发流程的命令行工具",
+    "one_liner": "一个编排AI编程代理的命令行工具。",
     "category": "工具",
-    "use_for": "管理多个AI代理，协调任务，跟踪进度，适合团队协作",
-    "usage": "通过命令行启动yy，配置任务清单，让AI代理执行并记录",
-    "example": "项目经理用yy安排两个AI代理分别写代码和测试，并在Git中跟踪进度",
+    "use_for": "管理和协调多个AI代理协同开发项目。",
+    "usage": "开发者通过命令行启动、监控和分配任务给AI代理。",
+    "example": "团队用yylo同时运行多个编码代理，分别处理不同模块，提高开发效率。",
     "stars_history": [
       [
         "2026-08-21",
@@ -1603,18 +1605,19 @@
         "2026-08-27",
         56
       ]
-    ]
+    ],
+    "compare": "提供了完整的任务管理和工作流记录，比单纯使用代理更结构化。"
   },
   "chaseai-yt/claudex-loop": {
     "first_seen": "2026-08-24",
     "stars_at_first_seen": 1196,
     "matched_query": "claude code skill",
-    "score": 9,
-    "one_liner": "利用两个不同AI模型交叉审查计划，提高开发可靠性",
+    "score": 10,
+    "one_liner": "一个Claude Code技能，用两个AI模型交叉审查计划。",
     "category": "Claude Code skill",
-    "use_for": "在编码前用两个AI验证计划，避免错误，提高代码质量",
-    "usage": "在Claude Code中启用技能，按照流程进行多阶段计划加固",
-    "example": "开发者用Claude规划功能，然后让Codex审查计划，修复问题后再编码",
+    "use_for": "提升开发计划的质量，减少编码错误。",
+    "usage": "在Claude Code中调用此技能，它会自动进行计划强化和审查。",
+    "example": "开发者输入“/claudex”并描述需求，Claude和Codex会轮流审查计划，发现问题并修正。",
     "stars_history": [
       [
         "2026-08-24",
@@ -1624,18 +1627,19 @@
         "2026-08-27",
         1333
       ]
-    ]
+    ],
+    "compare": "首创跨模型对抗审查，比单一模型审查更全面，能发现隐藏缺陷。"
   },
   "nateherkai/scroll-craft": {
     "first_seen": "2026-08-24",
     "stars_at_first_seen": 618,
     "matched_query": "claude code skill",
-    "score": 7,
-    "one_liner": "创建高质量滚动驱动网站的Claude Code技能",
+    "score": 6,
+    "one_liner": "用于创建高质量滚动驱动网站的Claude Code技能。",
     "category": "Claude Code skill",
-    "use_for": "生成精美滚动动画网站，注重设计细节和响应式",
-    "usage": "在Claude Code中调用技能，描述需求，生成定制化网站",
-    "example": "设计师输入“做一个旅游页面”，Claude生成滚动故事型网页，自动截图验证",
+    "use_for": "设计带有创意滚动效果的网站页面。",
+    "usage": "在Claude Code中调用此技能，根据描述生成网站代码。",
+    "example": "设计师输入“/scrollcraft 创建一个产品展示页”，得到带有滚动动画的HTML/CSS。",
     "stars_history": [
       [
         "2026-08-24",
@@ -1645,23 +1649,25 @@
         "2026-08-27",
         1032
       ]
-    ]
+    ],
+    "compare": "专注于滚动叙事设计，与其他网页设计技能相比更注重交互体验。"
   },
   "limenagent/prodagent": {
     "first_seen": "2026-08-27",
     "stars_at_first_seen": 51,
     "matched_query": "llm agent framework",
-    "score": 9,
-    "one_liner": "工业级多智能体框架，强调稳定性和安全，有丰富机制",
+    "score": 8,
+    "one_liner": "一个生产级的AI代理框架，强调稳定性和可靠性。",
     "category": "多智能体框架",
-    "use_for": "构建可靠的多Agent系统，处理复杂任务，有预算和恢复机制",
-    "usage": "开发者用Python集成到项目，管理多个AI协作，设置预算和防护",
-    "example": "客服机器人用prodagent协调多个Agent，一个负责理解，一个回答，超预算自动停止",
+    "use_for": "用于构建需要严格控制和容错的企业级AI应用。",
+    "usage": "开发者用它来创建有状态、可恢复的多代理系统，通过配置预算和防护措施。",
+    "example": "金融公司用prodagent构建自动交易系统，设置每秒调用次数限制，防止失控。",
     "stars_history": [
       [
         "2026-08-27",
         55
       ]
-    ]
+    ],
+    "compare": "相比其他框架，它更注重确定性、故障恢复和安全性，适合对稳定性要求高的场景。"
   }
 }
