@@ -5,24 +5,16 @@ Runs autonomously via GitHub Actions; findings sink into `discoveries/`.
 
 ## What gets scanned
 
-Curated queries (weighted by relevance):
+Three query channels (see `scripts/discover.py` for the full list):
 
-| Query | Weight |
-|---|---|
-| `claude code skill` | 10 |
-| `claude code subagent` | 10 |
-| `multi-agent orchestration framework` | 9 |
-| `multi agent framework claude` | 9 |
-| `agent orchestration cli` | 8 |
-| `ai coding agent framework` | 7 |
-| `llm agent framework` | 6 |
-| `prompt engineering agent` | 5 |
-| `awesome agent skills` | 4 |
-| `awesome llm agents` | 4 |
+- **主查询** — `claude code skill`、`multi-agent orchestration framework` 等 8 条，
+  按 stars 排序，全部带 `-awesome -list` 降噪
+- **Awesome-list 通道** — `awesome agent skills` / `awesome llm agents`，
+  专门把合集类 repo 收进来（viz 里归为 `资源合集`）
+- **新生项目通道** — 主关键词 + `created:>滚动60天`，捞按 stars 排序
+  永远轮不到的新 repo
 
-Edit `scripts/discover.py` to change. The two `awesome *` queries keep a
-self-maintaining meta-list of awesome-lists (they show up as
-`类型: 资源合集` in the viz).
+Edit `scripts/discover.py` to change.
 
 ## Filters
 

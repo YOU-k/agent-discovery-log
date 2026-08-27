@@ -43,21 +43,28 @@ DISCOVERIES = ROOT / "discoveries"
 # Curated queries — each with a weight (higher = more relevant to us).
 # Order matters: earlier queries dominate for repos that match multiple.
 QUERIES: list[tuple[str, int]] = [
-    ("claude code skill", 10),
-    ("claude code subagent", 10),
-    ("multi-agent orchestration framework", 9),
-    ("multi agent framework claude", 9),
-    ("agent orchestration cli", 8),
-    ("ai coding agent framework", 7),
-    ("llm agent framework", 6),
-    ("prompt engineering agent", 5),
+    ("claude code skill -awesome -list", 10),
+    ("claude code subagent -awesome -list", 10),
+    ("multi-agent orchestration framework -awesome -list", 9),
+    ("multi agent framework claude -awesome -list", 9),
+    ("agent orchestration cli -awesome -list", 8),
+    ("ai coding agent framework -awesome -list", 7),
+    ("llm agent framework -awesome -list", 6),
+    ("prompt engineering agent -awesome -list", 5),
+    # awesome-list 专属通道（主查询已用 -awesome -list 降噪）
     ("awesome agent skills", 4),
     ("awesome llm agents", 4),
+    # 新生项目通道：主查询按 stars 排序永远偏向老项目，用 created:> 滚动窗口捞新
+    ("claude code skill created:>{created_since} -awesome -list", 8),
+    ("claude code subagent created:>{created_since} -awesome -list", 8),
+    ("multi-agent orchestration framework created:>{created_since} -awesome -list", 7),
+    ("agent orchestration cli created:>{created_since} -awesome -list", 7),
 ]
 
 # Filters
 STAR_MIN = 50
 UPDATED_WITHIN_DAYS = 60
+CREATED_WITHIN_DAYS = 60  # {created_since} 占位符的滚动窗口
 
 # LLM scoring — any OpenAI-compatible endpoint (DeepSeek by default).
 LLM_API_KEY = os.environ.get("LLM_API_KEY") or os.environ.get("DEEPSEEK_API_KEY")
@@ -521,7 +528,9 @@ def main() -> int:
 
     # Collect + dedupe candidates
     candidates: dict[str, Repo] = {}
+    created_since = (dt.date.today() - dt.timedelta(days=CREATED_WITHIN_DAYS)).isoformat()
     for query, weight in QUERIES:
+        query = query.format(created_since=created_since)
         print(f"[INFO] searching: {query!r}", file=sys.stderr)
         for r in gh_search(query):
             if not filter_repo(r):
