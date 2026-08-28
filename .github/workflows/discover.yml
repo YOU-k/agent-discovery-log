@@ -2,8 +2,11 @@ name: Daily Discovery
 
 on:
   schedule:
-    # 06:00 Beijing = 22:00 UTC previous day
-    - cron: "0 22 * * *"
+    # 05:37 Beijing = 21:37 UTC previous day.
+    # Off the top of the hour and off 22:00 UTC — both are GitHub's peak
+    # cron windows where runs get delayed 30+ min or dropped entirely
+    # (dropped run on 2026-08-27 22:00 UTC = no Feishu card that morning).
+    - cron: "37 21 * * *"
   workflow_dispatch:
 
 permissions:
