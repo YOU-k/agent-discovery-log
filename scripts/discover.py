@@ -72,7 +72,7 @@ QUERIES: list[tuple[str, int]] = [
 RESEARCH_QUERIES: list[tuple[str, int]] = [
     # 每条都实测过能捞到 ≥50★ 的目标库（注释里是验证时的头名）。
     ("scientific agent skills", 10),   # K-Dense-AI/scientific-agent-skills 43k
-    ("research skills", 10),           # Imbad0202/academic-research-skills 46k
+    ("academic research skills", 10),  # Imbad0202/academic-research-skills 46k
     ("bioinformatics agent", 9),       # GoekeLab/awesome-genomic-skills
     ("bioinformatics skills", 9),      # ClawBio
     ("scientific skills", 9),          # InternScience/Awesome-Scientific-Skills
@@ -85,7 +85,7 @@ RESEARCH_QUERIES: list[tuple[str, int]] = [
     ("data analysis skills", 5),
     # 新生项目通道
     ("scientific agent skills created:>{created_since}", 9),
-    ("research skills created:>{created_since}", 9),
+    ("academic research skills created:>{created_since}", 9),
     ("bioinformatics skills created:>{created_since}", 8),
 ]
 RESEARCH_LIMIT = 100  # 科研通道不与通用通道抢 50 条配额
