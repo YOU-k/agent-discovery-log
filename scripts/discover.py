@@ -67,6 +67,29 @@ QUERIES: list[tuple[str, int]] = [
     ("agent orchestration cli created:>{created_since}", 7),
 ]
 
+# 科研赛道：通用 agent 查询按 stars 排序会把 K-Dense（43k★）、academic-research-skills
+# （46k★）这类科研库挤出 top-50，所以单开一条通道，且配额更大（RESEARCH_LIMIT）。
+RESEARCH_QUERIES: list[tuple[str, int]] = [
+    # 每条都实测过能捞到 ≥50★ 的目标库（注释里是验证时的头名）。
+    ("scientific agent skills", 10),   # K-Dense-AI/scientific-agent-skills 43k
+    ("research skills", 10),           # Imbad0202/academic-research-skills 46k
+    ("bioinformatics agent", 9),       # GoekeLab/awesome-genomic-skills
+    ("bioinformatics skills", 9),      # ClawBio
+    ("scientific skills", 9),          # InternScience/Awesome-Scientific-Skills
+    ("medical skills", 8),             # FreedomIntelligence/OpenClaw-Medical-Skills 3k
+    ("academic skills", 8),            # codex-claude-academic-skills 3k
+    ("science skills", 7),             # science-skills 2k
+    ("paper skills", 7),               # academic-paper-skills 1k
+    ("biology skills", 6),             # FigureOneLab 275
+    ("lab skills", 6),                 # shareAI-lab/lab-skills 314
+    ("data analysis skills", 5),
+    # 新生项目通道
+    ("scientific agent skills created:>{created_since}", 9),
+    ("research skills created:>{created_since}", 9),
+    ("bioinformatics skills created:>{created_since}", 8),
+]
+RESEARCH_LIMIT = 100  # 科研通道不与通用通道抢 50 条配额
+
 # 降噪：主通道在本地排除 awesome/list 类合集 repo。
 # 注意：GitHub 搜索的 `-term` NOT 语法对部分词（如 awesome）会静默返回 0 结果，
 # 所以必须在本地过滤，不能写进查询串。
@@ -106,11 +129,21 @@ LLM_MODEL = os.environ.get("LLM_MODEL") or "deepseek-chat"
 README_EXCERPT_CHARS = 1500
 
 SCORE_PROMPT = """下面是一些 GitHub 仓库（名称、star 数、描述，部分附 README 摘要）。
-请站在「想给日常工作找好用 AI 工具的普通开发者」的视角评估，全程用大白话，
-避免术语黑话，让不关注 AI 圈的人也能看懂。
+请站在「**做算法开发 + 生物信息流程 + 论文写作的科研工作者**」的视角评估。
+我的实际技术栈（按代码里 import 频次）：scanpy / anndata（单细胞，最主力）、
+seaborn+matplotlib、pytorch+transformers、rdkit、torch_geometric、pertpy、
+scvi-tools、statsmodels、squidpy（空间转录组）、pydeseq2、gseapy。
+日常工作：算法开发、问题解析、生信流程搭建、思路整理、个人知识库、写 report、
+下载文献、下载生物数据、做 PPT。
+全程用大白话，避免术语黑话。
 
 对每个仓库输出（全部用中文，score 除外）：
 - score: 1-10 的相关性评分（Claude Code skills、agent 编排、prompt 工程模式、多智能体框架 = 高相关）
+- fit: 1-10，跟**上面那个科研栈**的契合度。能直接用在单细胞/生信/论文/科研数据上 = 9-10；
+  通用开发工具但科研也用得上 = 5-6；纯前端/游戏/运维/交易 = 1-2。score 高但 fit 低是常态，别混为一谈
+- overlap: 它跟「已在追踪的项目」里哪个功能重复？重复到什么程度？（≤40字；
+  写成「和 X 重复，X 已够用」或「和 X 部分重叠，它多了 Y」或「无重复」）
+- verdict: 只能是「装」「观望」「不装」三选一，并在 ≤20 字内给理由
 - category: 类型，如 Claude Code skill / subagent / 多智能体框架 / 资源合集 / 工具 / 其他
 - what: 它是什么（≤25字，大白话）
 - use_for: 能拿它做什么（≤45字）
@@ -121,7 +154,7 @@ SCORE_PROMPT = """下面是一些 GitHub 仓库（名称、star 数、描述，�
 
 只输出 JSON（不要任何其他文字、不要代码围栏）：
 [
-  {{"full_name": "owner/name", "score": 8, "category": "...", "what": "...", "use_for": "...", "usage": "...", "example": "...", "compare": "..."}},
+  {{"full_name": "owner/name", "score": 8, "fit": 9, "category": "...", "what": "...", "use_for": "...", "usage": "...", "example": "...", "compare": "...", "overlap": "...", "verdict": "装：..."}},
   ...
 ]
 
@@ -156,11 +189,11 @@ class Repo:
     hn_url: str = ""
 
 
-def gh_search(query: str) -> list[dict[str, Any]]:
+def gh_search(query: str, limit: int = 50) -> list[dict[str, Any]]:
     """Search GH via gh CLI. Returns list of repo dicts."""
     cmd = [
         "gh", "search", "repos",
-        "--limit", "50",
+        "--limit", str(limit),
         "--sort", "stars",
         "--json", "fullName,description,stargazersCount,url,updatedAt",
         query,
@@ -362,14 +395,21 @@ def _parse_scores(text: str) -> dict[str, Score]:
             score = int(float(item.get("score") or 0))
         except (TypeError, ValueError):
             score = 0
+        try:
+            fit = int(float(item.get("fit") or 0))
+        except (TypeError, ValueError):
+            fit = 0
         out[item["full_name"]] = {
             "score": score,
+            "fit": fit,
             "category": str(item.get("category") or ""),
             "what": str(item.get("what") or ""),
             "use_for": str(item.get("use_for") or ""),
             "usage": str(item.get("usage") or ""),
             "example": str(item.get("example") or ""),
             "compare": str(item.get("compare") or ""),
+            "overlap": str(item.get("overlap") or ""),
+            "verdict": str(item.get("verdict") or ""),
         }
     return out
 
@@ -613,8 +653,14 @@ def render_daily(
     ]
     if new_repos:
         if scores:
-            new_repos.sort(key=lambda r: (scores.get(r.full_name) or {}).get("score", 0), reverse=True)
-            lines += ["Sorted by LLM relevance score (higher = more relevant).", ""]
+            new_repos.sort(
+                key=lambda r: (
+                    (scores.get(r.full_name) or {}).get("fit", 0),
+                    (scores.get(r.full_name) or {}).get("score", 0),
+                ),
+                reverse=True,
+            )
+            lines += ["Sorted by fit-to-my-stack, then relevance score.", ""]
         else:
             new_repos.sort(key=lambda r: r.stars, reverse=True)
             lines += ["Sorted by stars (no LLM scoring; set LLM_API_KEY to enable).", ""]
@@ -622,6 +668,8 @@ def render_daily(
     for r in new_repos:
         s = scores.get(r.full_name) or {}
         badge = f"[score {s['score']}/10] " if s.get("score") else ""
+        if s.get("fit"):
+            badge += f"[fit {s['fit']}/10] "
         lines += [f"## {badge}{r.full_name}  ·  ★{r.stars}", ""]
         if s.get("category"):
             lines += [f"- **类型**: {s['category']}"]
@@ -632,6 +680,8 @@ def render_daily(
             ("大家怎么用", "usage"),
             ("举个例子", "example"),
             ("和已有项目比", "compare"),
+            ("重复情况", "overlap"),
+            ("装不装", "verdict"),
         ):
             if s.get(key):
                 lines += [f"- **{label}**: {s[key]}"]
@@ -687,14 +737,18 @@ def main() -> int:
     # Collect + dedupe candidates
     candidates: dict[str, Repo] = {}
     created_since = (dt.date.today() - dt.timedelta(days=CREATED_WITHIN_DAYS)).isoformat()
-    for query, weight in QUERIES:
+    search_plan = [(q, w, 50, False) for q, w in QUERIES]
+    # 科研通道 keep_lists=True：awesome-genomic-skills / Awesome-Scientific-Skills
+    # 这类精选目录正是这条赛道要找的，不能被 NOISE_RE 当合集噪音滤掉。
+    search_plan += [(q, w, RESEARCH_LIMIT, True) for q, w in RESEARCH_QUERIES]
+    for query, weight, limit, keep_lists in search_plan:
         query = query.format(created_since=created_since)
-        print(f"[INFO] searching: {query!r}", file=sys.stderr)
-        for r in gh_search(query):
+        print(f"[INFO] searching: {query!r} (limit={limit})", file=sys.stderr)
+        for r in gh_search(query, limit=limit):
             if not filter_repo(r):
                 continue
             fn = r["fullName"]
-            if not query.startswith("awesome") and is_noise(fn, r["description"]):
+            if not keep_lists and not query.startswith("awesome") and is_noise(fn, r["description"]):
                 continue
             if fn in seen:
                 continue
