@@ -84,6 +84,7 @@ def repo_rows(seen: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
             "watched": discover.is_watched(e),
             "query": e.get("matched_query", ""),
             "score": e.get("score"),
+            "fit": e.get("fit"),
             "category": e.get("category") or "",
             "one_liner": e.get("one_liner") or "",
             "use_for": e.get("use_for") or "",
@@ -143,6 +144,8 @@ def render(seen: dict[str, dict[str, Any]]) -> str:
         delta_txt = f"+{r['delta']:,}" if r["delta"] > 0 else f"{r['delta']:,}"
         rate_txt = f"+{r['rate']:,.0f}/天" if r["rate"] else "—"
         score_txt = f'<span class="score">{r["score"]}/10</span>' if r["score"] else ""
+        if r.get("fit"):
+            score_txt += f' <span class="score">fit {r["fit"]}</span>'
         analysis = r["one_liner"] + (f"；{r['use_for']}" if r["use_for"] else "")
         flame = "🔥 " if r["watched"] else ""
         table_row_list.append(

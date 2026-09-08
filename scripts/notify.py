@@ -90,6 +90,8 @@ def repo_block(i: int, fn: str, e: dict[str, Any]) -> str:
     head = f"**{i}. [{fn}](https://github.com/{fn})** ★{(e.get('stars_at_first_seen') or 0):,}"
     if e.get("score"):
         head += f" · {e['score']}/10"
+    if e.get("fit"):
+        head += f" · fit {e['fit']}/10"
     if e.get("category"):
         head += f" · {e['category']}"
     body = []
@@ -103,6 +105,10 @@ def repo_block(i: int, fn: str, e: dict[str, Any]) -> str:
         body.append(f"举个例子：{e['example']}")
     if e.get("compare"):
         body.append(f"和已有项目比：{e['compare']}")
+    if e.get("overlap"):
+        body.append(f"重复情况：{e['overlap']}")
+    if e.get("verdict"):
+        body.append(f"**装不装：{e['verdict']}**")
     return head + ("\n" + "\n".join(body) if body else "")
 
 
@@ -114,7 +120,8 @@ def build_card(seen: dict[str, dict[str, Any]]) -> dict[str, Any]:
         (fn, e) for fn, e in seen.items() if e.get("first_seen") == today
     ]
     new_today.sort(
-        key=lambda kv: (kv[1].get("score") or 0, kv[1].get("stars_at_first_seen") or 0),
+        key=lambda kv: (kv[1].get("fit") or 0, kv[1].get("score") or 0,
+                        kv[1].get("stars_at_first_seen") or 0),
         reverse=True,
     )
 
