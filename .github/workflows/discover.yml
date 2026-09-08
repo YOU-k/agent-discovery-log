@@ -36,6 +36,11 @@ jobs:
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
 
+      # 先自检再跑。流水线挂了的表现是「第二天没收到飞书卡片」，
+      # 等发现已经晚一天；这一步 10 秒，挡住渲染/解析类的低级错误。
+      - name: Self-check (offline)
+        run: python3 scripts/test_pipeline.py
+
       - name: Run discovery
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

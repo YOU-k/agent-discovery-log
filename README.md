@@ -106,6 +106,21 @@ docs/index.html                # viz (GitHub Pages)
 .github/workflows/biomed.yml   # cron: Mon 22:05 UTC weekly
 ```
 
+## Tests
+
+```bash
+python3 scripts/test_pipeline.py          # 离线，~1 秒
+python3 scripts/test_pipeline.py --net    # 额外验每条查询词真能返回结果
+```
+
+离线部分守渲染和解析链路（打分 JSON 缺字段、没打过分的 repo、只有一个历史点的
+sparkline、飞书卡片字段缺失），CI 每天跑 discovery 之前会先跑一次 —— 流水线挂了
+的表现是「第二天没收到飞书卡片」，等发现已经晚一天。
+
+`--net` 那部分守的是**查询词写坏了静默返回 0 条**：`gh search` 对 3 个以上生僻词
+做 AND 匹配会直接归零（`agent skills bioinformatics` 就是这么废掉的，一条都捞不到
+却不报错）。**改过 `RESEARCH_QUERIES` 或 `QUERIES` 之后必须跑一次 `--net`。**
+
 ## Run locally
 
 ```bash
