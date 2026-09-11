@@ -65,6 +65,7 @@ jobs:
           LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
           LLM_BASE_URL: ${{ vars.LLM_BASE_URL }}
           LLM_MODEL: ${{ vars.LLM_MODEL }}
+          TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
           FEISHU_WEBHOOK: ${{ secrets.FEISHU_WEBHOOK }}
           FEISHU_KEYWORD: ${{ vars.FEISHU_KEYWORD }}
         run: python3 scripts/publish_xhs.py

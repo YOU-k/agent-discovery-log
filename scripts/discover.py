@@ -240,7 +240,7 @@ def gh_repo_meta(full_name: str) -> dict[str, Any] | None:
     return json.loads(result.stdout)
 
 
-def gh_readme_excerpt(full_name: str) -> str:
+def gh_readme_excerpt(full_name: str, limit: int = README_EXCERPT_CHARS) -> str:
     """Fetch the first chars of a repo's README (raw), '' on failure."""
     result = subprocess.run(
         ["gh", "api", f"repos/{full_name}/readme", "-H", "Accept: application/vnd.github.raw"],
@@ -248,7 +248,7 @@ def gh_readme_excerpt(full_name: str) -> str:
     )
     if result.returncode != 0:
         return ""
-    return result.stdout[:README_EXCERPT_CHARS]
+    return result.stdout[:limit]
 
 
 def filter_repo(r: dict[str, Any]) -> bool:
