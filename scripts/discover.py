@@ -549,6 +549,8 @@ def backfill_scores(
     for fn, e in sorted(seen.items(), key=lambda kv: kv[1].get("first_seen", ""), reverse=True):
         if not force and e.get("score"):
             continue
+        if e.get("similar_to"):
+            continue  # 克隆不值得花 token
         if e.get("first_seen", "") < cutoff:
             continue
         meta = gh_repo_meta(fn)

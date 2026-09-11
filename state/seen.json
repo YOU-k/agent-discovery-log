@@ -135,7 +135,8 @@
         "2026-09-10",
         46451
       ]
-    ]
+    ],
+    "similar_to": "op7418/Humanizer-zh"
   },
   "VoltAgent/awesome-claude-code-subagents": {
     "first_seen": "2026-07-02",
@@ -204,7 +205,8 @@
         "2026-09-10",
         24992
       ]
-    ]
+    ],
+    "similar_to": "kaushikb11/awesome-llm-agents"
   },
   "alirezarezvani/claude-skills": {
     "first_seen": "2026-07-02",
@@ -342,7 +344,8 @@
         "2026-09-10",
         17018
       ]
-    ]
+    ],
+    "similar_to": "blader/humanizer"
   },
   "HKUDS/AutoAgent": {
     "first_seen": "2026-07-02",
@@ -480,7 +483,8 @@
         "2026-09-10",
         29741
       ]
-    ]
+    ],
+    "similar_to": "deusyu/translate-book"
   },
   "kyegomez/swarms": {
     "first_seen": "2026-07-02",
@@ -549,7 +553,8 @@
         "2026-09-10",
         7162
       ]
-    ]
+    ],
+    "similar_to": "The-Swarm-Corporation/swarms-rs"
   },
   "open-multi-agent/open-multi-agent": {
     "first_seen": "2026-07-02",
@@ -618,7 +623,8 @@
         "2026-09-10",
         6903
       ]
-    ]
+    ],
+    "similar_to": "scdenney/open-science-skills"
   },
   "SimoneAvogadro/android-reverse-engineering-skill": {
     "first_seen": "2026-07-02",
@@ -1584,7 +1590,8 @@
         "2026-09-10",
         2406
       ]
-    ]
+    ],
+    "similar_to": "K-Dense-AI/claude-skills-mcp"
   },
   "Kocoro-lab/Shannon": {
     "first_seen": "2026-07-02",
@@ -1722,7 +1729,8 @@
         "2026-09-10",
         1580
       ]
-    ]
+    ],
+    "similar_to": "VoltAgent/awesome-claude-code-subagents"
   },
   "P4nda0s/reverse-skills": {
     "first_seen": "2026-07-02",
@@ -1860,7 +1868,8 @@
         "2026-09-10",
         1433
       ]
-    ]
+    ],
+    "similar_to": "Sateezg/codex-bridge"
   },
   "onvoyage-ai/gtm-engineer-skills": {
     "first_seen": "2026-07-02",
@@ -2481,7 +2490,8 @@
         "2026-09-10",
         999
       ]
-    ]
+    ],
+    "similar_to": "VoltAgent/awesome-claude-code-subagents"
   },
   "aiwithremy/claude-skills-llm-council": {
     "first_seen": "2026-07-02",
@@ -2826,7 +2836,8 @@
         "2026-09-10",
         1796
       ]
-    ]
+    ],
+    "similar_to": "virgiliojr94/book-to-skill"
   },
   "komal-SkyNET/claude-skill-homeassistant": {
     "first_seen": "2026-07-02",
@@ -3516,7 +3527,8 @@
         "2026-09-10",
         682
       ]
-    ]
+    ],
+    "similar_to": "robbin/wechat-exporter"
   },
   "xiaopu-ai/web-design": {
     "first_seen": "2026-07-02",
@@ -3792,7 +3804,8 @@
         "2026-09-10",
         1144
       ]
-    ]
+    ],
+    "similar_to": "Spark-To-Paper-Skills/paperjury"
   },
   "ksimback/tech-debt-skill": {
     "first_seen": "2026-07-02",
@@ -3999,7 +4012,8 @@
         "2026-09-10",
         832
       ]
-    ]
+    ],
+    "similar_to": "op7418/Humanizer-zh"
   },
   "levnikolaevich/claude-code-skills": {
     "first_seen": "2026-07-02",
@@ -4206,7 +4220,8 @@
         "2026-09-10",
         362
       ]
-    ]
+    ],
+    "similar_to": "VoltAgent/awesome-claude-code-subagents"
   },
   "dsifry/metaswarm": {
     "first_seen": "2026-07-02",
@@ -4482,7 +4497,8 @@
         "2026-09-10",
         177
       ]
-    ]
+    ],
+    "similar_to": "kyegomez/swarms"
   },
   "chefkannofriend-source/mbbb-baker-agent": {
     "first_seen": "2026-07-02",
@@ -5103,7 +5119,8 @@
         "2026-09-10",
         72
       ]
-    ]
+    ],
+    "similar_to": "VoltAgent/awesome-claude-code-subagents"
   },
   "Filip-Podstavec/claude-leverage": {
     "first_seen": "2026-07-02",
@@ -5241,7 +5258,8 @@
         "2026-09-10",
         102
       ]
-    ]
+    ],
+    "similar_to": "VoltAgent/awesome-claude-code-subagents"
   },
   "ryanthedev/oberskills": {
     "first_seen": "2026-07-02",
@@ -6138,7 +6156,8 @@
         "2026-09-10",
         1144
       ]
-    ]
+    ],
+    "similar_to": "u7079256/paperjury"
   },
   "danyuchn/asd-ste100-skill": {
     "first_seen": "2026-08-09",
@@ -6294,7 +6313,8 @@
         "2026-08-13",
         1022
       ]
-    ]
+    ],
+    "similar_to": "virgiliojr94/book-to-skill"
   },
   "danilo-znamerovszkij/draw-your-font": {
     "first_seen": "2026-08-19",
@@ -8044,7 +8064,8 @@
         "2026-09-10",
         545
       ]
-    ]
+    ],
+    "similar_to": "Neeeophytee/finding-unknowns-skills"
   },
   "Neeeophytee/finding-unknowns-skills": {
     "first_seen": "2026-08-28",
@@ -8105,7 +8126,8 @@
         "2026-09-10",
         328
       ]
-    ]
+    ],
+    "similar_to": "s0xDk/refactoring-ui-skill"
   },
   "soumatheusgomes/vibe-coding-toolkit": {
     "first_seen": "2026-08-28",
@@ -8166,7 +8188,8 @@
         "2026-09-10",
         608
       ]
-    ]
+    ],
+    "similar_to": "s0xDk/refactoring-ui-skill"
   },
   "finna/Finn-loop": {
     "first_seen": "2026-08-28",
@@ -8227,7 +8250,8 @@
         "2026-09-10",
         306
       ]
-    ]
+    ],
+    "similar_to": "s0xDk/refactoring-ui-skill"
   },
   "luchasarie/bro-skill": {
     "first_seen": "2026-08-28",
@@ -8288,7 +8312,8 @@
         "2026-09-10",
         341
       ]
-    ]
+    ],
+    "similar_to": "s0xDk/refactoring-ui-skill"
   },
   "0rangec3t/Black-cat": {
     "first_seen": "2026-08-28",
@@ -8349,7 +8374,8 @@
         "2026-09-10",
         312
       ]
-    ]
+    ],
+    "similar_to": "s0xDk/refactoring-ui-skill"
   },
   "Kronop/vibe-aso": {
     "first_seen": "2026-08-28",
@@ -8410,14 +8436,15 @@
         "2026-09-10",
         372
       ]
-    ]
+    ],
+    "similar_to": "s0xDk/refactoring-ui-skill"
   },
   "nick-vels/skills": {
     "first_seen": "2026-08-28",
     "stars_at_first_seen": 298,
     "matched_query": "claude code skill created:>2026-06-29",
-    "score": null,
-    "one_liner": null,
+    "score": 8,
+    "one_liner": "说句话就自动写规格、拆任务、建项目的框架",
     "stars_history": [
       [
         "2026-08-28",
@@ -8471,7 +8498,12 @@
         "2026-09-10",
         355
       ]
-    ]
+    ],
+    "category": "Claude Code skill",
+    "use_for": "把「搭个生信流程」这类模糊需求变成可执行项目",
+    "usage": "装后把想法丢给它，它问几个问题就开干并给仪表盘",
+    "example": "输入「做个小工具把 Seurat 对象转 anndata」，它自动拆任务并写出可用脚本",
+    "compare": "和 swarm/多智能体框架比更轻，一个 skill 搞定全自动开发，无需额外配置"
   },
   "Get-Concord-AI/concord-mcp": {
     "first_seen": "2026-08-28",
@@ -8535,7 +8567,8 @@
     ],
     "source": "hn",
     "hn_points": 9,
-    "hn_url": "https://news.ycombinator.com/item?id=49464704"
+    "hn_url": "https://news.ycombinator.com/item?id=49464704",
+    "similar_to": "K-Dense-AI/claude-skills-mcp"
   },
   "leopard627/fire-your-seo-agency": {
     "first_seen": "2026-08-28",
@@ -8596,7 +8629,8 @@
         "2026-09-10",
         434
       ]
-    ]
+    ],
+    "similar_to": "s0xDk/refactoring-ui-skill"
   },
   "Sateezg/codex-bridge": {
     "first_seen": "2026-08-28",
@@ -8657,7 +8691,8 @@
         "2026-09-10",
         250
       ]
-    ]
+    ],
+    "similar_to": "skills-directory/skill-codex"
   },
   "futantan/agent-skills.md": {
     "first_seen": "2026-08-28",
@@ -8718,7 +8753,8 @@
         "2026-09-10",
         258
       ]
-    ]
+    ],
+    "similar_to": "kaushikb11/awesome-llm-agents"
   },
   "codeswithroh/tastemaker": {
     "first_seen": "2026-08-28",
@@ -8779,7 +8815,8 @@
         "2026-09-10",
         363
       ]
-    ]
+    ],
+    "similar_to": "s0xDk/refactoring-ui-skill"
   },
   "NulightJens/humanizer-stack": {
     "first_seen": "2026-08-28",
@@ -8840,7 +8877,8 @@
         "2026-09-10",
         264
       ]
-    ]
+    ],
+    "similar_to": "blader/humanizer"
   },
   "adnanakil/nobuzz": {
     "first_seen": "2026-08-28",
@@ -8901,7 +8939,8 @@
         "2026-09-10",
         260
       ]
-    ]
+    ],
+    "similar_to": "s0xDk/refactoring-ui-skill"
   },
   "iBlinkQ/project-cairn": {
     "first_seen": "2026-08-28",
@@ -8962,7 +9001,8 @@
         "2026-09-10",
         226
       ]
-    ]
+    ],
+    "similar_to": "s0xDk/refactoring-ui-skill"
   },
   "dinosn/raptor-loop-hunt": {
     "first_seen": "2026-08-28",
@@ -9023,7 +9063,8 @@
         "2026-09-10",
         217
       ]
-    ]
+    ],
+    "similar_to": "s0xDk/refactoring-ui-skill"
   },
   "tigerless-labs/design-harness": {
     "first_seen": "2026-08-28",
@@ -9084,7 +9125,8 @@
         "2026-09-10",
         217
       ]
-    ]
+    ],
+    "similar_to": "s0xDk/refactoring-ui-skill"
   },
   "robbin/wechat-exporter": {
     "first_seen": "2026-08-28",
@@ -9145,7 +9187,8 @@
         "2026-09-10",
         211
       ]
-    ]
+    ],
+    "similar_to": "Wechat-ggGitHub/wechat-claude-code"
   },
   "nathanskill/niubiskill": {
     "first_seen": "2026-08-28",
@@ -9206,7 +9249,8 @@
         "2026-09-10",
         198
       ]
-    ]
+    ],
+    "similar_to": "s0xDk/refactoring-ui-skill"
   },
   "MegaTroll222/VOX-COLLAGE-BROLL": {
     "first_seen": "2026-08-28",
@@ -9267,14 +9311,15 @@
         "2026-09-10",
         206
       ]
-    ]
+    ],
+    "similar_to": "s0xDk/refactoring-ui-skill"
   },
   "scarletkc/agents": {
     "first_seen": "2026-08-28",
     "stars_at_first_seen": 188,
     "matched_query": "claude code skill created:>2026-06-29",
-    "score": null,
-    "one_liner": null,
+    "score": 7,
+    "one_liner": "跨 agent 共享的 AGENTS.md 规范和技能集",
     "stars_history": [
       [
         "2026-08-28",
@@ -9328,7 +9373,12 @@
         "2026-09-10",
         208
       ]
-    ]
+    ],
+    "category": "Claude Code skill 合集",
+    "use_for": "抄 AGENTS.md 模板，统一自己 agent 的协作规范",
+    "usage": "复制 AGENTS.md 到仓库，按项目往里加域内容",
+    "example": "开新生信项目时先拷它的 AGENTS.md，再补上 scanpy 相关约定",
+    "compare": "和 VoltAgent/awesome-agent-skills 比它更瘦、偏规范文档，可当最小起步模板"
   },
   "itgoyo/awesome-agent-skills": {
     "first_seen": "2026-08-28",
@@ -9389,7 +9439,8 @@
         "2026-09-10",
         191
       ]
-    ]
+    ],
+    "similar_to": "VoltAgent/awesome-claude-code-subagents"
   },
   "kairyou/agent-tools": {
     "first_seen": "2026-08-28",
@@ -9450,14 +9501,15 @@
         "2026-09-10",
         181
       ]
-    ]
+    ],
+    "similar_to": "s0xDk/refactoring-ui-skill"
   },
   "sv-number/skills": {
     "first_seen": "2026-08-28",
     "stars_at_first_seen": 170,
     "matched_query": "claude code skill created:>2026-06-29",
-    "score": null,
-    "one_liner": null,
+    "score": 6,
+    "one_liner": "给 agent 一个虚拟手机号收验证码",
     "stars_history": [
       [
         "2026-08-28",
@@ -9511,7 +9563,12 @@
         "2026-09-10",
         274
       ]
-    ]
+    ],
+    "category": "Claude Code skill",
+    "use_for": "自动注册需要手机号的网站服务",
+    "usage": "agent 调 API 下单号码、读短信码、还号码",
+    "example": "让 agent 注册一个国外数据集平台，它下单印尼号收到验证码完成注册",
+    "compare": "独一无二的验证码收取技能，别人都没有，但对科研几乎无用"
   },
   "dashaworks/share-as-link-skill": {
     "first_seen": "2026-08-28",
@@ -9572,7 +9629,8 @@
         "2026-09-10",
         229
       ]
-    ]
+    ],
+    "similar_to": "s0xDk/refactoring-ui-skill"
   },
   "GaZmagik/iso-24495": {
     "first_seen": "2026-08-28",
@@ -9633,7 +9691,8 @@
         "2026-09-10",
         171
       ]
-    ]
+    ],
+    "similar_to": "s0xDk/refactoring-ui-skill"
   },
   "imraywang/rayskills": {
     "first_seen": "2026-08-28",
@@ -9694,7 +9753,8 @@
         "2026-09-10",
         159
       ]
-    ]
+    ],
+    "similar_to": "s0xDk/refactoring-ui-skill"
   },
   "Nutlope/variate": {
     "first_seen": "2026-08-28",
@@ -9755,7 +9815,8 @@
         "2026-09-10",
         202
       ]
-    ]
+    ],
+    "similar_to": "s0xDk/refactoring-ui-skill"
   },
   "saurabhkumar8112/cyclomatic-complexity-skill": {
     "first_seen": "2026-08-28",
@@ -9816,7 +9877,8 @@
         "2026-09-10",
         383
       ]
-    ]
+    ],
+    "similar_to": "s0xDk/refactoring-ui-skill"
   },
   "duolahypercho/gauntlet-loop": {
     "first_seen": "2026-08-28",
@@ -9877,7 +9939,8 @@
         "2026-09-10",
         153
       ]
-    ]
+    ],
+    "similar_to": "s0xDk/refactoring-ui-skill"
   },
   "vasanthsreeram/Alvarmethod": {
     "first_seen": "2026-08-28",
@@ -9938,7 +10001,8 @@
         "2026-09-10",
         152
       ]
-    ]
+    ],
+    "similar_to": "s0xDk/refactoring-ui-skill"
   },
   "calesthio/generative-media-skills": {
     "first_seen": "2026-08-28",
@@ -9999,7 +10063,8 @@
         "2026-09-10",
         170
       ]
-    ]
+    ],
+    "similar_to": "s0xDk/refactoring-ui-skill"
   },
   "serradura/okf": {
     "first_seen": "2026-08-28",
@@ -10060,7 +10125,8 @@
         "2026-09-10",
         155
       ]
-    ]
+    ],
+    "similar_to": "s0xDk/refactoring-ui-skill"
   },
   "op7418/guizang-sports-skill": {
     "first_seen": "2026-08-28",
@@ -10121,7 +10187,8 @@
         "2026-09-10",
         141
       ]
-    ]
+    ],
+    "similar_to": "s0xDk/refactoring-ui-skill"
   },
   "yan-labs/yan-skills": {
     "first_seen": "2026-08-28",
@@ -10182,7 +10249,8 @@
         "2026-09-10",
         183
       ]
-    ]
+    ],
+    "similar_to": "s0xDk/refactoring-ui-skill"
   },
   "jasonsuhari/gridbash": {
     "first_seen": "2026-08-28",
@@ -10243,7 +10311,8 @@
         "2026-09-10",
         132
       ]
-    ]
+    ],
+    "similar_to": "s0xDk/refactoring-ui-skill"
   },
   "ZestfulPulse/ios-app-store-submit": {
     "first_seen": "2026-08-28",
@@ -10304,7 +10373,8 @@
         "2026-09-10",
         135
       ]
-    ]
+    ],
+    "similar_to": "s0xDk/refactoring-ui-skill"
   },
   "ADScanPro/Claude-AD": {
     "first_seen": "2026-08-28",
@@ -10365,7 +10435,8 @@
         "2026-09-10",
         193
       ]
-    ]
+    ],
+    "similar_to": "s0xDk/refactoring-ui-skill"
   },
   "ZSeven-W/dsh-crew": {
     "first_seen": "2026-08-28",
@@ -10426,7 +10497,8 @@
         "2026-09-10",
         138
       ]
-    ]
+    ],
+    "similar_to": "s0xDk/refactoring-ui-skill"
   },
   "kodustech/awesome-agent-skills": {
     "first_seen": "2026-08-28",
@@ -10487,7 +10559,8 @@
         "2026-09-10",
         101
       ]
-    ]
+    ],
+    "similar_to": "VoltAgent/awesome-claude-code-subagents"
   },
   "Ezeafk/awesome-agent-skills": {
     "first_seen": "2026-08-28",
@@ -10548,7 +10621,8 @@
         "2026-09-10",
         96
       ]
-    ]
+    ],
+    "similar_to": "VoltAgent/awesome-claude-code-subagents"
   },
   "junhua/awesome-llm-agents": {
     "first_seen": "2026-08-28",
@@ -10609,7 +10683,8 @@
         "2026-09-10",
         91
       ]
-    ]
+    ],
+    "similar_to": "VoltAgent/awesome-claude-code-subagents"
   },
   "LLMSecurity/awesome-agent-skills-security": {
     "first_seen": "2026-08-28",
@@ -10670,7 +10745,8 @@
         "2026-09-10",
         96
       ]
-    ]
+    ],
+    "similar_to": "kaushikb11/awesome-llm-agents"
   },
   "scienceaix/agentskills": {
     "first_seen": "2026-08-28",
@@ -10731,7 +10807,8 @@
         "2026-09-10",
         83
       ]
-    ]
+    ],
+    "similar_to": "kaushikb11/awesome-llm-agents"
   },
   "zjlrock777/Awesome-LLM-Agents-Scientific-Discovery": {
     "first_seen": "2026-08-28",
@@ -10792,7 +10869,8 @@
         "2026-09-10",
         80
       ]
-    ]
+    ],
+    "similar_to": "InternScience/Awesome-Scientific-Skills"
   },
   "levi-qiao/longgraph-skill": {
     "first_seen": "2026-08-28",
@@ -10853,7 +10931,8 @@
         "2026-09-10",
         76
       ]
-    ]
+    ],
+    "similar_to": "s0xDk/refactoring-ui-skill"
   },
   "omergocmen/CrewCtl": {
     "first_seen": "2026-08-28",
@@ -10914,7 +10993,8 @@
         "2026-09-10",
         65
       ]
-    ]
+    ],
+    "similar_to": "s0xDk/refactoring-ui-skill"
   },
   "timenavigatorrage/r16-voltagent-awesome-agent-skills-security": {
     "first_seen": "2026-08-28",
@@ -10975,7 +11055,8 @@
         "2026-09-10",
         57
       ]
-    ]
+    ],
+    "similar_to": "LLMSecurity/awesome-agent-skills-security"
   },
   "Gravityaespot/r16-voltagent-awesome-agent-skills-seo": {
     "first_seen": "2026-08-28",
@@ -11036,7 +11117,8 @@
         "2026-09-10",
         57
       ]
-    ]
+    ],
+    "similar_to": "timenavigatorrage/r16-voltagent-awesome-agent-skills-security"
   },
   "Holddrespell/r16-voltagent-awesome-agent-skills-datascience": {
     "first_seen": "2026-08-28",
@@ -11097,7 +11179,8 @@
         "2026-09-10",
         56
       ]
-    ]
+    ],
+    "similar_to": "timenavigatorrage/r16-voltagent-awesome-agent-skills-security"
   },
   "humanlayer/fold": {
     "first_seen": "2026-08-28",
@@ -11158,7 +11241,8 @@
         "2026-09-10",
         69
       ]
-    ]
+    ],
+    "similar_to": "s0xDk/refactoring-ui-skill"
   },
   "DreambigOu/ELI5": {
     "first_seen": "2026-08-29",
@@ -12600,8 +12684,8 @@
     "first_seen": "2026-09-07",
     "stars_at_first_seen": 132,
     "matched_query": "hn: Coop – Isolated VM Environments for Running Claude Code and ",
-    "score": null,
-    "one_liner": null,
+    "score": 8,
+    "one_liner": "给 Claude Code/Codex 跑隔离 VM 的 Rust CLI",
     "stars_history": [
       [
         "2026-09-07",
@@ -12622,7 +12706,12 @@
     ],
     "source": "hn",
     "hn_points": 51,
-    "hn_url": "https://news.ycombinator.com/item?id=49593842"
+    "hn_url": "https://news.ycombinator.com/item?id=49593842",
+    "category": "工具",
+    "use_for": "让 agent 装包跑脚本时不污染本机环境",
+    "usage": "coop up 起 VM，coop claude 进去跑 agent",
+    "example": "跑一个会装 rdkit 和 pytorch 的流程时，先在 coop VM 里跑，坏了就销毁重建",
+    "compare": "和通用 agent 技能集不同，它补的是沙箱执行层，别人都没这块"
   },
   "TauricResearch/TradingAgents": {
     "first_seen": "2026-09-08",
@@ -13166,7 +13255,8 @@
         "2026-09-10",
         362
       ]
-    ]
+    ],
+    "similar_to": "google-deepmind/science-skills"
   },
   "chtc66/academic-skills": {
     "first_seen": "2026-09-08",
@@ -13187,14 +13277,15 @@
         "2026-09-10",
         348
       ]
-    ]
+    ],
+    "similar_to": "Imbad0202/academic-research-skills"
   },
   "shareAI-lab/lab-skills": {
     "first_seen": "2026-09-08",
     "stars_at_first_seen": 314,
     "matched_query": "lab skills",
-    "score": null,
-    "one_liner": null,
+    "score": 8,
+    "one_liner": "实验室实战沉淀的通用 agent 技能包",
     "stars_history": [
       [
         "2026-09-08",
@@ -13208,7 +13299,12 @@
         "2026-09-10",
         314
       ]
-    ]
+    ],
+    "category": "Claude Code skill 合集",
+    "use_for": "抄它的技能写法，改造出科研流程类技能",
+    "usage": "npx skills add 装到 Claude Code 里直接用",
+    "example": "在 Claude Code 输入 /deep-architecture-research，它会按技能指引帮你拆解一个技术方案",
+    "compare": "和 Imbad0202/academic-research-skills 重叠但更偏工程协作，可借结构自研科研技能"
   },
   "wentorai/research-plugins": {
     "first_seen": "2026-09-08",
@@ -13229,14 +13325,15 @@
         "2026-09-10",
         291
       ]
-    ]
+    ],
+    "similar_to": "Imbad0202/academic-research-skills"
   },
   "yunshenwuchuxun/latex-paper-skills": {
     "first_seen": "2026-09-08",
     "stars_at_first_seen": 257,
     "matched_query": "paper skills",
-    "score": null,
-    "one_liner": null,
+    "score": 9,
+    "one_liner": "从选题到编译 PDF 的 LaTeX 论文写作技能包",
     "stars_history": [
       [
         "2026-09-08",
@@ -13250,7 +13347,12 @@
         "2026-09-10",
         259
       ]
-    ]
+    ],
+    "category": "Claude Code skill 合集",
+    "use_for": "写方法学论文，管 BibTeX、多智能体协作改稿",
+    "usage": "装到 Codex/Claude 里，跑 gated 工作流一步步出稿",
+    "example": "在 Claude Code 说「写一篇单细胞综述」，它按技能链扩文献、核引用、编译出 PDF",
+    "compare": "和 lishix520/academic-paper-skills 比更完整闭环，自带引用校验和编译验证"
   },
   "lensback940701/Evidence-Bound-Press-Conference-Revision-Skill": {
     "first_seen": "2026-09-08",
@@ -13271,7 +13373,8 @@
         "2026-09-10",
         243
       ]
-    ]
+    ],
+    "similar_to": "ZinSheng/paper-notes"
   },
   "franklee16/academic-research-skills": {
     "first_seen": "2026-09-08",
@@ -13292,7 +13395,8 @@
         "2026-09-10",
         215
       ]
-    ]
+    ],
+    "similar_to": "Imbad0202/academic-research-skills"
   },
   "ShZhao27208/Aut_Sci_Write": {
     "first_seen": "2026-09-08",
@@ -13313,7 +13417,8 @@
         "2026-09-10",
         194
       ]
-    ]
+    ],
+    "similar_to": "Imbad0202/academic-research-skills"
   },
   "Epsilon617/Codex-Academic-Skills": {
     "first_seen": "2026-09-08",
@@ -13334,7 +13439,8 @@
         "2026-09-10",
         180
       ]
-    ]
+    ],
+    "similar_to": "skills-directory/skill-codex"
   },
   "Ming-Lian/Bioinformatics-skills": {
     "first_seen": "2026-09-08",
@@ -13355,7 +13461,8 @@
         "2026-09-10",
         164
       ]
-    ]
+    ],
+    "similar_to": "variomeanalytics/bioinformatics-agent-skills"
   },
   "moonlarry/codex-paper-skills": {
     "first_seen": "2026-09-08",
@@ -13376,7 +13483,8 @@
         "2026-09-10",
         161
       ]
-    ]
+    ],
+    "similar_to": "skills-directory/skill-codex"
   },
   "voidful/academic-skills": {
     "first_seen": "2026-09-08",
@@ -13397,14 +13505,15 @@
         "2026-09-10",
         126
       ]
-    ]
+    ],
+    "similar_to": "Imbad0202/academic-research-skills"
   },
   "HaonanAlex/MGMT-Paper-Skills": {
     "first_seen": "2026-09-08",
     "stars_at_first_seen": 125,
     "matched_query": "paper skills",
-    "score": null,
-    "one_liner": null,
+    "score": 7,
+    "one_liner": "管理学论文的技能工作台，含 SPSS/Stata",
     "stars_history": [
       [
         "2026-09-08",
@@ -13418,14 +13527,19 @@
         "2026-09-10",
         125
       ]
-    ]
+    ],
+    "category": "Claude Code skill 合集",
+    "use_for": "借鉴它的流程化思路，但统计工具不匹配生信",
+    "usage": "装到 Codex/Claude 跑选题到审稿自查的全链条",
+    "example": "管理学者输入研究问题，它串起文献整理、数据清洗和期刊图表",
+    "compare": "同为学科科研技能，但面向管理学，和 sci-agent-skills 的生信方向互补"
   },
   "probabl-ai/skills": {
     "first_seen": "2026-09-08",
     "stars_at_first_seen": 121,
     "matched_query": "science skills",
-    "score": null,
-    "one_liner": null,
+    "score": 7,
+    "one_liner": "带方法论约束的数据科学实验技能包",
     "stars_history": [
       [
         "2026-09-08",
@@ -13439,7 +13553,12 @@
         "2026-09-10",
         122
       ]
-    ]
+    ],
+    "category": "Claude Code skill 合集",
+    "use_for": "规整 sklearn/skore 的 ML 流程，管实验记录",
+    "usage": "在 Claude Code 里说「建个 baseline 流程」，它按最佳实践搭管道",
+    "example": "给一份 data/README，让 agent 自动产出可审计的 sklearn baseline",
+    "compare": "和 google-deepmind/science-skills 类科学技能比，它偏通用 ML 工程方法论"
   },
   "cookjohn/wos-skills": {
     "first_seen": "2026-09-08",
@@ -13460,7 +13579,8 @@
         "2026-09-10",
         117
       ]
-    ]
+    ],
+    "similar_to": "google-deepmind/science-skills"
   },
   "GoekeLab/awesome-genomic-skills": {
     "first_seen": "2026-09-08",
@@ -13481,14 +13601,15 @@
         "2026-09-10",
         97
       ]
-    ]
+    ],
+    "similar_to": "kaushikb11/awesome-llm-agents"
   },
   "NEONScience/NEON-Data-Skills": {
     "first_seen": "2026-09-08",
     "stars_at_first_seen": 91,
     "matched_query": "data analysis skills",
-    "score": null,
-    "one_liner": null,
+    "score": 3,
+    "one_liner": "生态学数据科学自学教程集，R/Python 混合",
     "stars_history": [
       [
         "2026-09-08",
@@ -13502,7 +13623,12 @@
         "2026-09-10",
         91
       ]
-    ]
+    ],
+    "category": "教程资源",
+    "use_for": "补数据素养、找课题练手数据集",
+    "usage": "照着 tutorials/ 里的 notebook 一题一题练",
+    "example": "找空间栅格数据练手时，翻它的 Rmd 教程跟着做一遍",
+    "compare": "和 openbiox 的 100 天生信比更偏生态学观测数据，不重叠"
   },
   "drpedapati/sciclaw": {
     "first_seen": "2026-09-08",
@@ -13523,14 +13649,15 @@
         "2026-09-10",
         88
       ]
-    ]
+    ],
+    "similar_to": "Tyche-MKR/scientific-agent-skills"
   },
   "schlende/practical-pandas-projects": {
     "first_seen": "2026-09-08",
     "stars_at_first_seen": 87,
     "matched_query": "data analysis skills",
-    "score": null,
-    "one_liner": null,
+    "score": 3,
+    "one_liner": "pandas 练手项目点子合集，带示例数据",
     "stars_history": [
       [
         "2026-09-08",
@@ -13544,14 +13671,19 @@
         "2026-09-10",
         87
       ]
-    ]
+    ],
+    "category": "教程资源",
+    "use_for": "练 pandas 手感、找数据分析练手题",
+    "usage": "在 Binder 上打开 notebook 直接跑",
+    "example": "想练 groupby 时打开 Etsy 商品 notebook，跟着分析哪个品类卖最好",
+    "compare": "纯 pandas 练手，和单细胞 anndata 工作流没关系，填练手题空白"
   },
   "openbiox/bioinformatics-100-days": {
     "first_seen": "2026-09-08",
     "stars_at_first_seen": 85,
     "matched_query": "bioinformatics skills",
-    "score": null,
-    "one_liner": null,
+    "score": 4,
+    "one_liner": "100 天补生信技能的课程资源清单",
     "stars_history": [
       [
         "2026-09-08",
@@ -13565,7 +13697,12 @@
         "2026-09-10",
         85
       ]
-    ]
+    ],
+    "category": "教程资源",
+    "use_for": "查生信学习路线、补缺口资料索引",
+    "usage": "按天翻它列的 Bioconductor 工作坊和 awesome 列表",
+    "example": "想学空间转录组时，顺它清单找到 awesome-single-cell 里的资料",
+    "compare": "和 NEON 教程比更偏纯粹生信工具链，sci-agent-skills 有技能它只有清单"
   },
   "muhammadanas0716/Data-Science-Projects---EDA": {
     "first_seen": "2026-09-08",
@@ -13586,7 +13723,8 @@
         "2026-09-10",
         80
       ]
-    ]
+    ],
+    "similar_to": "youssefHosni/Data-Science-Handbook"
   },
   "kael-odin/awesome-academic-research-skills": {
     "first_seen": "2026-09-08",
@@ -13607,7 +13745,8 @@
         "2026-09-10",
         76
       ]
-    ]
+    ],
+    "similar_to": "Imbad0202/academic-research-skills"
   },
   "AlterLab-IEU/AlterLab-Academic-Skills": {
     "first_seen": "2026-09-08",
@@ -13628,7 +13767,8 @@
         "2026-09-10",
         66
       ]
-    ]
+    ],
+    "similar_to": "chtc66/academic-skills"
   },
   "qinyan-ai/qinyan-academic-skills": {
     "first_seen": "2026-09-08",
@@ -13649,7 +13789,8 @@
         "2026-09-10",
         67
       ]
-    ]
+    ],
+    "similar_to": "LeonChaoX/qinyan-academic-skills"
   },
   "YuanyuanMa03/academic-research-skills": {
     "first_seen": "2026-09-08",
@@ -13670,7 +13811,8 @@
         "2026-09-10",
         63
       ]
-    ]
+    ],
+    "similar_to": "Imbad0202/academic-research-skills"
   },
   "variomeanalytics/bioinformatics-agent-skills": {
     "first_seen": "2026-09-08",
@@ -13691,7 +13833,8 @@
         "2026-09-10",
         62
       ]
-    ]
+    ],
+    "similar_to": "Ming-Lian/Bioinformatics-skills"
   },
   "yorkeccak/scientific-skills": {
     "first_seen": "2026-09-08",
@@ -13712,7 +13855,8 @@
         "2026-09-10",
         61
       ]
-    ]
+    ],
+    "similar_to": "Tyche-MKR/scientific-agent-skills"
   },
   "timpara/opencode-academic-research": {
     "first_seen": "2026-09-08",
@@ -13733,7 +13877,8 @@
         "2026-09-10",
         61
       ]
-    ]
+    ],
+    "similar_to": "Imbad0202/academic-research-skills"
   },
   "scdenney/open-science-skills": {
     "first_seen": "2026-09-08",
@@ -13754,7 +13899,8 @@
         "2026-09-10",
         55
       ]
-    ]
+    ],
+    "similar_to": "open-multi-agent/open-multi-agent"
   },
   "ZinSheng/paper-notes": {
     "first_seen": "2026-09-08",
@@ -13775,7 +13921,8 @@
         "2026-09-10",
         52
       ]
-    ]
+    ],
+    "similar_to": "lensback940701/Evidence-Bound-Press-Conference-Revision-Skill"
   },
   "Desertbetweenalembic/website-downloader": {
     "first_seen": "2026-09-09",
