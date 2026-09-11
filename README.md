@@ -54,6 +54,25 @@ Feishu card and the viz report three transparent, rule-based signals
 - **降温** — hot overall but nearly flat over the last 7 days (needs ≥ 8
   days of history, so it appears about a week after tracking starts)
 
+## Novelty filter
+
+Star counts don't stop clones (a copycat wave shares real stars). New
+repos are compared against everything tracked (name + description token
+similarity); look-alikes are tagged `similar_to`, skip LLM scoring, and
+collapse to one compact line in the report/card. Category strings from
+the LLM are normalized at storage time (`CATEGORY_MAP`), not in the prompt.
+
+## 小红书草稿（每周一）
+
+`scripts/publish_xhs.py` turns the week's data (high-score newcomers,
+velocity leaders, auto-watched) into a ready-to-post 小红书 note draft
+(title / body / tags / cover idea, facts only from collected numbers,
+plus the de-AI-slop pass). Writes `publish/YYYY-MM-DD-xhs.md` and pushes
+a red Feishu card for copy-paste. Runs inside the daily workflow, no-op
+except Mondays; `python3 scripts/publish_xhs.py --force` to generate any
+day. 小红书 has no official personal publishing API — posting is manual
+by design (cookie-based RPA exists but risks the account).
+
 ## Visualization
 
 `scripts/render_viz.py` renders `docs/index.html` — a self-contained

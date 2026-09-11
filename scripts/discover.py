@@ -269,6 +269,41 @@ def is_noise(full_name: str, description: str) -> bool:
     return bool(NOISE_RE.search(full_name) or NOISE_RE.search(description or ""))
 
 
+# 同类检测（新颖度过滤）：克隆项目的星数也是真的，星数门槛挡不住，
+# 要靠"和已追踪项目的相似度"来识别。名字 token 是主信号。
+_TOKEN_STOP = {
+    "the", "a", "an", "and", "or", "for", "to", "of", "in", "on", "with", "your",
+    "you", "code", "claude", "skill", "skills", "agent", "agents", "framework",
+    "ai", "llm", "multi", "based", "via",
+}
+SIMILAR_NAME_THRESHOLD = 0.5
+SIMILAR_TEXT_THRESHOLD = 0.35
+
+
+def _tokens(text: str) -> set[str]:
+    return {t for t in re.findall(r"[a-z0-9]+", (text or "").lower()) if t not in _TOKEN_STOP}
+
+
+def _jaccard(a: set[str], b: set[str]) -> float:
+    return len(a & b) / len(a | b) if a and b else 0.0
+
+
+def find_similar(r: Repo, seen: dict[str, Any]) -> str | None:
+    """Return the tracked repo this one looks like a clone of, else None."""
+    name_t = _tokens(r.full_name.split("/")[-1])
+    text_t = name_t | _tokens(r.description)
+    if not name_t:
+        return None
+    for fn, e in seen.items():
+        e_name_t = _tokens(fn.split("/")[-1])
+        e_text_t = e_name_t | _tokens(e.get("one_liner") or e.get("matched_query") or "")
+        if _jaccard(name_t, e_name_t) >= SIMILAR_NAME_THRESHOLD:
+            return fn
+        if _jaccard(text_t, e_text_t) >= SIMILAR_TEXT_THRESHOLD:
+            return fn
+    return None
+
+
 def hn_search(query: str, since_days: int = HN_SINCE_DAYS) -> list[dict[str, Any]]:
     """Search Hacker News stories via the Algolia API (title only)."""
     since = int((dt.datetime.now(dt.timezone.utc) - dt.timedelta(days=since_days)).timestamp())
@@ -467,11 +502,31 @@ def _score_anthropic(prompt: str) -> dict[str, Score]:
     return _parse_scores(text)
 
 
+# 类型归一化：LLM 输出有时蹦英文变体，存储时统一（不在 prompt 里写死枚举，
+# 保留模型表达自由，脏数据在入口清洗）
+CATEGORY_MAP = {
+    "tool": "工具",
+    "resource collection": "资源合集",
+    "collection": "资源合集",
+    "awesome list": "资源合集",
+    "claude code skill": "Claude Code skill",
+    "skill": "Claude Code skill",
+    "multi-agent framework": "多智能体框架",
+    "agent framework": "多智能体框架",
+    "llm agent framework": "多智能体框架",
+    "other": "其他",
+}
+
+
+def normalize_category(cat: str) -> str:
+    return CATEGORY_MAP.get((cat or "").strip().lower(), (cat or "").strip())
+
+
 def apply_score(entry: dict[str, Any], s: Score) -> None:
     """Write an analysis into a seen.json entry."""
     entry["score"] = s.get("score")
     entry["one_liner"] = s.get("what") or entry.get("one_liner")
-    entry["category"] = s.get("category")
+    entry["category"] = normalize_category(s.get("category") or "")
     entry["use_for"] = s.get("use_for")
     entry["usage"] = s.get("usage")
     entry["example"] = s.get("example")
@@ -643,6 +698,7 @@ def render_daily(
     new_repos: list[Repo],
     scores: dict[str, Score],
     movers: list[tuple[str, str, int, int, int]],
+    similars: dict[str, str] | None = None,
 ) -> str:
     today = dt.date.today().isoformat()
     lines = [
@@ -666,6 +722,11 @@ def render_daily(
             lines += ["Sorted by stars (no LLM scoring; set LLM_API_KEY to enable).", ""]
 
     for r in new_repos:
+        # 同类跟进的只留一行，不展开（省篇幅，也省得重复讲同一个概念）
+        similar_to = (similars or {}).get(r.full_name)
+        if similar_to:
+            lines += [f"- {r.full_name} · ★{r.stars} — 同类跟进 of [{similar_to}](https://github.com/{similar_to})", ""]
+            continue
         s = scores.get(r.full_name) or {}
         badge = f"[score {s['score']}/10] " if s.get("score") else ""
         if s.get("fit"):
@@ -776,7 +837,9 @@ def main() -> int:
     new_repos = sorted(candidates.values(), key=lambda r: r.stars, reverse=True)
     print(f"[INFO] {len(new_repos)} new repos after dedup", file=sys.stderr)
 
-    # Register new repos in state (analysis filled in below if scored)
+    # Register new repos in state (analysis filled in below if scored).
+    # 同类检测在注册时做：seen 随注册增长，同批次的克隆也能被抓到。
+    n_similar = 0
     for r in new_repos:
         entry: dict[str, Any] = {
             "first_seen": today_iso,
@@ -792,13 +855,20 @@ def main() -> int:
             entry["hn_points"] = r.hn_points
         if r.hn_url:
             entry["hn_url"] = r.hn_url
+        similar_to = find_similar(r, seen)
+        if similar_to:
+            entry["similar_to"] = similar_to
+            n_similar += 1
         seen[r.full_name] = entry
+    if n_similar:
+        print(f"[INFO] {n_similar} repos flagged as similar-to-existing (skip scoring)", file=sys.stderr)
 
     # Score the top N new repos (with the tracked list as compare context)
+    to_score = [r for r in new_repos if "similar_to" not in seen[r.full_name]]
     scores: dict[str, Score] = {}
-    if new_repos:
-        print(f"[INFO] scoring {min(len(new_repos), args.max_scored)} repos", file=sys.stderr)
-        scores = score_with_llm(new_repos[: args.max_scored], tracked_summary(seen))
+    if to_score:
+        print(f"[INFO] scoring {min(len(to_score), args.max_scored)} repos", file=sys.stderr)
+        scores = score_with_llm(to_score[: args.max_scored], tracked_summary(seen))
         for fn, s in scores.items():
             if fn in seen:
                 apply_score(seen[fn], s)
@@ -807,7 +877,10 @@ def main() -> int:
     refresh_stars(seen)
     movers = top_movers(seen)
 
-    md = render_daily(new_repos, scores, movers)
+    md = render_daily(
+        new_repos, scores, movers,
+        {r.full_name: seen[r.full_name]["similar_to"] for r in new_repos if "similar_to" in seen[r.full_name]},
+    )
 
     if args.dry_run:
         print(md)

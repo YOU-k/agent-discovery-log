@@ -126,9 +126,18 @@ def build_card(seen: dict[str, dict[str, Any]]) -> dict[str, Any]:
     )
 
     if new_today:
-        blocks = [repo_block(i, fn, e) for i, (fn, e) in enumerate(new_today[:MAX_NEW_IN_MSG], 1)]
-        more = f"\n\n…以及另外 {len(new_today) - MAX_NEW_IN_MSG} 个" if len(new_today) > MAX_NEW_IN_MSG else ""
-        new_md = f"**新发现 {len(new_today)} 个 repo**\n" + "\n\n".join(blocks) + more
+        novel = [(fn, e) for fn, e in new_today if not e.get("similar_to")]
+        clones = [(fn, e) for fn, e in new_today if e.get("similar_to")]
+        blocks = [repo_block(i, fn, e) for i, (fn, e) in enumerate(novel[:MAX_NEW_IN_MSG], 1)]
+        more = f"\n\n…以及另外 {len(novel) - MAX_NEW_IN_MSG} 个" if len(novel) > MAX_NEW_IN_MSG else ""
+        new_md = f"**新发现 {len(novel)} 个 repo**\n" + "\n\n".join(blocks) + more
+        if clones:
+            clone_lines = [
+                f"[{fn}](https://github.com/{fn})（与 [{e['similar_to']}](https://github.com/{e['similar_to']}) 同类）"
+                for fn, e in clones[:5]
+            ]
+            extra = f"、等 {len(clones) - 5} 个" if len(clones) > 5 else ""
+            new_md += "\n\n**同类跟进（不展开）**：" + "、".join(clone_lines) + extra
         new_md = humanize_text(new_md)
     else:
         new_md = "**今天没有新 repo 通过过滤**"
