@@ -48,9 +48,16 @@ README_CHARS = 5000
 WEBHOOK = os.environ.get("FEISHU_WEBHOOK", "")
 KEYWORD = os.environ.get("FEISHU_KEYWORD", "")
 
-XHS_PROMPT = """你是小红书博主，写 AI 工具深度向内容，读者是普通程序员和 AI 爱好者。
+XHS_PROMPT = """你是小红书博主，写 AI 工具内容，读者是普通程序员和 AI 爱好者。
 这周深扒一个项目。素材在下面：README 摘录、我们的追踪数据、网络讨论背景。
 规则：只用素材里的事实和数字，不许编造；引用网络背景时在句子里自然带出来源。
+
+【本次风格】{style_label}
+人设与语气：{style_persona}
+标题公式参考（选其一变形，别照抄）：{style_titles}
+正文结构：{style_structure}
+示例开头（找感觉，别照抄）：{style_example}
+禁忌：{style_avoid}
 
 【项目】{full_name} ★{stars}（{first_seen} 首次发现，日均涨星 +{rate}）
 【我们的分析】{category} · {score}/10 · {one_liner}
@@ -62,16 +69,32 @@ XHS_PROMPT = """你是小红书博主，写 AI 工具深度向内容，读者是
 {web}
 
 写一条小红书笔记：
-1. title: ≤20字，钩子，可带 1-2 个 emoji
-2. body: 400-600字，口语短句多分段。结构：
-   一句话说它是什么 → 为什么最近火（用网络背景，没有就直接进下一段）→
-   具体怎么用它（从 README 提炼：真实命令、步骤、文件结构，别泛泛而谈）→
-   适合谁、不适合谁（要有明确观点）→ 一句互动引导
+1. title: ≤20字，符合上面的标题公式，可带 1-2 个 emoji
+2. body: 400-600字，口语短句多分段，严格按上面的正文结构和风格禁忌
 3. tags: 5-8 个（#开头）
 4. cover_idea: 一句话描述首图
 
 只输出 JSON（不要任何其他文字、不要代码围栏）：
 {{"title": "...", "body": "...", "tags": ["#AI", "..."], "cover_idea": "..."}}"""
+
+STYLES: dict[str, dict[str, str]] = {}
+_styles_path = ROOT / "scripts" / "xhs_styles.json"
+if _styles_path.exists():
+    STYLES = json.loads(_styles_path.read_text(encoding="utf-8"))
+DEFAULT_STYLE = "deep-dive"
+
+
+def pick_style(name: str | None) -> tuple[str, dict[str, str]]:
+    """--style 指定优先；否则按 ISO 周数轮换，免得每周一个味儿。"""
+    if not STYLES:
+        return DEFAULT_STYLE, {}
+    if name:
+        if name not in STYLES:
+            raise SystemExit(f"未知风格 {name!r}，可选：{', '.join(STYLES)}")
+        return name, STYLES[name]
+    keys = sorted(STYLES)
+    chosen = keys[dt.date.today().isocalendar().week % len(keys)]
+    return chosen, STYLES[chosen]
 
 
 def load_covered() -> list[str]:
@@ -152,12 +175,18 @@ def gather_web_context(full_name: str) -> str:
     return "\n".join(parts) or "（没有找到值得一提的网络讨论）"
 
 
-def make_draft(full_name: str, e: dict[str, Any], web: str, readme: str) -> dict[str, Any] | None:
+def make_draft(full_name: str, e: dict[str, Any], web: str, readme: str, style: dict[str, str]) -> dict[str, Any] | None:
     rate = discover.daily_rate(e)
     compare_line = ""
     if e.get("compare"):
         compare_line = f"【和同类比】{e['compare']}\n"
     prompt = XHS_PROMPT.format(
+        style_label=style.get("label", "深度攻略体"),
+        style_persona=style.get("persona", ""),
+        style_titles="；".join(style.get("title_formulas", [])),
+        style_structure=style.get("structure", ""),
+        style_example=style.get("example_opener", ""),
+        style_avoid=style.get("avoid", ""),
         full_name=full_name,
         stars=f"{(e.get('stars_history') or [[0, e.get('stars_at_first_seen') or 0]])[-1][1]:,}",
         first_seen=e.get("first_seen", ""),
@@ -186,12 +215,18 @@ def make_draft(full_name: str, e: dict[str, Any], web: str, readme: str) -> dict
         return None
     body = notify.humanize_text(str(draft.get("body") or ""))
     if body:
+        # 模型有时把 hashtags 同时写进 body 末尾和 tags 字段——去掉 body 里的纯标签行
+        import re as _re
+        body = "\n".join(
+            line for line in body.splitlines() if not _re.fullmatch(r"(#\S+\s*)+", line.strip())
+        ).strip()
         draft["body"] = body
     return draft
 
 
-def render_md(draft: dict[str, Any], full_name: str, total: int) -> str:
+def render_md(draft: dict[str, Any], full_name: str, total: int, style_name: str = "") -> str:
     tags = " ".join(draft.get("tags") or [])
+    style_note = f"> 风格：{style_name}（scripts/xhs_styles.json 可改可换）\n" if style_name else ""
     return (
         f"# {draft.get('title', '')}\n\n"
         f"{draft.get('body', '')}\n\n"
@@ -199,6 +234,7 @@ def render_md(draft: dict[str, Any], full_name: str, total: int) -> str:
         f"---\n"
         f"> 首图建议：{draft.get('cover_idea', '')}\n"
         f"> 项目：https://github.com/{full_name}\n"
+        f"{style_note}"
         f"> 数据来源：agent-discovery-log（追踪 {total} 个 repo · 截至 {dt.date.today().isoformat()}）\n"
     )
 
@@ -238,11 +274,21 @@ def main() -> int:
     parser.add_argument("--force", action="store_true", help="Generate even when not Monday.")
     parser.add_argument("--dry-run", action="store_true", help="Print instead of writing/sending.")
     parser.add_argument("--repo", default=None, help="Override story selection (owner/name).")
+    parser.add_argument("--style", default=None, help=f"Style from xhs_styles.json (default: weekly rotation).")
+    parser.add_argument("--list-styles", action="store_true", help="List available styles and exit.")
     args = parser.parse_args()
+
+    if args.list_styles:
+        for key, s in STYLES.items():
+            print(f"{key:12s} {s.get('label', ''):8s} 适合：{s.get('best_for', '')}")
+        return 0
 
     if not args.force and not args.dry_run and dt.date.today().weekday() != DRAFT_DAY:
         print("[INFO] not draft day (Monday) — use --force to override", file=sys.stderr)
         return 0
+
+    style_name, style = pick_style(args.style)
+    print(f"[INFO] style: {style_name}（{style.get('label', '—')}）", file=sys.stderr)
 
     seen: dict[str, dict[str, Any]] = json.loads(STATE.read_text(encoding="utf-8"))
     covered = load_covered()
@@ -270,11 +316,11 @@ def main() -> int:
 
     readme = discover.gh_readme_excerpt(full_name, limit=README_CHARS)
     web = gather_web_context(full_name)
-    draft = make_draft(full_name, entry, web, readme)
+    draft = make_draft(full_name, entry, web, readme, style)
     if not draft:
         print("[WARN] no draft generated", file=sys.stderr)
         return 1
-    md = render_md(draft, full_name, len(seen))
+    md = render_md(draft, full_name, len(seen), style_name)
 
     if args.dry_run:
         print(md)
