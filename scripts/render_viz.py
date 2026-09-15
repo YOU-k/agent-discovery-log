@@ -4,6 +4,10 @@
 No dependencies, no external assets: plain HTML/CSS with data baked in.
 Suitable for GitHub Pages (serve /docs on main) or opening locally.
 
+The tracking table is compact by default — each row shows only name /
+sparkline / stars / Δ / 日均 / 评分; click (or Enter/Space) a row to expand
+the full analysis inline. 「全部展开」按钮在表格区右上角。
+
 Usage:
     python3 scripts/render_viz.py [--refresh]
 
@@ -74,6 +78,7 @@ a:hover { text-decoration: underline; text-underline-offset: 2px; }
 .head { margin-bottom: 40px; }
 h1 { font-size: 30px; letter-spacing: -0.02em; margin: 0 0 6px; font-weight: 600; }
 .meta { color: var(--ink-3); font-size: 13px; margin: 0; font-variant-numeric: tabular-nums; }
+.meta .fresh { color: var(--ink-2); }
 
 /* 模块卡片 —— 「模块突出」靠留白 + 细边 + 标题层级，不靠重色块 */
 section { background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
@@ -119,7 +124,7 @@ th, td { border-bottom: 1px solid var(--line-soft); padding: 9px 10px; text-alig
 thead th { color: var(--ink-3); font-weight: 600; white-space: nowrap; font-size: 11px;
            letter-spacing: 0.06em; text-transform: uppercase;
            border-bottom: 1px solid var(--line); position: sticky; top: 0; background: var(--surface); }
-tbody tr:hover { background: var(--line-soft); }
+tbody tr.r:hover { background: var(--line-soft); }
 td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
 td.pos { color: var(--pos); }
 .spark { display: block; }
@@ -128,24 +133,62 @@ td.pos { color: var(--pos); }
 .pill.f { border-color: var(--series); color: var(--series); }
 .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%;
        background: var(--hot); margin-right: 7px; vertical-align: 1px; }
-/* 分析列：给足宽度并夹到 2 行 —— 不然窄列换行会让行高忽高忽低，节奏全乱 */
 .one { color: var(--ink-2); font-size: 13px; }
-.clamp { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
-         line-clamp: 2; overflow: hidden; }
+
+/* 可展开行：默认只留摘要列，详情收进点击展开的下一行 */
+tr.r { cursor: pointer; }
+tr.r:focus-visible { outline: 2px solid var(--series); outline-offset: -2px; }
+.car { display: inline-block; color: var(--ink-3); font-size: 11px;
+       transition: transform .15s ease; }
+tr.r.open .car { transform: rotate(90deg); color: var(--ink-2); }
+tr.detail > td { background: var(--line-soft); padding: 14px 18px 16px;
+                 border-bottom: 1px solid var(--line); cursor: default; }
+.dl { display: grid; grid-template-columns: 88px 1fr; gap: 5px 18px; margin: 0; }
+.dl dt { color: var(--ink-3); font-size: 12.5px; }
+.dl dd { margin: 0; color: var(--ink-2); font-size: 13.5px; }
+.toggle-all { float: right; border: 1px solid var(--line); background: transparent;
+              color: var(--ink-3); border-radius: 999px; padding: 2px 12px;
+              font-size: 12px; cursor: pointer; font-family: inherit; }
+.toggle-all:hover { color: var(--ink-2); border-color: var(--ink-3); }
+
 table { table-layout: fixed; }
-th:nth-child(1), td:nth-child(1) { width: 22%; }
-th:nth-child(2), td:nth-child(2) { width: 92px; }
-th:nth-child(3), td:nth-child(3) { width: 96px; }
-th:nth-child(4), td:nth-child(4) { width: 132px; }
-th:nth-child(5), td:nth-child(5) { width: 78px; }
-th:nth-child(6), td:nth-child(6) { width: 78px; }
-th:nth-child(7), td:nth-child(7) { width: 88px; }
-th:nth-child(8), td:nth-child(8) { width: 96px; }
-td:nth-child(1), td:nth-child(7) { overflow-wrap: anywhere; }
+th:nth-child(1), td:nth-child(1) { width: 32%; }
+th:nth-child(2), td:nth-child(2) { width: 96px; }
+th:nth-child(3), td:nth-child(3) { width: 104px; }
+th:nth-child(4), td:nth-child(4) { width: 84px; }
+th:nth-child(5), td:nth-child(5) { width: 88px; }
+th:nth-child(6), td:nth-child(6) { width: 128px; }
+th:nth-child(7), td:nth-child(7) { width: 30px; }
+td:nth-child(1) { overflow-wrap: anywhere; }
 .legend { display: flex; gap: 18px; align-items: center; color: var(--ink-3);
           font-size: 12px; margin-top: 14px; }
 .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px;
             margin-right: 6px; vertical-align: -1px; }
+"""
+
+JS = """
+document.querySelectorAll("tr.r").forEach(function (tr) {
+  function toggle(e) {
+    if (e && e.target && e.target.closest("a")) return;  // 点链接不展开
+    var d = document.getElementById(tr.dataset.d);
+    if (!d) return;
+    d.hidden = !d.hidden;
+    tr.classList.toggle("open", !d.hidden);
+  }
+  tr.addEventListener("click", toggle);
+  tr.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(e); }
+  });
+});
+var allBtn = document.getElementById("toggle-all");
+if (allBtn) {
+  allBtn.addEventListener("click", function () {
+    var expand = !!document.querySelector("tr.detail[hidden]");
+    document.querySelectorAll("tr.detail").forEach(function (d) { d.hidden = !expand; });
+    document.querySelectorAll("tr.r").forEach(function (tr) { tr.classList.toggle("open", expand); });
+    allBtn.textContent = expand ? "全部收起" : "全部展开";
+  });
+}
 """
 
 
@@ -176,7 +219,16 @@ def repo_rows(seen: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
             "category": e.get("category") or "",
             "one_liner": e.get("one_liner") or "",
             "use_for": e.get("use_for") or "",
-            "hist": e.get("stars_history") or [],
+            "usage": e.get("usage") or "",
+            "example": e.get("example") or "",
+            "compare": e.get("compare") or "",
+            "overlap": e.get("overlap") or "",
+            "verdict": e.get("verdict") or "",
+            "similar_to": e.get("similar_to") or "",
+            "source": e.get("source") or "github",
+            "hn_points": e.get("hn_points") or 0,
+            "hn_url": e.get("hn_url") or "",
+            "hist": hist,
         })
     rows.sort(key=lambda r: r["delta"], reverse=True)
     return rows
@@ -220,9 +272,48 @@ def bar_chart(rows: list[dict[str, Any]], value_key: str, hot: bool = False) -> 
     )
 
 
+def detail_html(r: dict[str, Any]) -> str:
+    """展开行的完整内容：元信息 + 全字段分析。没分析的字段整行不出现。"""
+    items: list[tuple[str, str]] = []
+    items.append(("首次收录", f'{esc(r["first_seen"])}（当时 ★{r["then"]:,}）'))
+    if r["category"]:
+        items.append(("类型", esc(r["category"])))
+    if r["source"] == "hn" and r["hn_url"]:
+        items.append(("来源", f'Hacker News（{r["hn_points"]} 分）· <a href="{esc(r["hn_url"])}">讨论链接</a>'))
+    elif r["source"] == "census":
+        items.append(("来源", "周日普查"))
+    if r["similar_to"]:
+        items.append(("同类跟进", f'与 <a href="https://github.com/{esc(r["similar_to"])}">{esc(r["similar_to"])}</a> 同类'))
+    if r["query"]:
+        items.append(("命中查询", f'<code>{esc(r["query"])}</code>'))
+    if r.get("fit") or r.get("verdict"):
+        fit_bits = []
+        if r.get("fit"):
+            fit_bits.append(f'fit {r["fit"]}/10')
+        if r.get("verdict"):
+            fit_bits.append(esc(r["verdict"]))
+        if r.get("overlap"):
+            fit_bits.append(f'重复度：{esc(r["overlap"])}')
+        items.append(("契合度", " · ".join(fit_bits)))
+    for label, key in (
+        ("是什么", "one_liner"),
+        ("能做什么", "use_for"),
+        ("大家怎么用", "usage"),
+        ("举个例子", "example"),
+        ("和已有项目比", "compare"),
+    ):
+        if r[key]:
+            items.append((label, esc(r[key])))
+    if not any(k in dict(items) for k in ("是什么",)):
+        items.append(("分析", "（尚未生成分析）"))
+    body = "\n".join(f"<dt>{k}</dt><dd>{v}</dd>" for k, v in items)
+    link = f'<a href="https://github.com/{esc(r["full_name"])}">GitHub ↗</a>'
+    return f'<dl class="dl">{body}<dt>链接</dt><dd>{link}</dd></dl>'
+
+
 def render(seen: dict[str, dict[str, Any]]) -> str:
     rows = repo_rows(seen)
-    generated = dt.datetime.now().astimezone().strftime("%Y-%m-%d %H:%M %Z")
+    generated = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
     first_dates = sorted(r["first_seen"] for r in rows if r["first_seen"])
 
     # Top movers (cumulative)
@@ -274,31 +365,29 @@ def render(seen: dict[str, dict[str, Any]]) -> str:
         f'<div class="v">{esc(v)}<small>{esc(u)}</small></div></div>'
         for k, v, u in tiles)
 
-    # Full table
-    table_row_list = []
-    for r in rows:
+    # 全部追踪：紧凑主行 + 点击展开的详情行
+    table_parts = []
+    for i, r in enumerate(rows):
         delta_cls = "num pos" if r["delta"] > 0 else "num"
         delta_txt = f"+{r['delta']:,}" if r["delta"] > 0 else f"{r['delta']:,}"
         rate_txt = f"+{r['rate']:,.0f}/天" if r["rate"] else "—"
-        score_txt = f'<span class="score">{r["score"]}/10</span>' if r["score"] else ""
+        score_txt = f'<span class="pill">{r["score"]}/10</span>' if r["score"] else ""
         if r.get("fit"):
-            score_txt += f' <span class="score">fit {r["fit"]}</span>'
-        analysis = r["one_liner"] + (f"；{r['use_for']}" if r["use_for"] else "")
+            score_txt += f' <span class="pill f">fit {r["fit"]}</span>'
         flame = '<span class="dot" title="自动关注"></span>' if r["watched"] else ""
-        table_row_list.append(
-            "<tr>"
+        table_parts.append(
+            f'<tr class="r" data-d="d{i}" tabindex="0" title="点击展开完整分析">'
             f'<td>{flame}<a href="https://github.com/{esc(r["full_name"])}">{esc(r["full_name"])}</a></td>'
             f'<td>{sparkline(r["hist"])}</td>'
-            f'<td class="num">{esc(r["first_seen"])}</td>'
-            f'<td class="num">{r["then"]:,} → {r["now"]:,}</td>'
+            f'<td class="num">{r["now"]:,}</td>'
             f'<td class="{delta_cls}">{delta_txt}</td>'
             f'<td class="num">{rate_txt}</td>'
-            f"<td>{esc(r['category'])}</td>"
             f"<td>{score_txt}</td>"
-            f'<td class="one"><div class="clamp">{esc(analysis)}</div></td>'
+            f'<td><span class="car">▸</span></td>'
             "</tr>"
+            f'<tr class="detail" id="d{i}" hidden><td colspan="7">{detail_html(r)}</td></tr>'
         )
-    table_rows = "\n".join(table_row_list)
+    table_rows = "\n".join(table_parts)
 
     return f"""<!doctype html>
 <html lang="zh">
@@ -311,7 +400,7 @@ def render(seen: dict[str, dict[str, Any]]) -> str:
 <body>
 <header class="head">
   <h1>Agent Discovery</h1>
-  <p class="meta">{esc(generated)} · 自 {esc(first_dates[0] if first_dates else "—")} 起追踪</p>
+  <p class="meta"><span class="fresh">数据更新于 {esc(generated)}</span> · 每晚 22:00 UTC 自动更新 · 自 {esc(first_dates[0] if first_dates else "—")} 起追踪</p>
 </header>
 
 <div class="tiles">
@@ -344,16 +433,18 @@ def render(seen: dict[str, dict[str, Any]]) -> str:
 
 <section>
   <h2>全部追踪</h2>
-  <p class="sub">{len(rows)} 个 repo。走势为首收至今的 star 曲线；fit = 跟本人技术栈的契合度。</p>
+  <p class="sub"><button id="toggle-all" class="toggle-all">全部展开</button>
+  {len(rows)} 个 repo。走势为首收至今的 star 曲线；点任意一行展开完整分析（类型 / 来源 / 是什么 / 能做什么 / 例子 / 对比）。</p>
   <div class="wrap">
   <table>
-  <thead><tr><th>Repo</th><th>走势</th><th>首次收录</th><th>Stars</th><th>Δ</th><th>日均</th><th>类型</th><th>评分</th><th>分析</th></tr></thead>
+  <thead><tr><th>Repo</th><th>走势</th><th>Stars</th><th>Δ</th><th>日均</th><th>评分</th><th></th></tr></thead>
   <tbody>
 {table_rows}
   </tbody>
   </table>
   </div>
 </section>
+<script>{JS}</script>
 </body>
 </html>
 """
