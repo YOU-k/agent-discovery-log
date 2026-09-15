@@ -60,7 +60,7 @@ jobs:
           FEISHU_KEYWORD: ${{ vars.FEISHU_KEYWORD }}
         run: python3 scripts/notify.py
 
-      - name: XHS draft (Mondays)
+      - name: XHS draft (daily)
         env:
           LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
           LLM_BASE_URL: ${{ vars.LLM_BASE_URL }}
