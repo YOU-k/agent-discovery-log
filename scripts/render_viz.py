@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Render docs/index.html — a self-contained visualization of state/seen.json.
+"""Render the docs/ site — a multi-page, self-contained visualization of state/seen.json.
 
-No dependencies, no external assets: plain HTML/CSS with data baked in.
-Suitable for GitHub Pages (serve /docs on main) or opening locally.
-
-The tracking table is compact by default — each row shows only name /
-sparkline / stars / Δ / 日均 / 评分; click (or Enter/Space) a row to expand
-the full analysis inline. 「全部展开」按钮在表格区右上角。
+Structure (all static, no external assets, GitHub Pages serves /docs):
+  index.html    主页：stat tiles + 四张模块卡（点开进子页）
+  velocity.html 日均涨速 Top 30
+  movers.html   累计涨幅 Top 30
+  daily.html    每日新发现（柱图 + 按天明细）
+  repos.html    全部追踪（紧凑行，点击展开完整分析）
 
 Usage:
     python3 scripts/render_viz.py [--refresh]
@@ -22,18 +22,30 @@ import argparse
 import datetime as dt
 import html
 import json
+import os
+import re
+import subprocess
 import sys
 from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 STATE = ROOT / "state" / "seen.json"
-OUT = ROOT / "docs" / "index.html"
+OUT_DIR = ROOT / "docs"
 
 sys.path.insert(0, str(ROOT / "scripts"))
 import discover  # noqa: E402  (daily_rate / is_watched / refresh_stars)
 
-TOP_MOVERS = 15
+TOP_HOME = 15      # 主页不再放图，只留卡片；图表页用这个上限
+TOP_CHART = 30     # 独立图表页可以放更多
+
+NAV = [
+    ("index.html", "主页"),
+    ("velocity.html", "日均涨速"),
+    ("movers.html", "累计涨幅"),
+    ("daily.html", "每日新发现"),
+    ("repos.html", "全部追踪"),
+]
 
 CSS = """
 /* 调色板取自 dataviz 参考实例，两模式都跑过 validate_palette：
@@ -68,29 +80,44 @@ CSS = """
 body {
   background: var(--bg); color: var(--ink);
   font: 15px/1.6 ui-sans-serif, -apple-system, "Segoe UI", "Noto Sans SC", sans-serif;
-  margin: 0 auto; max-width: 1120px; padding: 56px 24px 96px;
+  margin: 0 auto; max-width: 1120px; padding: 48px 24px 96px;
   -webkit-font-smoothing: antialiased;
 }
 a { color: inherit; text-decoration: none; }
 a:hover { text-decoration: underline; text-underline-offset: 2px; }
 
-/* 页头 */
-.head { margin-bottom: 40px; }
+/* 页头 + 导航 */
+.head { margin-bottom: 24px; }
 h1 { font-size: 30px; letter-spacing: -0.02em; margin: 0 0 6px; font-weight: 600; }
 .meta { color: var(--ink-3); font-size: 13px; margin: 0; font-variant-numeric: tabular-nums; }
 .meta .fresh { color: var(--ink-2); }
+.nav { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 28px; }
+.nav a { border: 1px solid var(--line); border-radius: 999px; padding: 5px 15px;
+         font-size: 13px; color: var(--ink-2); }
+.nav a:hover { border-color: var(--ink-3); text-decoration: none; }
+.nav a.cur { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 
-/* 模块卡片 —— 「模块突出」靠留白 + 细边 + 标题层级，不靠重色块 */
+/* 模块卡片 */
 section { background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
           padding: 24px 24px 26px; margin: 0 0 20px; }
 section > h2 { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
                color: var(--ink-3); margin: 0 0 2px; }
 section > .sub { color: var(--ink-3); font-size: 13px; margin: 0 0 18px; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+         gap: 14px; margin: 0 0 20px; }
+a.card { display: block; background: var(--surface); border: 1px solid var(--line);
+         border-radius: 14px; padding: 20px 22px; transition: border-color .15s ease; }
+a.card:hover { border-color: var(--ink-3); text-decoration: none; }
+.card h3 { margin: 0 0 4px; font-size: 16px; font-weight: 600; }
+.card .d { color: var(--ink-3); font-size: 13px; margin: 0 0 14px; }
+.card .preview { font-size: 13px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.card .preview b { color: var(--ink); }
+.card .go { color: var(--series); font-size: 13px; margin-top: 12px; display: block; }
 
 /* Stat tiles —— 单个数字不该画成图 */
 .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1px;
          background: var(--line); border: 1px solid var(--line); border-radius: 14px;
-         overflow: hidden; margin: 0 0 20px; }
+         overflow: hidden; margin: 0 0 28px; }
 .tile { background: var(--surface); padding: 20px 22px; }
 .tile .k { color: var(--ink-3); font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; }
 .tile .v { font-size: 30px; font-weight: 600; letter-spacing: -0.02em; margin-top: 6px;
@@ -98,7 +125,7 @@ section > .sub { color: var(--ink-3); font-size: 13px; margin: 0 0 18px; }
 .tile .v small { font-size: 14px; font-weight: 500; color: var(--ink-3); margin-left: 4px; }
 
 /* 条形图：细 mark、4px 圆头、锚在基线 */
-.bar-row { display: grid; grid-template-columns: minmax(150px, 260px) 1fr 96px; gap: 14px;
+.bar-row { display: grid; grid-template-columns: minmax(150px, 280px) 1fr 96px; gap: 14px;
            align-items: center; padding: 5px 0; border-radius: 6px; }
 .bar-row:hover { background: var(--line-soft); }
 .bar-row .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13.5px; }
@@ -115,6 +142,11 @@ section > .sub { color: var(--ink-3); font-size: 13px; margin: 0 0 18px; }
 .col .v { background: var(--series); width: 100%; border-radius: 3px 3px 0 0; min-height: 2px; }
 .axis { display: flex; justify-content: space-between; color: var(--ink-3);
         font-size: 11px; margin-top: 8px; font-variant-numeric: tabular-nums; }
+.day { border-top: 1px solid var(--line-soft); padding: 10px 2px; }
+.day .dt { color: var(--ink-2); font-size: 13.5px; font-variant-numeric: tabular-nums; }
+.day .dt a { color: var(--series); }
+.day .repos { color: var(--ink-3); font-size: 13px; margin-top: 2px; }
+.day .repos a { color: var(--ink-2); margin-right: 4px; }
 
 /* 表格 */
 .wrap { overflow-x: auto; }
@@ -196,6 +228,21 @@ def esc(s: Any) -> str:
     return html.escape(str(s or ""), quote=True)
 
 
+def repo_slug() -> str:
+    """owner/repo，用于「当天日报」链接。CI 里有 GITHUB_REPOSITORY，本地取 git remote。"""
+    slug = os.environ.get("GITHUB_REPOSITORY", "")
+    if slug:
+        return slug
+    try:
+        url = subprocess.run(
+            ["git", "remote", "get-url", "origin"], capture_output=True, text=True, timeout=10,
+        ).stdout.strip()
+        m = re.search(r"github\.com[:/]([^/]+/[^/]+?)(?:\.git)?$", url)
+        return m.group(1) if m else ""
+    except Exception:
+        return ""
+
+
 def repo_rows(seen: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
     """Flatten seen.json into display rows with then/now/delta stars + velocity."""
     rows = []
@@ -272,6 +319,37 @@ def bar_chart(rows: list[dict[str, Any]], value_key: str, hot: bool = False) -> 
     )
 
 
+def page_shell(active: str, body: str, generated: str) -> str:
+    """所有页共用的外壳：页头 + 导航。"""
+    nav_items = []
+    for href, label in NAV:
+        cls = ' class="cur"' if href == active else ""
+        nav_items.append(f'  <a href="{href}"{cls}>{label}</a>')
+    nav = "\n".join(nav_items)
+    script = f"<script>{JS}</script>" if active == "repos.html" else ""
+    return f"""<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent Discovery · {dict(NAV).get(active, "")}</title>
+<style>{CSS}</style>
+</head>
+<body>
+<header class="head">
+  <h1>Agent Discovery</h1>
+  <p class="meta"><span class="fresh">数据更新于 {esc(generated)}</span> · 每晚 22:00 UTC 自动更新</p>
+</header>
+<nav class="nav">
+{nav}
+</nav>
+{body}
+{script}
+</body>
+</html>
+"""
+
+
 def detail_html(r: dict[str, Any]) -> str:
     """展开行的完整内容：元信息 + 全字段分析。没分析的字段整行不出现。"""
     items: list[tuple[str, str]] = []
@@ -311,40 +389,8 @@ def detail_html(r: dict[str, Any]) -> str:
     return f'<dl class="dl">{body}<dt>链接</dt><dd>{link}</dd></dl>'
 
 
-def render(seen: dict[str, dict[str, Any]]) -> str:
-    rows = repo_rows(seen)
-    generated = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
-    first_dates = sorted(r["first_seen"] for r in rows if r["first_seen"])
-
-    # Top movers (cumulative)
-    top = [r for r in rows if r["delta"] > 0][:TOP_MOVERS]
-    for r in top:
-        r["_bar_label"] = f"+{r['delta']:,}"
-    movers_html = bar_chart(top, "delta")
-
-    # Velocity (avg stars/day over tracked span)
-    rated = [r for r in rows if r["rate"] and r["rate"] > 0]
-    rated.sort(key=lambda r: r["rate"], reverse=True)
-    top_rated = rated[:TOP_MOVERS]
-    for r in top_rated:
-        r["_bar_label"] = f"+{r['rate']:,.0f}/天"
-    rate_html = bar_chart(top_rated, "rate", hot=True)
-
-    # Discoveries per day
-    by_day: dict[str, int] = {}
-    for r in rows:
-        by_day[r["first_seen"]] = by_day.get(r["first_seen"], 0) + 1
-    max_n = max(by_day.values(), default=1)
-    days = sorted(by_day.items())
-    timeline_html = "\n".join(
-        f'<div class="col" title="{esc(d)}：{n} 个"><div class="v" '
-        f'style="height:{max(2, n * 100 // max_n)}%"></div></div>'
-        for d, n in days
-    )
-    axis_html = (f'<span>{esc(days[0][0])}</span><span>峰值 {max_n} 个/天</span>'
-                 f'<span>{esc(days[-1][0])}</span>') if days else ""
-
-    # Stat tiles —— 单个数字画成图是反模式，直接给数字
+def tiles_html(rows: list[dict[str, Any]]) -> str:
+    """Stat tiles —— 单个数字画成图是反模式，直接给数字。"""
     today = dt.date.today()
     week_ago = (today - dt.timedelta(days=7)).isoformat()
     new_7d = sum(1 for r in rows if r["first_seen"] >= week_ago)
@@ -360,12 +406,110 @@ def render(seen: dict[str, dict[str, Any]]) -> str:
     ]
     if scored:
         tiles.append(("fit ≥ 8", f"{fit_hi:,}", f"/ {len(scored)} 已打分"))
-    tiles_html = "\n".join(
+    return "\n".join(
         f'<div class="tile"><div class="k">{esc(k)}</div>'
         f'<div class="v">{esc(v)}<small>{esc(u)}</small></div></div>'
         for k, v, u in tiles)
 
-    # 全部追踪：紧凑主行 + 点击展开的详情行
+
+def home_page(rows: list[dict[str, Any]], generated: str) -> str:
+    """主页：tiles + 四张模块卡（每卡带一行真实数据预览）。"""
+    rated = [r for r in rows if r["rate"] and r["rate"] > 0]
+    rated.sort(key=lambda r: r["rate"], reverse=True)
+    top_rate = rated[0] if rated else None
+    top_delta = rows[0] if rows and rows[0]["delta"] > 0 else None
+
+    by_day: dict[str, int] = {}
+    for r in rows:
+        by_day[r["first_seen"]] = by_day.get(r["first_seen"], 0) + 1
+    peak_day = max(by_day.items(), key=lambda kv: kv[1]) if by_day else ("—", 0)
+    watched_n = sum(1 for r in rows if r["watched"])
+
+    def preview(main: str, sub: str) -> str:
+        return f'<p class="preview"><b>{esc(main)}</b><br>{esc(sub)}</p>'
+
+    cards = [
+        ("velocity.html", "日均涨速", "自首收起平均每天涨多少星，谁正在起量",
+         preview(f"{top_rate['full_name']}", f"日均 +{top_rate['rate']:,.0f}，Top {TOP_CHART} 完整榜")
+         if top_rate else preview("—", "历史累积中")),
+        ("movers.html", "累计涨幅", "从首次收录到现在涨得最多的一批",
+         preview(f"{top_delta['full_name']}", f"+{top_delta['delta']:,} ★ 自首收起")
+         if top_delta else preview("—", "历史累积中")),
+        ("daily.html", "每日新发现", "每天新进追踪的 repo，按天看明细",
+         preview(f"{peak_day[0]}", f"峰值 {peak_day[1]} 个/天 · 共 {sum(by_day.values())} 条发现")),
+        ("repos.html", "全部追踪", "完整清单，点行展开每个项目的分析",
+         preview(f"{len(rows)} 个 repo", f"{watched_n} 个已自动关注")),
+    ]
+    cards_html = "\n".join(
+        f'<a class="card" href="{href}"><h3>{esc(title)}</h3><p class="d">{esc(desc)}</p>'
+        f'{prev}<span class="go">打开 →</span></a>'
+        for href, title, desc, prev in cards
+    )
+    body = f"""<div class="tiles">
+{tiles_html(rows)}
+</div>
+<div class="cards">
+{cards_html}
+</div>"""
+    return page_shell("index.html", body, generated)
+
+
+def chart_page(active: str, title: str, sub: str, chart: str, generated: str, legend: str = "") -> str:
+    body = f"""<section>
+  <h2>{esc(title)}</h2>
+  <p class="sub">{esc(sub)}</p>
+{chart}
+{legend}
+</section>"""
+    return page_shell(active, body, generated)
+
+
+def daily_page(rows: list[dict[str, Any]], generated: str) -> str:
+    """每日新发现：柱图 + 按天明细（每天发现了哪些，链接到当天日报）。"""
+    by_day: dict[str, list[str]] = {}
+    for r in rows:
+        by_day.setdefault(r["first_seen"], []).append(r["full_name"])
+    days = sorted(by_day.items())
+    max_n = max((n for _, n in ((d, len(v)) for d, v in days)), default=1)
+    cols = "\n".join(
+        f'<div class="col" title="{esc(d)}：{len(v)} 个"><div class="v" '
+        f'style="height:{max(2, len(v) * 100 // max_n)}%"></div></div>'
+        for d, v in days
+    )
+    axis = (f'<span>{esc(days[0][0])}</span><span>峰值 {max_n} 个/天</span>'
+            f'<span>{esc(days[-1][0])}</span>') if days else ""
+
+    slug = repo_slug()
+    day_blocks = []
+    for d, names in sorted(by_day.items(), reverse=True):
+        report = (f' · <a href="https://github.com/{esc(slug)}/blob/main/discoveries/{esc(d)}.md">当天日报 →</a>'
+                  if slug else "")
+        links = " ".join(
+            f'<a href="https://github.com/{esc(fn)}">{esc(fn.split("/")[-1])}</a>' for fn in names[:12]
+        )
+        more = f" 等 {len(names)} 个" if len(names) > 12 else ""
+        day_blocks.append(
+            f'<div class="day"><div class="dt">{esc(d)} — {len(names)} 个{report}</div>'
+            f'<div class="repos">{links}{more}</div></div>'
+        )
+    body = f"""<section>
+  <h2>每日新发现</h2>
+  <p class="sub">每天首次进入追踪表的 repo 数。下面是按天明细。</p>
+  <div class="cols">
+{cols}
+  </div>
+  <div class="axis">{axis}</div>
+</section>
+<section>
+  <h2>按天明细</h2>
+  <p class="sub">点击项目名去 GitHub；「当天日报」是含完整分析的 markdown。</p>
+{"".join(day_blocks)}
+</section>"""
+    return page_shell("daily.html", body, generated)
+
+
+def repos_page(rows: list[dict[str, Any]], generated: str) -> str:
+    """全部追踪：紧凑主行 + 点击展开的详情行。"""
     table_parts = []
     for i, r in enumerate(rows):
         delta_cls = "num pos" if r["delta"] > 0 else "num"
@@ -387,51 +531,7 @@ def render(seen: dict[str, dict[str, Any]]) -> str:
             "</tr>"
             f'<tr class="detail" id="d{i}" hidden><td colspan="7">{detail_html(r)}</td></tr>'
         )
-    table_rows = "\n".join(table_parts)
-
-    return f"""<!doctype html>
-<html lang="zh">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Agent Discovery</title>
-<style>{CSS}</style>
-</head>
-<body>
-<header class="head">
-  <h1>Agent Discovery</h1>
-  <p class="meta"><span class="fresh">数据更新于 {esc(generated)}</span> · 每晚 22:00 UTC 自动更新 · 自 {esc(first_dates[0] if first_dates else "—")} 起追踪</p>
-</header>
-
-<div class="tiles">
-{tiles_html}
-</div>
-
-<section>
-  <h2>日均涨速</h2>
-  <p class="sub">首次收录以来的平均 stars/天，Top {TOP_MOVERS}。橙色 = 已自动关注。</p>
-{rate_html}
-  <div class="legend"><span><i style="background:var(--hot)"></i>自动关注</span>
-  <span><i style="background:var(--series)"></i>其余</span>
-  <span>score ≥ 7 且日均 ≥ 20，或日均 ≥ 100</span></div>
-</section>
-
-<section>
-  <h2>累计涨幅</h2>
-  <p class="sub">从首次收录到现在涨了多少星，Top {TOP_MOVERS}。</p>
-{movers_html}
-</section>
-
-<section>
-  <h2>每日新发现</h2>
-  <p class="sub">每天首次进入追踪表的 repo 数。</p>
-  <div class="cols">
-{timeline_html}
-  </div>
-  <div class="axis">{axis_html}</div>
-</section>
-
-<section>
+    body = f"""<section>
   <h2>全部追踪</h2>
   <p class="sub"><button id="toggle-all" class="toggle-all">全部展开</button>
   {len(rows)} 个 repo。走势为首收至今的 star 曲线；点任意一行展开完整分析（类型 / 来源 / 是什么 / 能做什么 / 例子 / 对比）。</p>
@@ -439,15 +539,49 @@ def render(seen: dict[str, dict[str, Any]]) -> str:
   <table>
   <thead><tr><th>Repo</th><th>走势</th><th>Stars</th><th>Δ</th><th>日均</th><th>评分</th><th></th></tr></thead>
   <tbody>
-{table_rows}
+{"".join(table_parts)}
   </tbody>
   </table>
   </div>
-</section>
-<script>{JS}</script>
-</body>
-</html>
-"""
+</section>"""
+    return page_shell("repos.html", body, generated)
+
+
+def render_pages(seen: dict[str, dict[str, Any]]) -> dict[str, str]:
+    rows = repo_rows(seen)
+    generated = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+
+    rated = [r for r in rows if r["rate"] and r["rate"] > 0]
+    rated.sort(key=lambda r: r["rate"], reverse=True)
+    top_rated = rated[:TOP_CHART]
+    for r in top_rated:
+        r["_bar_label"] = f"+{r['rate']:,.0f}/天"
+    rate_html = bar_chart(top_rated, "rate", hot=True)
+    rate_legend = ('  <div class="legend"><span><i style="background:var(--hot)"></i>自动关注</span>\n'
+                   '  <span><i style="background:var(--series)"></i>其余</span>\n'
+                   '  <span>score ≥ 7 且日均 ≥ 20，或日均 ≥ 100</span></div>')
+
+    top = [r for r in rows if r["delta"] > 0][:TOP_CHART]
+    for r in top:
+        r["_bar_label"] = f"+{r['delta']:,}"
+    movers_html = bar_chart(top, "delta")
+
+    return {
+        "index.html": home_page(rows, generated),
+        "velocity.html": chart_page("velocity.html", "日均涨速",
+                                    f"首次收录以来的平均 stars/天，Top {TOP_CHART}。橙色 = 已自动关注。",
+                                    rate_html, generated, rate_legend),
+        "movers.html": chart_page("movers.html", "累计涨幅",
+                                  f"从首次收录到现在涨了多少星，Top {TOP_CHART}。",
+                                  movers_html, generated),
+        "daily.html": daily_page(rows, generated),
+        "repos.html": repos_page(rows, generated),
+    }
+
+
+def render(seen: dict[str, dict[str, Any]]) -> str:
+    """向后兼容：返回主页。"""
+    return render_pages(seen)["index.html"]
 
 
 def main() -> int:
@@ -460,9 +594,11 @@ def main() -> int:
     if args.refresh:
         discover.refresh_stars(seen)
 
-    OUT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_text(render(seen), encoding="utf-8")
-    print(f"[INFO] wrote {OUT.relative_to(ROOT)}")
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
+    pages = render_pages(seen)
+    for name, html_text in pages.items():
+        (OUT_DIR / name).write_text(html_text, encoding="utf-8")
+    print(f"[INFO] wrote {len(pages)} pages to {OUT_DIR.relative_to(ROOT)}")
     return 0
 
 

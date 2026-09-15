@@ -102,13 +102,19 @@ def main() -> int:
 
     # --- 4. 渲染：整条链路能出东西，且新字段真的出现在产物里 ---
     print("\n渲染:")
-    html = render_viz.render(seen)
-    ok &= check("HTML 渲得出来", len(html) > 2000, f"{len(html)} 字符")
-    for frag in ("<!doctype html>", "Agent Discovery", "acme/rocket", "tiles", "全部追踪"):
-        ok &= check(f"含「{frag}」", frag in html)
-    ok &= check("fit 徽章出现在表里", "fit 9" in html)
-    ok &= check("sparkline 渲出 svg", html.count("<svg") >= 2, f"{html.count('<svg')} 个")
-    ok &= check("没打过分的 repo 不让渲染崩", "acme/bare" in html)
+    pages = render_viz.render_pages(seen)
+    home, repos_pg = pages["index.html"], pages["repos.html"]
+    ok &= check("五个页面都渲得出来",
+                set(pages) == {"index.html", "velocity.html", "movers.html", "daily.html", "repos.html"}
+                and all(len(p) > 2000 for p in pages.values()),
+                f"{len(pages)} 页")
+    for frag in ("<!doctype html>", "Agent Discovery", "tiles", "全部追踪", "日均涨速"):
+        ok &= check(f"主页含「{frag}」", frag in home)
+    ok &= check("repos 页含目标行", "acme/rocket" in repos_pg)
+    ok &= check("fit 徽章出现在表里", "fit 9" in repos_pg)
+    ok &= check("sparkline 渲出 svg", repos_pg.count("<svg") >= 2, f"{repos_pg.count('<svg')} 个")
+    ok &= check("没打过分的 repo 不让渲染崩", "acme/bare" in repos_pg)
+    ok &= check("主页有导航链接", 'href="repos.html"' in home)
     sp = render_viz.sparkline([["2026-01-01", 1], ["2026-01-02", 5]])
     ok &= check("两点就能画 sparkline", sp.startswith("<svg"))
     ok &= check("一个点不画", render_viz.sparkline([["2026-01-01", 1]]) == "")
