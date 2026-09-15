@@ -1,0 +1,711 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent Discovery · </title>
+<style>
+/* 调色板取自 dataviz 参考实例，两模式都跑过 validate_palette：
+   light #2a78d6/#eb6834 on #fcfcfb、dark #3987e5/#d95926 on #1a1a19，
+   五项检查全 PASS（all-pairs CVD ΔE 24.7/26.8，normal 33.6/31.8，对比度 ≥3:1）。
+   蓝 = 数据序列，橙 = 「自动关注」状态，两者不混用。 */
+:root {
+  color-scheme: light;
+  --bg: #ffffff;
+  --surface: #fcfcfb;
+  --line: #e7e5e0;
+  --line-soft: #f2f1ed;
+  --ink: #0b0b0b;
+  --ink-2: #52514e;
+  --ink-3: #8a8880;
+  --series: #2a78d6;
+  --series-soft: #dce9f9;
+  --hot: #eb6834;
+  --hot-soft: #fbe4da;
+  --pos: #0a6b3d;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #131312; --surface: #1a1a19; --line: #302f2c; --line-soft: #232322;
+    --ink: #ffffff; --ink-2: #c3c2b7; --ink-3: #8a8880;
+    --series: #3987e5; --series-soft: #1e3a5f; --hot: #d95926; --hot-soft: #3a241b;
+    --pos: #4bbd85;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink);
+  font: 15px/1.6 ui-sans-serif, -apple-system, "Segoe UI", "Noto Sans SC", sans-serif;
+  margin: 0 auto; max-width: 1120px; padding: 48px 24px 96px;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; }
+a:hover { text-decoration: underline; text-underline-offset: 2px; }
+
+/* 页头 + 导航 */
+.head { margin-bottom: 24px; }
+h1 { font-size: 30px; letter-spacing: -0.02em; margin: 0 0 6px; font-weight: 600; }
+.meta { color: var(--ink-3); font-size: 13px; margin: 0; font-variant-numeric: tabular-nums; }
+.meta .fresh { color: var(--ink-2); }
+.nav { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 28px; }
+.nav a { border: 1px solid var(--line); border-radius: 999px; padding: 5px 15px;
+         font-size: 13px; color: var(--ink-2); }
+.nav a:hover { border-color: var(--ink-3); text-decoration: none; }
+.nav a.cur { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+/* 模块卡片 */
+section { background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+          padding: 24px 24px 26px; margin: 0 0 20px; }
+section > h2 { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+               color: var(--ink-3); margin: 0 0 2px; }
+section > .sub { color: var(--ink-3); font-size: 13px; margin: 0 0 18px; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+         gap: 14px; margin: 0 0 20px; }
+a.card { display: block; background: var(--surface); border: 1px solid var(--line);
+         border-radius: 14px; padding: 20px 22px; transition: border-color .15s ease; }
+a.card:hover { border-color: var(--ink-3); text-decoration: none; }
+.card h3 { margin: 0 0 4px; font-size: 16px; font-weight: 600; }
+.card .d { color: var(--ink-3); font-size: 13px; margin: 0 0 14px; }
+.card .preview { font-size: 13px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.card .preview b { color: var(--ink); }
+.card .go { color: var(--series); font-size: 13px; margin-top: 12px; display: block; }
+
+/* Stat tiles —— 单个数字不该画成图 */
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1px;
+         background: var(--line); border: 1px solid var(--line); border-radius: 14px;
+         overflow: hidden; margin: 0 0 28px; }
+.tile { background: var(--surface); padding: 20px 22px; }
+.tile .k { color: var(--ink-3); font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; }
+.tile .v { font-size: 30px; font-weight: 600; letter-spacing: -0.02em; margin-top: 6px;
+           font-variant-numeric: tabular-nums; }
+.tile .v small { font-size: 14px; font-weight: 500; color: var(--ink-3); margin-left: 4px; }
+
+/* 条形图：细 mark、4px 圆头、锚在基线 */
+.bar-row { display: grid; grid-template-columns: minmax(150px, 280px) 1fr 96px; gap: 14px;
+           align-items: center; padding: 5px 0; border-radius: 6px; }
+.bar-row:hover { background: var(--line-soft); }
+.bar-row .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13.5px; }
+.bar-track { background: var(--line-soft); border-radius: 4px; height: 10px; }
+.bar { background: var(--series); height: 10px; border-radius: 0 4px 4px 0; min-width: 3px; display: block; }
+.bar.hot { background: var(--hot); }
+.delta { color: var(--ink-2); font-variant-numeric: tabular-nums; text-align: right; font-size: 13px; }
+
+/* 每日发现：列图 */
+.cols { display: flex; align-items: flex-end; gap: 2px; height: 116px; }
+.col { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end;
+       align-items: stretch; min-width: 0; border-radius: 4px 4px 0 0; }
+.col:hover { background: var(--line-soft); }
+.col .v { background: var(--series); width: 100%; border-radius: 3px 3px 0 0; min-height: 2px; }
+.axis { display: flex; justify-content: space-between; color: var(--ink-3);
+        font-size: 11px; margin-top: 8px; font-variant-numeric: tabular-nums; }
+.day { border-top: 1px solid var(--line-soft); padding: 10px 2px; }
+.day .dt { color: var(--ink-2); font-size: 13.5px; font-variant-numeric: tabular-nums; }
+.day .dt a { color: var(--series); }
+.day .repos { color: var(--ink-3); font-size: 13px; margin-top: 2px; }
+.day .repos a { color: var(--ink-2); margin-right: 4px; }
+
+/* 表格 */
+.wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+th, td { border-bottom: 1px solid var(--line-soft); padding: 9px 10px; text-align: left;
+         vertical-align: middle; }
+thead th { color: var(--ink-3); font-weight: 600; white-space: nowrap; font-size: 11px;
+           letter-spacing: 0.06em; text-transform: uppercase;
+           border-bottom: 1px solid var(--line); position: sticky; top: 0; background: var(--surface); }
+tbody tr.r:hover { background: var(--line-soft); }
+td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+td.pos { color: var(--pos); }
+.spark { display: block; }
+.pill { display: inline-block; border: 1px solid var(--line); border-radius: 999px;
+        padding: 1px 9px; font-size: 11.5px; color: var(--ink-2); white-space: nowrap; }
+.pill.f { border-color: var(--series); color: var(--series); }
+.dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+       background: var(--hot); margin-right: 7px; vertical-align: 1px; }
+.one { color: var(--ink-2); font-size: 13px; }
+
+/* 可展开行：默认只留摘要列，详情收进点击展开的下一行 */
+tr.r { cursor: pointer; }
+tr.r:focus-visible { outline: 2px solid var(--series); outline-offset: -2px; }
+.car { display: inline-block; color: var(--ink-3); font-size: 11px;
+       transition: transform .15s ease; }
+tr.r.open .car { transform: rotate(90deg); color: var(--ink-2); }
+tr.detail > td { background: var(--line-soft); padding: 14px 18px 16px;
+                 border-bottom: 1px solid var(--line); cursor: default; }
+.dl { display: grid; grid-template-columns: 88px 1fr; gap: 5px 18px; margin: 0; }
+.dl dt { color: var(--ink-3); font-size: 12.5px; }
+.dl dd { margin: 0; color: var(--ink-2); font-size: 13.5px; }
+.toggle-all { float: right; border: 1px solid var(--line); background: transparent;
+              color: var(--ink-3); border-radius: 999px; padding: 2px 12px;
+              font-size: 12px; cursor: pointer; font-family: inherit; }
+.toggle-all:hover { color: var(--ink-2); border-color: var(--ink-3); }
+
+table { table-layout: fixed; }
+th:nth-child(1), td:nth-child(1) { width: 32%; }
+th:nth-child(2), td:nth-child(2) { width: 96px; }
+th:nth-child(3), td:nth-child(3) { width: 104px; }
+th:nth-child(4), td:nth-child(4) { width: 84px; }
+th:nth-child(5), td:nth-child(5) { width: 88px; }
+th:nth-child(6), td:nth-child(6) { width: 128px; }
+th:nth-child(7), td:nth-child(7) { width: 30px; }
+td:nth-child(1) { overflow-wrap: anywhere; }
+.legend { display: flex; gap: 18px; align-items: center; color: var(--ink-3);
+          font-size: 12px; margin-top: 14px; }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px;
+            margin-right: 6px; vertical-align: -1px; }
+
+/* 日报正文（reports/*.html） */
+.report h1 { font-size: 22px; margin: 0 0 10px; }
+.report h2 { font-size: 16px; margin: 26px 0 8px; font-weight: 600; }
+.report p { color: var(--ink-2); font-size: 14px; margin: 6px 0; }
+.report ul { margin: 6px 0 14px; padding-left: 22px; }
+.report li { margin: 3px 0; color: var(--ink-2); font-size: 14px; }
+.report table { table-layout: auto; font-size: 13px; }
+.report code { background: var(--line-soft); border-radius: 4px; padding: 1px 5px; font-size: 12.5px; }
+.report a { color: var(--series); }
+.back { display: inline-block; margin: 0 0 14px; color: var(--ink-3); font-size: 13px; }
+</style>
+</head>
+<body>
+<header class="head">
+  <h1>Agent Discovery</h1>
+  <p class="meta"><span class="fresh">数据更新于 2026-09-15 04:52 UTC</span> · 每晚 22:00 UTC 自动更新</p>
+</header>
+<nav class="nav">
+  <a href="index.html">主页</a>
+  <a href="velocity.html">日均涨速</a>
+  <a href="movers.html">累计涨幅</a>
+  <a href="daily.html">每日新发现</a>
+  <a href="repos.html">全部追踪</a>
+</nav>
+<section><a class="back" href="../daily.html">← 每日新发现</a>
+<div class="report"><h1>Agent Discovery · 2026-09-08</h1>
+<p>Found <strong>50 new repos</strong> across 14 queries + HN.</p>
+<p>Sorted by fit-to-my-stack, then relevance score.</p>
+<h2>[score 9/10] [fit 10/10] K-Dense-AI/scientific-agent-skills  ·  ★43863</h2>
+<ul>
+<li><strong>类型</strong>: 资源合集</li>
+<li>Turn any AI agent into an AI Scientist. The #1 Agent Skills library for science, used by 190,000+ scientists worldwide. 165 ready-to-use validated skills plus 100+ scientific databases covering biology, chemistry, medicine, and drug discovery. Compatible with Cursor, Claude Code, Codex, Pi, Antigravity, and the open Agent Skills standard.</li>
+<li><strong>是什么</strong>: 大型科学技能库</li>
+<li><strong>能做什么</strong>: 获取生物信息、药物设计等专用技能</li>
+<li><strong>大家怎么用</strong>: 安装到AI agent中直接调用</li>
+<li><strong>举个例子</strong>: 输入基因列表，调用方法进行通路分析</li>
+<li><strong>和已有项目比</strong>: 技能更全面，覆盖我的科研领域</li>
+<li><strong>重复情况</strong>: 和现有追踪有重叠，但技能更多</li>
+<li><strong>装不装</strong>: 装：科研实用性极强</li>
+<li>Updated: 2026-09-08</li>
+<li>Source: <code>github</code> · Query hit: <code>scientific agent skills</code></li>
+<li><a href="https://github.com/K-Dense-AI/scientific-agent-skills">https://github.com/K-Dense-AI/scientific-agent-skills</a></li>
+</ul>
+<h2>[score 10/10] [fit 9/10] Imbad0202/academic-research-skills  ·  ★47038</h2>
+<ul>
+<li><strong>类型</strong>: Claude Code skill</li>
+<li>Academic Research Skills for Claude Code: research → write → review → revise → finalize</li>
+<li><strong>是什么</strong>: 完整学术研究技能套件</li>
+<li><strong>能做什么</strong>: 辅助论文写作、文献调研与修改</li>
+<li><strong>大家怎么用</strong>: 在Claude Code中作为插件安装使用</li>
+<li><strong>举个例子</strong>: 运行/ars-plan，对话规划论文结构</li>
+<li><strong>和已有项目比</strong>: 比同类技能更全面，覆盖研究全流程</li>
+<li><strong>重复情况</strong>: 与科研写作技能部分重叠，它更全面</li>
+<li><strong>装不装</strong>: 装：直接提升论文效率</li>
+<li>Updated: 2026-09-08</li>
+<li>Source: <code>github</code> · Query hit: <code>academic research skills</code></li>
+<li><a href="https://github.com/Imbad0202/academic-research-skills">https://github.com/Imbad0202/academic-research-skills</a></li>
+</ul>
+<h2>[score 10/10] [fit 9/10] Spark-To-Paper-Skills/spark-to-paper-skills  ·  ★965</h2>
+<ul>
+<li><strong>类型</strong>: Claude Code skill</li>
+<li>One sentence in, one draft paper out: spark-to-paper-skills automatically reviews papers, plans and runs experiments, and writes a research draft—typically using about $10 in API costs per paper.</li>
+<li><strong>是什么</strong>: 一句话生成论文草稿</li>
+<li><strong>能做什么</strong>: 从想法到论文初稿的自动化</li>
+<li><strong>大家怎么用</strong>: 在Claude Code中调用</li>
+<li><strong>举个例子</strong>: 输入一句想法，生成含引用与图表的完整论文</li>
+<li><strong>和已有项目比</strong>: 与学术研究技能互补，全自动化</li>
+<li><strong>重复情况</strong>: 与学术研究技能部分重叠，但自动化程度高</li>
+<li><strong>装不装</strong>: 装：节省写作时间</li>
+<li>Updated: 2026-09-08</li>
+<li>Source: <code>github</code> · Query hit: <code>paper skills</code></li>
+<li><a href="https://github.com/Spark-To-Paper-Skills/spark-to-paper-skills">https://github.com/Spark-To-Paper-Skills/spark-to-paper-skills</a></li>
+</ul>
+<h2>[score 9/10] [fit 9/10] LeonChaoX/qinyan-academic-skills  ·  ★876</h2>
+<ul>
+<li><strong>类型</strong>: 资源合集</li>
+<li>A curated, multilingual library of 182 installable AI agent skills for end-to-end academic research—spanning literature discovery, scientific writing, grant development, bioinformatics, drug discovery, clinical research, machine learning, and data analysis.</li>
+<li><strong>是什么</strong>: 多领域学术技能合集</li>
+<li><strong>能做什么</strong>: 覆盖文献到发表的技能</li>
+<li><strong>大家怎么用</strong>: 在支持的agent中安装单独技能</li>
+<li><strong>举个例子</strong>: 使用Nature风格写作流程</li>
+<li><strong>和已有项目比</strong>: 与学术研究技能类似，但分类更细</li>
+<li><strong>重复情况</strong>: 与学术研究技能高度重叠</li>
+<li><strong>装不装</strong>: 装：适合我需要</li>
+<li>Updated: 2026-09-08</li>
+<li>Source: <code>github</code> · Query hit: <code>academic skills</code></li>
+<li><a href="https://github.com/LeonChaoX/qinyan-academic-skills">https://github.com/LeonChaoX/qinyan-academic-skills</a></li>
+</ul>
+<h2>[score 8/10] [fit 9/10] google-deepmind/science-skills  ·  ★2922</h2>
+<ul>
+<li><strong>类型</strong>: 资源合集</li>
+<li>GDM Science Skills to speed up agentic scientific workflows with better grounding and higher token efficiency. Integrate insights from AlphaGenome, AFDB, UniProt and 30+ other databases and tools.</li>
+<li><strong>是什么</strong>: 科学计算技能集</li>
+<li><strong>能做什么</strong>: 访问基因组、结构等数据库</li>
+<li><strong>大家怎么用</strong>: 通过npx或Antigravity安装</li>
+<li><strong>举个例子</strong>: 输入UniProt ID，获取蛋白质信息</li>
+<li><strong>和已有项目比</strong>: 与科学技能库重叠，但更权威</li>
+<li><strong>重复情况</strong>: 与科学技能库高度重叠</li>
+<li><strong>装不装</strong>: 观望：已有的很够用</li>
+<li>Updated: 2026-09-08</li>
+<li>Source: <code>github</code> · Query hit: <code>science skills</code></li>
+<li><a href="https://github.com/google-deepmind/science-skills">https://github.com/google-deepmind/science-skills</a></li>
+</ul>
+<h2>[score 9/10] [fit 8/10] Imbad0202/academic-research-skills-codex  ·  ★10344</h2>
+<ul>
+<li><strong>类型</strong>: Claude Code skill</li>
+<li>Codex-native Academic Research Skills suite for human-in-the-loop academic research workflows</li>
+<li><strong>是什么</strong>: Codex版学术研究技能</li>
+<li><strong>能做什么</strong>: 在Codex中完成学术写作</li>
+<li><strong>大家怎么用</strong>: 作为Codex插件安装执行</li>
+<li><strong>举个例子</strong>: 使用Codex规划论文并生成初稿</li>
+<li><strong>和已有项目比</strong>: 与学术研究技能重复，但适配Codex</li>
+<li><strong>重复情况</strong>: 和academic-research-skills重复</li>
+<li><strong>装不装</strong>: 观望：若用Codex再装</li>
+<li>Updated: 2026-09-08</li>
+<li>Source: <code>github</code> · Query hit: <code>academic research skills</code></li>
+<li><a href="https://github.com/Imbad0202/academic-research-skills-codex">https://github.com/Imbad0202/academic-research-skills-codex</a></li>
+</ul>
+<h2>[score 9/10] [fit 8/10] lishix520/academic-paper-skills  ·  ★1273</h2>
+<ul>
+<li><strong>类型</strong>: Claude Code skill</li>
+<li>Systematic framework for planning and writing academic papers using Claude Code. Includes strategist (planning) and composer (writing) skills with quality checkpoints.</li>
+<li><strong>是什么</strong>: 论文规划与写作框架</li>
+<li><strong>能做什么</strong>: 从选题到成稿的完整流程</li>
+<li><strong>大家怎么用</strong>: 在Claude Code中运行</li>
+<li><strong>举个例子</strong>: 输入想法，得到带检查点的论文提纲</li>
+<li><strong>和已有项目比</strong>: 系统化强于其他技能</li>
+<li><strong>重复情况</strong>: 与学术研究技能重叠，但更系统</li>
+<li><strong>装不装</strong>: 装：结构化写作有利</li>
+<li>Updated: 2026-09-08</li>
+<li>Source: <code>github</code> · Query hit: <code>paper skills</code></li>
+<li><a href="https://github.com/lishix520/academic-paper-skills">https://github.com/lishix520/academic-paper-skills</a></li>
+</ul>
+<h2>[score 9/10] [fit 8/10] Boom5426/Nature-Paper-Skills  ·  ★486</h2>
+<ul>
+<li><strong>类型</strong>: Claude Code skill</li>
+<li>Agent skills for drafting, revising, auditing, and resubmitting Nature-style journal manuscripts.</li>
+<li><strong>是什么</strong>: Nature风格论文写作技能</li>
+<li><strong>能做什么</strong>: 面向Nature的稿件写作与修订</li>
+<li><strong>大家怎么用</strong>: 在Claude Code或Codex中安装</li>
+<li><strong>举个例子</strong>: 按Nature规范生成图表和审稿回复</li>
+<li><strong>和已有项目比</strong>: 比通用写作更专业、强约束</li>
+<li><strong>重复情况</strong>: 与学术研究技能部分重叠，更专</li>
+<li><strong>装不装</strong>: 装：符合期刊要求</li>
+<li>Updated: 2026-09-08</li>
+<li>Source: <code>github</code> · Query hit: <code>paper skills</code></li>
+<li><a href="https://github.com/Boom5426/Nature-Paper-Skills">https://github.com/Boom5426/Nature-Paper-Skills</a></li>
+</ul>
+<h2>[score 8/10] [fit 8/10] zLanqing/codex-claude-academic-skills  ·  ★3664</h2>
+<ul>
+<li><strong>类型</strong>: Claude Code skill</li>
+<li>本仓库包含三个面向学术科研人员的Skills，覆盖从文献阅读、论文写作到科学计算的完整研究工作流。office-academic-skill 负责论文阅读报告与学术 PPT/Word 文档生成；research-writing-skill 提供论文写作、润色与审稿回复辅助；scientific-toolkit-skill 整合 MATLAB/Python 科学计算与期刊级图表生成。三个 Skill 专为中文科研用户设计，可在 Claude Code 和 codex 中一键调用。</li>
+<li><strong>是什么</strong>: 中文科研技能集</li>
+<li><strong>能做什么</strong>: 论文写作与科研计算</li>
+<li><strong>大家怎么用</strong>: 在Claude Code中调用</li>
+<li><strong>举个例子</strong>: 生成学术PPT或润色中文论文</li>
+<li><strong>和已有项目比</strong>: 中文支持好，更贴近我的工作</li>
+<li><strong>重复情况</strong>: 与学术研究技能重叠，但有中文优化</li>
+<li><strong>装不装</strong>: 装：中文科研者适用</li>
+<li>Updated: 2026-09-08</li>
+<li>Source: <code>github</code> · Query hit: <code>academic skills</code></li>
+<li><a href="https://github.com/zLanqing/codex-claude-academic-skills">https://github.com/zLanqing/codex-claude-academic-skills</a></li>
+</ul>
+<h2>[score 8/10] [fit 8/10] xjtulyc/MedgeClaw  ·  ★642</h2>
+<ul>
+<li><strong>类型</strong>: 工具</li>
+<li>Open-source AI research assistant for biomedicine — chat to run RNA-seq, drug discovery, clinical analysis, and more. Built on Claude Code with 140 K-Dense scientific skills, real-time dashboard, and RStudio/JupyterLab integration. | 开源生物医学 AI 研究助手，对话即可驱动转录组、药物发现、临床分析等工作流，集成 140 个科学技能与实时研究看板。</li>
+<li><strong>是什么</strong>: 生物医学AI研究助手</li>
+<li><strong>能做什么</strong>: 聊天驱动RNA-seq等分析</li>
+<li><strong>大家怎么用</strong>: 通过OpenClaw和Claude集成</li>
+<li><strong>举个例子</strong>: 通过聊天运行转录组分析流程</li>
+<li><strong>和已有项目比</strong>: 与科学技能库集成，界面友好</li>
+<li><strong>重复情况</strong>: 与科学技能库重叠，但有界面</li>
+<li><strong>装不装</strong>: 观望：实际可替代</li>
+<li>Updated: 2026-09-04</li>
+<li>Source: <code>github</code> · Query hit: <code>scientific skills</code></li>
+<li><a href="https://github.com/xjtulyc/MedgeClaw">https://github.com/xjtulyc/MedgeClaw</a></li>
+</ul>
+<h2>[score 8/10] [fit 8/10] InternScience/Awesome-Scientific-Skills  ·  ★544</h2>
+<ul>
+<li><strong>类型</strong>: 资源合集</li>
+<li>An open, curated collection of Agent Skills for scientific research — clone it, use it, extend it!</li>
+<li><strong>是什么</strong>: 科学技能精选列表</li>
+<li><strong>能做什么</strong>: 发现技能并克隆扩展</li>
+<li><strong>大家怎么用</strong>: 浏览分类查找技能</li>
+<li><strong>举个例子</strong>: 找到做GO富集的技能安装</li>
+<li><strong>和已有项目比</strong>: 与科学技能库重叠，但分类清晰</li>
+<li><strong>重复情况</strong>: 与科学技能库高度重叠</li>
+<li><strong>装不装</strong>: 观望：可以借鉴</li>
+<li>Updated: 2026-09-08</li>
+<li>Source: <code>github</code> · Query hit: <code>scientific skills</code></li>
+<li><a href="https://github.com/InternScience/Awesome-Scientific-Skills">https://github.com/InternScience/Awesome-Scientific-Skills</a></li>
+</ul>
+<h2>[score 8/10] [fit 7/10] FreedomIntelligence/OpenClaw-Medical-Skills  ·  ★2994</h2>
+<ul>
+<li><strong>类型</strong>: 资源合集</li>
+<li>The largest open-source medical AI skills library for OpenClaw🦞.</li>
+<li><strong>是什么</strong>: 医学AI技能库</li>
+<li><strong>能做什么</strong>: 获取医学领域专用技能</li>
+<li><strong>大家怎么用</strong>: 通过OpenClaw平台调用</li>
+<li><strong>举个例子</strong>: 输入临床症状，获取诊断思路</li>
+<li><strong>和已有项目比</strong>: 医学专精，与我的领域有交集</li>
+<li><strong>重复情况</strong>: 与科学技能库部分重叠</li>
+<li><strong>装不装</strong>: 不装：非直接需求</li>
+<li>Updated: 2026-09-08</li>
+<li>Source: <code>github</code> · Query hit: <code>medical skills</code></li>
+<li><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills</a></li>
+</ul>
+<h2>[score 7/10] [fit 7/10] delibae/claude-prism  ·  ★1777</h2>
+<ul>
+<li><strong>类型</strong>: 工具</li>
+<li>An offline-first scientific writing workspace powered by Claude. LaTeX + Python + 100+ scientific skills all running locally.</li>
+<li><strong>是什么</strong>: 离线科学写作工作区</li>
+<li><strong>能做什么</strong>: 本地LaTeX写作与技能调用</li>
+<li><strong>大家怎么用</strong>: 安装桌面应用本地启动</li>
+<li><strong>举个例子</strong>: 在本地编写论文并运行Python计算</li>
+<li><strong>和已有项目比</strong>: 与通用写作工具不同，离线优势</li>
+<li><strong>重复情况</strong>: 与学术研究技能部分重叠</li>
+<li><strong>装不装</strong>: 观望：需要本地环境</li>
+<li>Updated: 2026-09-08</li>
+<li>Source: <code>github</code> · Query hit: <code>scientific skills</code></li>
+<li><a href="https://github.com/delibae/claude-prism">https://github.com/delibae/claude-prism</a></li>
+</ul>
+<h2>[score 7/10] [fit 6/10] yb2460/harness-anything  ·  ★1722</h2>
+<ul>
+<li><strong>类型</strong>: 工具</li>
+<li>Harness Anything - AI agent control hub: WPS, MS Office, Zotero, Photoshop, 47 CLI commands, 27 academic skills, SVG-to-PPTX</li>
+<li><strong>是什么</strong>: 办公软件控制中心</li>
+<li><strong>能做什么</strong>: 用AI操作Office和Zotero</li>
+<li><strong>大家怎么用</strong>: 通过CLI命令调用</li>
+<li><strong>举个例子</strong>: 自动生成PPT或整理文献</li>
+<li><strong>和已有项目比</strong>: 补充了办公自动化功能</li>
+<li><strong>重复情况</strong>: 与office技能部分重叠</li>
+<li><strong>装不装</strong>: 观望：与PPT技能重复</li>
+<li>Updated: 2026-09-08</li>
+<li>Source: <code>github</code> · Query hit: <code>academic skills</code></li>
+<li><a href="https://github.com/yb2460/harness-anything">https://github.com/yb2460/harness-anything</a></li>
+</ul>
+<h2>[score 7/10] [fit 6/10] chrisblattman/claudeblattman  ·  ★454</h2>
+<ul>
+<li><strong>类型</strong>: 资源合集</li>
+<li>Claude Code for academics — skills, agents, and setup guides</li>
+<li><strong>是什么</strong>: 面向学者的AI工作流指南</li>
+<li><strong>能做什么</strong>: 建立学者个人AI工作流</li>
+<li><strong>大家怎么用</strong>: 阅读指南并下载技能</li>
+<li><strong>举个例子</strong>: 学习如何配置Claude Code</li>
+<li><strong>和已有项目比</strong>: 教育性质，提供入门指南</li>
+<li><strong>重复情况</strong>: 与学术技能部分重叠但教育为主</li>
+<li><strong>装不装</strong>: 观望：非技能本身</li>
+<li>Updated: 2026-09-06</li>
+<li>Source: <code>github</code> · Query hit: <code>academic skills</code></li>
+<li><a href="https://github.com/chrisblattman/claudeblattman">https://github.com/chrisblattman/claudeblattman</a></li>
+</ul>
+<h2>[score 6/10] [fit 6/10] hkcanan/katmer-code  ·  ★473</h2>
+<ul>
+<li><strong>类型</strong>: 工具</li>
+<li>Multi-provider AI sidebar for Obsidian — Claude, Gemini, Codex, Antigravity. Per-tab routing, same-tab consult, inline diff, CLAUDE.md auto-mirror, academic research skills.</li>
+<li><strong>是什么</strong>: Obsidian多AI聊天侧栏</li>
+<li><strong>能做什么</strong>: 在笔记软件中调用多个AI</li>
+<li><strong>大家怎么用</strong>: 作为Obsidian插件安装</li>
+<li><strong>举个例子</strong>: 在侧栏与Claude和Gemini讨论</li>
+<li><strong>和已有项目比</strong>: 与学术技能无关，但可结合</li>
+<li><strong>重复情况</strong>: 与学术技能无重复</li>
+<li><strong>装不装</strong>: 观望：如果用Obsidian</li>
+<li>Updated: 2026-08-21</li>
+<li>Source: <code>github</code> · Query hit: <code>academic research skills</code></li>
+<li><a href="https://github.com/hkcanan/katmer-code">https://github.com/hkcanan/katmer-code</a></li>
+</ul>
+<h2>[score 5/10] [fit 6/10] K-Dense-AI/claude-skills-mcp  ·  ★402</h2>
+<ul>
+<li><strong>类型</strong>: 工具</li>
+<li>MCP server for searching and retrieving Scientific Agent Skills using vector search</li>
+<li><strong>是什么</strong>: MCP服务器用于检索技能</li>
+<li><strong>能做什么</strong>: 通过MCP搜索科学技能</li>
+<li><strong>大家怎么用</strong>: 作为MCP服务器接入</li>
+<li><strong>举个例子</strong>: 在Cursor中搜索技能</li>
+<li><strong>和已有项目比</strong>: 旧工具，已废弃</li>
+<li><strong>重复情况</strong>: 与技能库重复</li>
+<li><strong>装不装</strong>: 不装：已弃用</li>
+<li>Updated: 2026-09-06</li>
+<li>Source: <code>github</code> · Query hit: <code>scientific agent skills</code></li>
+<li><a href="https://github.com/K-Dense-AI/claude-skills-mcp">https://github.com/K-Dense-AI/claude-skills-mcp</a></li>
+</ul>
+<h2>[score 6/10] [fit 5/10] AAASS554/codex-academic-paper-skills  ·  ★531</h2>
+<ul>
+<li><strong>类型</strong>: Claude Code skill</li>
+<li>Codex academic paper skills for software engineering thesis planning and revision</li>
+<li><strong>是什么</strong>: 本科论文写作技能包</li>
+<li><strong>能做什么</strong>: 软件工程论文的降重和改写</li>
+<li><strong>大家怎么用</strong>: 在Codex中安装使用</li>
+<li><strong>举个例子</strong>: 根据查重报告改写段落</li>
+<li><strong>和已有项目比</strong>: 与学术研究技能重复，聚焦本科</li>
+<li><strong>重复情况</strong>: 与学术研究技能部分重叠</li>
+<li><strong>装不装</strong>: 不装：非我主要需求</li>
+<li>Updated: 2026-09-08</li>
+<li>Source: <code>github</code> · Query hit: <code>paper skills</code></li>
+<li><a href="https://github.com/AAASS554/codex-academic-paper-skills">https://github.com/AAASS554/codex-academic-paper-skills</a></li>
+</ul>
+<h2>[score 4/10] [fit 4/10] youssefHosni/Data-Science-Handbook  ·  ★574</h2>
+<ul>
+<li><strong>类型</strong>: 资源合集</li>
+<li>A curated list of data science educational resources for essential data science skills </li>
+<li><strong>是什么</strong>: 数据科学学习资源列表</li>
+<li><strong>能做什么</strong>: 查找教程和资料</li>
+<li><strong>大家怎么用</strong>: 浏览链接学习</li>
+<li><strong>举个例子</strong>: 搜索数据分析教程</li>
+<li><strong>和已有项目比</strong>: 无重复</li>
+<li><strong>重复情况</strong>: 无重复</li>
+<li><strong>装不装</strong>: 不装：网上教程多有</li>
+<li>Updated: 2026-08-04</li>
+<li>Source: <code>github</code> · Query hit: <code>science skills</code></li>
+<li><a href="https://github.com/youssefHosni/Data-Science-Handbook">https://github.com/youssefHosni/Data-Science-Handbook</a></li>
+</ul>
+<h2>[score 8/10] [fit 2/10] TauricResearch/TradingAgents  ·  ★103415</h2>
+<ul>
+<li><strong>类型</strong>: 多智能体框架</li>
+<li>TradingAgents: Multi-Agents LLM Financial Trading Framework</li>
+<li><strong>是什么</strong>: 金融交易的多智能体框架</li>
+<li><strong>能做什么</strong>: 学习多智能体协作模式，但领域不相关</li>
+<li><strong>大家怎么用</strong>: 金融分析场景中模拟交易决策</li>
+<li><strong>举个例子</strong>: 输入股票数据，得到多智能体分析报告</li>
+<li><strong>和已有项目比</strong>: 无重复，领域差异大</li>
+<li><strong>重复情况</strong>: 无重复</li>
+<li><strong>装不装</strong>: 不装：金融领域，科研无用</li>
+<li>Updated: 2026-09-08</li>
+<li>Source: <code>hn</code> · Query hit: <code>hn: Multi-Agents LLM Financial Trading Framework</code></li>
+<li>HN: <a href="https://news.ycombinator.com/item?id=49605822">113 points</a></li>
+<li><a href="https://github.com/TauricResearch/TradingAgents">https://github.com/TauricResearch/TradingAgents</a></li>
+</ul>
+<h2>jaechang-hits/SciAgent-Skills  ·  ★362</h2>
+<ul>
+<li>197 bioinformatics &amp; life science skills for Claude Code and AI agents — BixBench 92.0% accuracy. RNA-seq, single-cell, drug discovery, proteomics, and more. Powers OmicsHorizon.</li>
+<li>Updated: 2026-09-08</li>
+<li>Source: <code>github</code> · Query hit: <code>science skills</code></li>
+<li><a href="https://github.com/jaechang-hits/SciAgent-Skills">https://github.com/jaechang-hits/SciAgent-Skills</a></li>
+</ul>
+<h2>chtc66/academic-skills  ·  ★348</h2>
+<ul>
+<li>Academic workflow skills for paper reading, survey writing, experiment summarization, rebuttal drafting, and weekly lab updates.</li>
+<li>Updated: 2026-09-08</li>
+<li>Source: <code>github</code> · Query hit: <code>academic skills</code></li>
+<li><a href="https://github.com/chtc66/academic-skills">https://github.com/chtc66/academic-skills</a></li>
+</ul>
+<h2>shareAI-lab/lab-skills  ·  ★314</h2>
+<ul>
+<li>Skills distilled from the Lab&#x27;s real work and collaboration practices</li>
+<li>Updated: 2026-09-07</li>
+<li>Source: <code>github</code> · Query hit: <code>lab skills</code></li>
+<li><a href="https://github.com/shareAI-lab/lab-skills">https://github.com/shareAI-lab/lab-skills</a></li>
+</ul>
+<h2>wentorai/research-plugins  ·  ★290</h2>
+<ul>
+<li>350+ academic research skills, MCP configs, and plugins for Research-Claw and AI agents</li>
+<li>Updated: 2026-09-08</li>
+<li>Source: <code>github</code> · Query hit: <code>academic research skills</code></li>
+<li><a href="https://github.com/wentorai/research-plugins">https://github.com/wentorai/research-plugins</a></li>
+</ul>
+<h2>yunshenwuchuxun/latex-paper-skills  ·  ★257</h2>
+<ul>
+<li>A modular skill-based framework for writing, revising, and managing LaTeX academic papers with AI assistance.</li>
+<li>Updated: 2026-09-08</li>
+<li>Source: <code>github</code> · Query hit: <code>paper skills</code></li>
+<li><a href="https://github.com/yunshenwuchuxun/latex-paper-skills">https://github.com/yunshenwuchuxun/latex-paper-skills</a></li>
+</ul>
+<h2>lensback940701/Evidence-Bound-Press-Conference-Revision-Skill  ·  ★239</h2>
+<ul>
+<li>An evidence-bound academic revision skill for social science research. It reduces defensive prose without weakening scholarly caution, foregrounds core contributions, compresses repetitive qualifications and process narration, and preserves claim ceilings, evidence status, scope, boundaries, and rival explanations for auditable, traceable revision.</li>
+<li>Updated: 2026-09-08</li>
+<li>Source: <code>github</code> · Query hit: <code>academic research skills created:&gt;2026-07-10</code></li>
+<li><a href="https://github.com/lensback940701/Evidence-Bound-Press-Conference-Revision-Skill">https://github.com/lensback940701/Evidence-Bound-Press-Conference-Revision-Skill</a></li>
+</ul>
+<h2>franklee16/academic-research-skills  ·  ★215</h2>
+<ul>
+<li>Comprehensive collection of Claude Code skills for academic research in economics, finance, and social sciences</li>
+<li>Updated: 2026-09-05</li>
+<li>Source: <code>github</code> · Query hit: <code>academic research skills</code></li>
+<li><a href="https://github.com/franklee16/academic-research-skills">https://github.com/franklee16/academic-research-skills</a></li>
+</ul>
+<h2>ShZhao27208/Aut_Sci_Write  ·  ★192</h2>
+<ul>
+<li> Academic research skills suite for AI Agent — literature search/download (WoS+Elsevier+Springer), PDF   extraction, figure cropping, review writing, Zotero sync, and PPT/Html generation. </li>
+<li>Updated: 2026-09-06</li>
+<li>Source: <code>github</code> · Query hit: <code>academic research skills</code></li>
+<li><a href="https://github.com/ShZhao27208/Aut_Sci_Write">https://github.com/ShZhao27208/Aut_Sci_Write</a></li>
+</ul>
+<h2>Epsilon617/Codex-Academic-Skills  ·  ★180</h2>
+<ul>
+<li>A curated list of research-oriented skills usable in OpenAI Codex, covering writing, literature review, evaluation, and research workflows.</li>
+<li>Updated: 2026-09-08</li>
+<li>Source: <code>github</code> · Query hit: <code>academic skills</code></li>
+<li><a href="https://github.com/Epsilon617/Codex-Academic-Skills">https://github.com/Epsilon617/Codex-Academic-Skills</a></li>
+</ul>
+<h2>Ming-Lian/Bioinformatics-skills  ·  ★164</h2>
+<ul>
+<li>生物信息学技能提升，专注于工具使用与编程</li>
+<li>Updated: 2026-08-31</li>
+<li>Source: <code>github</code> · Query hit: <code>bioinformatics skills</code></li>
+<li><a href="https://github.com/Ming-Lian/Bioinformatics-skills">https://github.com/Ming-Lian/Bioinformatics-skills</a></li>
+</ul>
+<h2>moonlarry/codex-paper-skills  ·  ★160</h2>
+<ul>
+<li>Codex运行规范及写论文使用的多个skills</li>
+<li>Updated: 2026-09-07</li>
+<li>Source: <code>github</code> · Query hit: <code>paper skills</code></li>
+<li><a href="https://github.com/moonlarry/codex-paper-skills">https://github.com/moonlarry/codex-paper-skills</a></li>
+</ul>
+<h2>voidful/academic-skills  ·  ★126</h2>
+<ul>
+<li>A complete academic research Skill suite. Supports Claude Code, ChatGPT / Codex CLI, and Gemini CLI.</li>
+<li>Updated: 2026-09-01</li>
+<li>Source: <code>github</code> · Query hit: <code>academic research skills</code></li>
+<li><a href="https://github.com/voidful/academic-skills">https://github.com/voidful/academic-skills</a></li>
+</ul>
+<h2>HaonanAlex/MGMT-Paper-Skills  ·  ★125</h2>
+<ul>
+<li>Management research paper skills and MCP workflows for Codex and Claude</li>
+<li>Updated: 2026-09-05</li>
+<li>Source: <code>github</code> · Query hit: <code>paper skills</code></li>
+<li><a href="https://github.com/HaonanAlex/MGMT-Paper-Skills">https://github.com/HaonanAlex/MGMT-Paper-Skills</a></li>
+</ul>
+<h2>probabl-ai/skills  ·  ★121</h2>
+<ul>
+<li>Data Science Skills for AI agents like Claude Code</li>
+<li>Updated: 2026-09-08</li>
+<li>Source: <code>github</code> · Query hit: <code>science skills</code></li>
+<li><a href="https://github.com/probabl-ai/skills">https://github.com/probabl-ai/skills</a></li>
+</ul>
+<h2>cookjohn/wos-skills  ·  ★115</h2>
+<ul>
+<li>Web of Science skills for Claude Code — search, browse, export, download academic papers via Chrome DevTools MCP</li>
+<li>Updated: 2026-09-08</li>
+<li>Source: <code>github</code> · Query hit: <code>science skills</code></li>
+<li><a href="https://github.com/cookjohn/wos-skills">https://github.com/cookjohn/wos-skills</a></li>
+</ul>
+<h2>GoekeLab/awesome-genomic-skills  ·  ★97</h2>
+<ul>
+<li>A curated list of awesome genomics and bioinformatics agentic skills, MCPs and benchmarks for Claude Code, Copilot, Codex, Cursor, Gemini CLI, etc</li>
+<li>Updated: 2026-08-29</li>
+<li>Source: <code>github</code> · Query hit: <code>bioinformatics agent</code></li>
+<li><a href="https://github.com/GoekeLab/awesome-genomic-skills">https://github.com/GoekeLab/awesome-genomic-skills</a></li>
+</ul>
+<h2>NEONScience/NEON-Data-Skills  ·  ★91</h2>
+<ul>
+<li>Self-paced tutorials that review key data literacy concepts and data analysis skills. Published materials can be found at:</li>
+<li>Updated: 2026-09-06</li>
+<li>Source: <code>github</code> · Query hit: <code>data analysis skills</code></li>
+<li><a href="https://github.com/NEONScience/NEON-Data-Skills">https://github.com/NEONScience/NEON-Data-Skills</a></li>
+</ul>
+<h2>drpedapati/sciclaw  ·  ★88</h2>
+<ul>
+<li>Paired-scientist AI assistant for reproducible research — lightweight Go runtime, lifecycle hooks, manuscript integration, 12 baseline scientific skills. PicoClaw-compatible.</li>
+<li>Updated: 2026-09-03</li>
+<li>Source: <code>github</code> · Query hit: <code>scientific skills</code></li>
+<li><a href="https://github.com/drpedapati/sciclaw">https://github.com/drpedapati/sciclaw</a></li>
+</ul>
+<h2>schlende/practical-pandas-projects  ·  ★87</h2>
+<ul>
+<li>Project ideas for improving your Python data analysis skills</li>
+<li>Updated: 2026-09-04</li>
+<li>Source: <code>github</code> · Query hit: <code>data analysis skills</code></li>
+<li><a href="https://github.com/schlende/practical-pandas-projects">https://github.com/schlende/practical-pandas-projects</a></li>
+</ul>
+<h2>openbiox/bioinformatics-100-days  ·  ★85</h2>
+<ul>
+<li>Learn and practice the bioinformatics skills in 100 Days.</li>
+<li>Updated: 2026-08-14</li>
+<li>Source: <code>github</code> · Query hit: <code>bioinformatics skills</code></li>
+<li><a href="https://github.com/openbiox/bioinformatics-100-days">https://github.com/openbiox/bioinformatics-100-days</a></li>
+</ul>
+<h2>muhammadanas0716/Data-Science-Projects---EDA  ·  ★80</h2>
+<ul>
+<li>The projects I&#x27;ve done over the course of time for practicing my EDA and Data Science skills. You can check the code out and learn!</li>
+<li>Updated: 2026-07-20</li>
+<li>Source: <code>github</code> · Query hit: <code>science skills</code></li>
+<li><a href="https://github.com/muhammadanas0716/Data-Science-Projects---EDA">https://github.com/muhammadanas0716/Data-Science-Projects---EDA</a></li>
+</ul>
+<h2>kael-odin/awesome-academic-research-skills  ·  ★69</h2>
+<ul>
+<li>面向中文用户的学术论文与科研 Agent Skill 每日排行榜 · 自动搜索、过滤并排名 GitHub 上的 Claude Code / Codex / OpenCode 科研 Skill 仓库</li>
+<li>Updated: 2026-09-08</li>
+<li>Source: <code>github</code> · Query hit: <code>academic research skills</code></li>
+<li><a href="https://github.com/kael-odin/awesome-academic-research-skills">https://github.com/kael-odin/awesome-academic-research-skills</a></li>
+</ul>
+<h2>AlterLab-IEU/AlterLab-Academic-Skills  ·  ★66</h2>
+<ul>
+<li>239 evaluated academic Claude/agent skills across 17 research domains (bioinformatics, data science, clinical, social-science methods, Turkish academia &amp; more). Executable eval per skill, deterministic citation verifier, research→write→review→publish pipeline, and a skill-finder front door. Claude Code, Cursor, Codex, Gemini CLI &amp; Copilot.</li>
+<li>Updated: 2026-09-06</li>
+<li>Source: <code>github</code> · Query hit: <code>academic skills</code></li>
+<li><a href="https://github.com/AlterLab-IEU/AlterLab-Academic-Skills">https://github.com/AlterLab-IEU/AlterLab-Academic-Skills</a></li>
+</ul>
+<h2>qinyan-ai/qinyan-academic-skills  ·  ★66</h2>
+<ul>
+<li>沁言学术skills库</li>
+<li>Updated: 2026-09-05</li>
+<li>Source: <code>github</code> · Query hit: <code>academic skills</code></li>
+<li><a href="https://github.com/qinyan-ai/qinyan-academic-skills">https://github.com/qinyan-ai/qinyan-academic-skills</a></li>
+</ul>
+<h2>YuanyuanMa03/academic-research-skills  ·  ★62</h2>
+<ul>
+<li>&quot;Search CNKI for papers on neural rendering&quot; &quot;Find citing papers on Google Scholar&quot; &quot;Download this ScienceDirect paper&quot; &quot;Help me write a Nature-style introduction&quot;</li>
+<li>Updated: 2026-09-05</li>
+<li>Source: <code>github</code> · Query hit: <code>academic research skills</code></li>
+<li><a href="https://github.com/YuanyuanMa03/academic-research-skills">https://github.com/YuanyuanMa03/academic-research-skills</a></li>
+</ul>
+<h2>variomeanalytics/bioinformatics-agent-skills  ·  ★62</h2>
+<ul>
+<li>MCP server for bioinformatics agent skills — query a knowledge graph of 78 bioinformatics workflows directly from Claude Code</li>
+<li>Updated: 2026-08-19</li>
+<li>Source: <code>github</code> · Query hit: <code>bioinformatics agent</code></li>
+<li><a href="https://github.com/variomeanalytics/bioinformatics-agent-skills">https://github.com/variomeanalytics/bioinformatics-agent-skills</a></li>
+</ul>
+<h2>yorkeccak/scientific-skills  ·  ★61</h2>
+<ul>
+<li>Natural language scientific literature search skills with semantic search over PubMed, arXiv, ChEMBL, DrugBank, bioRxiv, medRxiv, clinical trials, and more with zero API complexity.</li>
+<li>Updated: 2026-08-18</li>
+<li>Source: <code>github</code> · Query hit: <code>scientific skills</code></li>
+<li><a href="https://github.com/yorkeccak/scientific-skills">https://github.com/yorkeccak/scientific-skills</a></li>
+</ul>
+<h2>timpara/opencode-academic-research  ·  ★60</h2>
+<ul>
+<li>OpenCode port of academic-research-skills: 4 skills, 13 slash commands, 38-agent pipeline for academic research, writing, peer review, and revision</li>
+<li>Updated: 2026-09-08</li>
+<li>Source: <code>github</code> · Query hit: <code>academic research skills</code></li>
+<li><a href="https://github.com/timpara/opencode-academic-research">https://github.com/timpara/opencode-academic-research</a></li>
+</ul>
+<h2>scdenney/open-science-skills  ·  ★54</h2>
+<ul>
+<li>Agentic skills for Claude Code and Codex, built from published social-science methods sources. Covers experimental design, computational text analysis, manuscript QA, and transparent reporting.</li>
+<li>Updated: 2026-09-08</li>
+<li>Source: <code>github</code> · Query hit: <code>science skills</code></li>
+<li><a href="https://github.com/scdenney/open-science-skills">https://github.com/scdenney/open-science-skills</a></li>
+</ul>
+<h2>ZinSheng/paper-notes  ·  ★51</h2>
+<ul>
+<li>A paper close-reading skill that turns every paper into research sense.</li>
+<li>Updated: 2026-09-08</li>
+<li>Source: <code>github</code> · Query hit: <code>academic research skills created:&gt;2026-07-10</code></li>
+<li><a href="https://github.com/ZinSheng/paper-notes">https://github.com/ZinSheng/paper-notes</a></li>
+</ul>
+<h2>Trending since first seen</h2>
+<table><thead><tr><th>Repo</th><th>First seen</th><th>Stars then → now</th><th>Δ</th></tr></thead><tbody>
+<tr><td><a href="https://github.com/ayghri/i-have-adhd">ayghri/i-have-adhd</a></td><td>2026-07-19</td><td>3084 → 30285</td><td>+27201</td></tr>
+<tr><td><a href="https://github.com/JuliusBrussee/caveman">JuliusBrussee/caveman</a></td><td>2026-07-02</td><td>79188 → 104347</td><td>+25159</td></tr>
+<tr><td><a href="https://github.com/virgiliojr94/book-to-skill">virgiliojr94/book-to-skill</a></td><td>2026-07-02</td><td>7442 → 29133</td><td>+21691</td></tr>
+<tr><td><a href="https://github.com/blader/humanizer">blader/humanizer</a></td><td>2026-07-02</td><td>27141 → 45397</td><td>+18256</td></tr>
+<tr><td><a href="https://github.com/alirezarezvani/claude-skills">alirezarezvani/claude-skills</a></td><td>2026-07-02</td><td>19625 → 25723</td><td>+6098</td></tr>
+<tr><td><a href="https://github.com/op7418/Humanizer-zh">op7418/Humanizer-zh</a></td><td>2026-07-02</td><td>12156 → 16915</td><td>+4759</td></tr>
+<tr><td><a href="https://github.com/VoltAgent/awesome-claude-code-subagents">VoltAgent/awesome-claude-code-subagents</a></td><td>2026-07-02</td><td>22698 → 24950</td><td>+2252</td></tr>
+<tr><td><a href="https://github.com/Nanako0129/sepia">Nanako0129/sepia</a></td><td>2026-08-29</td><td>644 → 2454</td><td>+1810</td></tr>
+<tr><td><a href="https://github.com/nateherkai/scroll-craft">nateherkai/scroll-craft</a></td><td>2026-08-24</td><td>618 → 2187</td><td>+1569</td></tr>
+<tr><td><a href="https://github.com/elementalsouls/Claude-BugHunter">elementalsouls/Claude-BugHunter</a></td><td>2026-07-02</td><td>2828 → 4387</td><td>+1559</td></tr>
+</tbody></table></div></section>
+
+</body>
+</html>

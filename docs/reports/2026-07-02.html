@@ -1,0 +1,733 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent Discovery · </title>
+<style>
+/* 调色板取自 dataviz 参考实例，两模式都跑过 validate_palette：
+   light #2a78d6/#eb6834 on #fcfcfb、dark #3987e5/#d95926 on #1a1a19，
+   五项检查全 PASS（all-pairs CVD ΔE 24.7/26.8，normal 33.6/31.8，对比度 ≥3:1）。
+   蓝 = 数据序列，橙 = 「自动关注」状态，两者不混用。 */
+:root {
+  color-scheme: light;
+  --bg: #ffffff;
+  --surface: #fcfcfb;
+  --line: #e7e5e0;
+  --line-soft: #f2f1ed;
+  --ink: #0b0b0b;
+  --ink-2: #52514e;
+  --ink-3: #8a8880;
+  --series: #2a78d6;
+  --series-soft: #dce9f9;
+  --hot: #eb6834;
+  --hot-soft: #fbe4da;
+  --pos: #0a6b3d;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #131312; --surface: #1a1a19; --line: #302f2c; --line-soft: #232322;
+    --ink: #ffffff; --ink-2: #c3c2b7; --ink-3: #8a8880;
+    --series: #3987e5; --series-soft: #1e3a5f; --hot: #d95926; --hot-soft: #3a241b;
+    --pos: #4bbd85;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink);
+  font: 15px/1.6 ui-sans-serif, -apple-system, "Segoe UI", "Noto Sans SC", sans-serif;
+  margin: 0 auto; max-width: 1120px; padding: 48px 24px 96px;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; }
+a:hover { text-decoration: underline; text-underline-offset: 2px; }
+
+/* 页头 + 导航 */
+.head { margin-bottom: 24px; }
+h1 { font-size: 30px; letter-spacing: -0.02em; margin: 0 0 6px; font-weight: 600; }
+.meta { color: var(--ink-3); font-size: 13px; margin: 0; font-variant-numeric: tabular-nums; }
+.meta .fresh { color: var(--ink-2); }
+.nav { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 28px; }
+.nav a { border: 1px solid var(--line); border-radius: 999px; padding: 5px 15px;
+         font-size: 13px; color: var(--ink-2); }
+.nav a:hover { border-color: var(--ink-3); text-decoration: none; }
+.nav a.cur { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+/* 模块卡片 */
+section { background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+          padding: 24px 24px 26px; margin: 0 0 20px; }
+section > h2 { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+               color: var(--ink-3); margin: 0 0 2px; }
+section > .sub { color: var(--ink-3); font-size: 13px; margin: 0 0 18px; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+         gap: 14px; margin: 0 0 20px; }
+a.card { display: block; background: var(--surface); border: 1px solid var(--line);
+         border-radius: 14px; padding: 20px 22px; transition: border-color .15s ease; }
+a.card:hover { border-color: var(--ink-3); text-decoration: none; }
+.card h3 { margin: 0 0 4px; font-size: 16px; font-weight: 600; }
+.card .d { color: var(--ink-3); font-size: 13px; margin: 0 0 14px; }
+.card .preview { font-size: 13px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.card .preview b { color: var(--ink); }
+.card .go { color: var(--series); font-size: 13px; margin-top: 12px; display: block; }
+
+/* Stat tiles —— 单个数字不该画成图 */
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1px;
+         background: var(--line); border: 1px solid var(--line); border-radius: 14px;
+         overflow: hidden; margin: 0 0 28px; }
+.tile { background: var(--surface); padding: 20px 22px; }
+.tile .k { color: var(--ink-3); font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; }
+.tile .v { font-size: 30px; font-weight: 600; letter-spacing: -0.02em; margin-top: 6px;
+           font-variant-numeric: tabular-nums; }
+.tile .v small { font-size: 14px; font-weight: 500; color: var(--ink-3); margin-left: 4px; }
+
+/* 条形图：细 mark、4px 圆头、锚在基线 */
+.bar-row { display: grid; grid-template-columns: minmax(150px, 280px) 1fr 96px; gap: 14px;
+           align-items: center; padding: 5px 0; border-radius: 6px; }
+.bar-row:hover { background: var(--line-soft); }
+.bar-row .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13.5px; }
+.bar-track { background: var(--line-soft); border-radius: 4px; height: 10px; }
+.bar { background: var(--series); height: 10px; border-radius: 0 4px 4px 0; min-width: 3px; display: block; }
+.bar.hot { background: var(--hot); }
+.delta { color: var(--ink-2); font-variant-numeric: tabular-nums; text-align: right; font-size: 13px; }
+
+/* 每日发现：列图 */
+.cols { display: flex; align-items: flex-end; gap: 2px; height: 116px; }
+.col { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end;
+       align-items: stretch; min-width: 0; border-radius: 4px 4px 0 0; }
+.col:hover { background: var(--line-soft); }
+.col .v { background: var(--series); width: 100%; border-radius: 3px 3px 0 0; min-height: 2px; }
+.axis { display: flex; justify-content: space-between; color: var(--ink-3);
+        font-size: 11px; margin-top: 8px; font-variant-numeric: tabular-nums; }
+.day { border-top: 1px solid var(--line-soft); padding: 10px 2px; }
+.day .dt { color: var(--ink-2); font-size: 13.5px; font-variant-numeric: tabular-nums; }
+.day .dt a { color: var(--series); }
+.day .repos { color: var(--ink-3); font-size: 13px; margin-top: 2px; }
+.day .repos a { color: var(--ink-2); margin-right: 4px; }
+
+/* 表格 */
+.wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+th, td { border-bottom: 1px solid var(--line-soft); padding: 9px 10px; text-align: left;
+         vertical-align: middle; }
+thead th { color: var(--ink-3); font-weight: 600; white-space: nowrap; font-size: 11px;
+           letter-spacing: 0.06em; text-transform: uppercase;
+           border-bottom: 1px solid var(--line); position: sticky; top: 0; background: var(--surface); }
+tbody tr.r:hover { background: var(--line-soft); }
+td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+td.pos { color: var(--pos); }
+.spark { display: block; }
+.pill { display: inline-block; border: 1px solid var(--line); border-radius: 999px;
+        padding: 1px 9px; font-size: 11.5px; color: var(--ink-2); white-space: nowrap; }
+.pill.f { border-color: var(--series); color: var(--series); }
+.dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+       background: var(--hot); margin-right: 7px; vertical-align: 1px; }
+.one { color: var(--ink-2); font-size: 13px; }
+
+/* 可展开行：默认只留摘要列，详情收进点击展开的下一行 */
+tr.r { cursor: pointer; }
+tr.r:focus-visible { outline: 2px solid var(--series); outline-offset: -2px; }
+.car { display: inline-block; color: var(--ink-3); font-size: 11px;
+       transition: transform .15s ease; }
+tr.r.open .car { transform: rotate(90deg); color: var(--ink-2); }
+tr.detail > td { background: var(--line-soft); padding: 14px 18px 16px;
+                 border-bottom: 1px solid var(--line); cursor: default; }
+.dl { display: grid; grid-template-columns: 88px 1fr; gap: 5px 18px; margin: 0; }
+.dl dt { color: var(--ink-3); font-size: 12.5px; }
+.dl dd { margin: 0; color: var(--ink-2); font-size: 13.5px; }
+.toggle-all { float: right; border: 1px solid var(--line); background: transparent;
+              color: var(--ink-3); border-radius: 999px; padding: 2px 12px;
+              font-size: 12px; cursor: pointer; font-family: inherit; }
+.toggle-all:hover { color: var(--ink-2); border-color: var(--ink-3); }
+
+table { table-layout: fixed; }
+th:nth-child(1), td:nth-child(1) { width: 32%; }
+th:nth-child(2), td:nth-child(2) { width: 96px; }
+th:nth-child(3), td:nth-child(3) { width: 104px; }
+th:nth-child(4), td:nth-child(4) { width: 84px; }
+th:nth-child(5), td:nth-child(5) { width: 88px; }
+th:nth-child(6), td:nth-child(6) { width: 128px; }
+th:nth-child(7), td:nth-child(7) { width: 30px; }
+td:nth-child(1) { overflow-wrap: anywhere; }
+.legend { display: flex; gap: 18px; align-items: center; color: var(--ink-3);
+          font-size: 12px; margin-top: 14px; }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px;
+            margin-right: 6px; vertical-align: -1px; }
+
+/* 日报正文（reports/*.html） */
+.report h1 { font-size: 22px; margin: 0 0 10px; }
+.report h2 { font-size: 16px; margin: 26px 0 8px; font-weight: 600; }
+.report p { color: var(--ink-2); font-size: 14px; margin: 6px 0; }
+.report ul { margin: 6px 0 14px; padding-left: 22px; }
+.report li { margin: 3px 0; color: var(--ink-2); font-size: 14px; }
+.report table { table-layout: auto; font-size: 13px; }
+.report code { background: var(--line-soft); border-radius: 4px; padding: 1px 5px; font-size: 12.5px; }
+.report a { color: var(--series); }
+.back { display: inline-block; margin: 0 0 14px; color: var(--ink-3); font-size: 13px; }
+</style>
+</head>
+<body>
+<header class="head">
+  <h1>Agent Discovery</h1>
+  <p class="meta"><span class="fresh">数据更新于 2026-09-15 04:52 UTC</span> · 每晚 22:00 UTC 自动更新</p>
+</header>
+<nav class="nav">
+  <a href="index.html">主页</a>
+  <a href="velocity.html">日均涨速</a>
+  <a href="movers.html">累计涨幅</a>
+  <a href="daily.html">每日新发现</a>
+  <a href="repos.html">全部追踪</a>
+</nav>
+<section><a class="back" href="../daily.html">← 每日新发现</a>
+<div class="report"><h1>Agent Discovery · 2026-07-02</h1>
+<p>Found <strong>78 new repos</strong> across 8 queries.</p>
+<p>Sorted by stars (no LLM scoring; set ANTHROPIC_API_KEY to enable).</p>
+<h2>JuliusBrussee/caveman  ·  ★79188</h2>
+<ul>
+<li>🪨 why use many token when few token do trick — Claude Code skill that cuts 65% of tokens by talking like caveman</li>
+<li>Updated: 2026-07-02</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/JuliusBrussee/caveman">https://github.com/JuliusBrussee/caveman</a></li>
+</ul>
+<h2>blader/humanizer  ·  ★27141</h2>
+<ul>
+<li>Claude Code skill that removes signs of AI-generated writing from text</li>
+<li>Updated: 2026-07-02</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/blader/humanizer">https://github.com/blader/humanizer</a></li>
+</ul>
+<h2>VoltAgent/awesome-claude-code-subagents  ·  ★22698</h2>
+<ul>
+<li>A collection of 100+ specialized Claude Code subagents covering a wide range of development use cases</li>
+<li>Updated: 2026-07-02</li>
+<li>Query hit: <code>claude code subagent</code></li>
+<li><a href="https://github.com/VoltAgent/awesome-claude-code-subagents">https://github.com/VoltAgent/awesome-claude-code-subagents</a></li>
+</ul>
+<h2>alirezarezvani/claude-skills  ·  ★19625</h2>
+<ul>
+<li>337 Claude Code skills &amp; agent skills &amp; plugins (30+ Agents, 70+ custom commands, 330+ skills, customizable references, scripts)for Claude Code, Codex, Gemini CLI, Cursor, and 8 more coding agents — engineering, marketing, product, compliance, C-level advisory, research, business operations, commercial &amp; finance, and your daily productivity skills.</li>
+<li>Updated: 2026-07-02</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/alirezarezvani/claude-skills">https://github.com/alirezarezvani/claude-skills</a></li>
+</ul>
+<h2>op7418/Humanizer-zh  ·  ★12156</h2>
+<ul>
+<li>Humanizer 的汉化版本，Claude Code Skills，旨在消除文本中 AI 生成的痕迹。</li>
+<li>Updated: 2026-07-02</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/op7418/Humanizer-zh">https://github.com/op7418/Humanizer-zh</a></li>
+</ul>
+<h2>HKUDS/AutoAgent  ·  ★9412</h2>
+<ul>
+<li>&quot;AutoAgent: Fully-Automated and Zero-Code LLM Agent Framework&quot;</li>
+<li>Updated: 2026-07-01</li>
+<li>Query hit: <code>llm agent framework</code></li>
+<li><a href="https://github.com/HKUDS/AutoAgent">https://github.com/HKUDS/AutoAgent</a></li>
+</ul>
+<h2>virgiliojr94/book-to-skill  ·  ★7442</h2>
+<ul>
+<li>Turn any technical book PDF into a Claude Code skill — ready to study, reference, and use while you work.</li>
+<li>Updated: 2026-07-02</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/virgiliojr94/book-to-skill">https://github.com/virgiliojr94/book-to-skill</a></li>
+</ul>
+<h2>kyegomez/swarms  ·  ★6909</h2>
+<ul>
+<li>The Enterprise-Grade Production-Ready Multi-Agent Orchestration Framework. Website: https://swarms.ai</li>
+<li>Updated: 2026-07-02</li>
+<li>Query hit: <code>multi-agent orchestration framework</code></li>
+<li><a href="https://github.com/kyegomez/swarms">https://github.com/kyegomez/swarms</a></li>
+</ul>
+<h2>open-multi-agent/open-multi-agent  ·  ★6479</h2>
+<ul>
+<li>TypeScript multi-agent orchestration framework. Describe a goal, a coordinator decomposes it into a task DAG that runs on any LLM: Claude, ChatGPT, Gemini, DeepSeek, or local models. </li>
+<li>Updated: 2026-07-02</li>
+<li>Query hit: <code>multi-agent orchestration framework</code></li>
+<li><a href="https://github.com/open-multi-agent/open-multi-agent">https://github.com/open-multi-agent/open-multi-agent</a></li>
+</ul>
+<h2>SimoneAvogadro/android-reverse-engineering-skill  ·  ★6287</h2>
+<ul>
+<li>Claude Code skill to support Android app&#x27;s reverse engineering</li>
+<li>Updated: 2026-07-02</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/SimoneAvogadro/android-reverse-engineering-skill">https://github.com/SimoneAvogadro/android-reverse-engineering-skill</a></li>
+</ul>
+<h2>trailofbits/skills  ·  ★5956</h2>
+<ul>
+<li>Trail of Bits Claude Code skills for security research, vulnerability detection, and audit workflows</li>
+<li>Updated: 2026-07-02</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/trailofbits/skills">https://github.com/trailofbits/skills</a></li>
+</ul>
+<h2>zarazhangrui/codebase-to-course  ·  ★5099</h2>
+<ul>
+<li>A Claude Code skill that turns any codebase into a beautiful, interactive single-page HTML course for non-technical vibe coders.</li>
+<li>Updated: 2026-07-02</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/zarazhangrui/codebase-to-course">https://github.com/zarazhangrui/codebase-to-course</a></li>
+</ul>
+<h2>VRSEN/agency-swarm  ·  ★4467</h2>
+<ul>
+<li>Reliable Multi-Agent Orchestration Framework</li>
+<li>Updated: 2026-07-01</li>
+<li>Query hit: <code>multi-agent orchestration framework</code></li>
+<li><a href="https://github.com/VRSEN/agency-swarm">https://github.com/VRSEN/agency-swarm</a></li>
+</ul>
+<h2>glitternetwork/pinme  ·  ★3698</h2>
+<ul>
+<li>Deploy Your Frontend in a Single Command. Claude Code Skills supported.</li>
+<li>Updated: 2026-07-01</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/glitternetwork/pinme">https://github.com/glitternetwork/pinme</a></li>
+</ul>
+<h2>taishi-i/awesome-ChatGPT-repositories  ·  ★3119</h2>
+<ul>
+<li>A curated list of open source GitHub repositories related to ChatGPT, the OpenAI API, and Codex. Searchable via Claude Code skills.</li>
+<li>Updated: 2026-07-01</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/taishi-i/awesome-ChatGPT-repositories">https://github.com/taishi-i/awesome-ChatGPT-repositories</a></li>
+</ul>
+<h2>nowork-studio/NotFair  ·  ★3034</h2>
+<ul>
+<li>Open-source Claude Code skills for SEO, GEO, Google Ads, Meta Ads</li>
+<li>Updated: 2026-07-02</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/nowork-studio/NotFair">https://github.com/nowork-studio/NotFair</a></li>
+</ul>
+<h2>lackeyjb/playwright-skill  ·  ★2851</h2>
+<ul>
+<li>Claude Code Skill for browser automation with Playwright. Model-invoked - Claude autonomously writes and executes custom automation for testing and validation.</li>
+<li>Updated: 2026-07-02</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/lackeyjb/playwright-skill">https://github.com/lackeyjb/playwright-skill</a></li>
+</ul>
+<h2>elementalsouls/Claude-BugHunter  ·  ★2828</h2>
+<ul>
+<li>A Claude Code skill bundle for bug hunting and external red-team work — 71 skills, 15 slash commands, 681 disclosed-report patterns curated across 24 core vulnerability classes, plus enterprise identity + infrastructure attack matrices.</li>
+<li>Updated: 2026-07-02</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/elementalsouls/Claude-BugHunter">https://github.com/elementalsouls/Claude-BugHunter</a></li>
+</ul>
+<h2>dominikmartn/nothing-design-skill  ·  ★2568</h2>
+<ul>
+<li>A Claude Code skill for generating UI in the Nothing design language. Monochrome, typographic, industrial.</li>
+<li>Updated: 2026-07-01</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/dominikmartn/nothing-design-skill">https://github.com/dominikmartn/nothing-design-skill</a></li>
+</ul>
+<h2>Agentchengfeng/chengfeng-videocut-skills  ·  ★2468</h2>
+<ul>
+<li>用 Claude Code Skills 做的视频剪辑 Agent</li>
+<li>Updated: 2026-07-02</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/Agentchengfeng/chengfeng-videocut-skills">https://github.com/Agentchengfeng/chengfeng-videocut-skills</a></li>
+</ul>
+<h2>heshengtao/comfyui_LLM_party  ·  ★2294</h2>
+<ul>
+<li>LLM Agent Framework in ComfyUI includes MCP sever, Omost,GPT-sovits, ChatTTS,GOT-OCR2.0, and FLUX prompt nodes,access to Feishu,discord,and adapts to all llms with similar openai / aisuite interfaces, such as o1,ollama, gemini, grok, qwen, GLM, deepseek, kimi,doubao. Adapted to local llms, vlm, gguf such as llama-3.3 Janus-Pro, Linkage graphRAG</li>
+<li>Updated: 2026-07-01</li>
+<li>Query hit: <code>llm agent framework</code></li>
+<li><a href="https://github.com/heshengtao/comfyui_LLM_party">https://github.com/heshengtao/comfyui_LLM_party</a></li>
+</ul>
+<h2>tradermonty/claude-trading-skills  ·  ★2210</h2>
+<ul>
+<li>Claude Code skills for equity investors and traders — market analysis, technical charting, economic calendars, screeners, and trading strategy development.</li>
+<li>Updated: 2026-07-02</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/tradermonty/claude-trading-skills">https://github.com/tradermonty/claude-trading-skills</a></li>
+</ul>
+<h2>yctimlin/mcp_excalidraw  ·  ★2119</h2>
+<ul>
+<li>MCP server and Claude Code skill for Excalidraw — programmatic canvas toolkit to create, edit, and export diagrams via AI agents with real-time canvas sync.</li>
+<li>Updated: 2026-07-02</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/yctimlin/mcp_excalidraw">https://github.com/yctimlin/mcp_excalidraw</a></li>
+</ul>
+<h2>Kocoro-lab/Shannon  ·  ★2065</h2>
+<ul>
+<li>A production-oriented multi-agent orchestration framework.</li>
+<li>Updated: 2026-07-02</li>
+<li>Query hit: <code>multi-agent orchestration framework</code></li>
+<li><a href="https://github.com/Kocoro-lab/Shannon">https://github.com/Kocoro-lab/Shannon</a></li>
+</ul>
+<h2>kaushikb11/awesome-llm-agents  ·  ★1520</h2>
+<ul>
+<li>A curated list of awesome LLM agents frameworks.</li>
+<li>Updated: 2026-07-01</li>
+<li>Query hit: <code>llm agent framework</code></li>
+<li><a href="https://github.com/kaushikb11/awesome-llm-agents">https://github.com/kaushikb11/awesome-llm-agents</a></li>
+</ul>
+<h2>P4nda0s/reverse-skills  ·  ★1464</h2>
+<ul>
+<li>Reverse engineering skills for Claude Code | 逆向工程 Claude Code Skills 插件</li>
+<li>Updated: 2026-07-01</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/P4nda0s/reverse-skills">https://github.com/P4nda0s/reverse-skills</a></li>
+</ul>
+<h2>skills-directory/skill-codex  ·  ★1339</h2>
+<ul>
+<li>A claude code skill to delegate prompts to codex</li>
+<li>Updated: 2026-07-01</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/skills-directory/skill-codex">https://github.com/skills-directory/skill-codex</a></li>
+</ul>
+<h2>onvoyage-ai/gtm-engineer-skills  ·  ★1244</h2>
+<ul>
+<li>Claude Code skill for improving website AEO (AI Engine Optimization) and GEO (Generative Engine Optimization) scores — 16 foundational checks, 6 intelligence dimensions, framework-specific fixes</li>
+<li>Updated: 2026-07-02</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/onvoyage-ai/gtm-engineer-skills">https://github.com/onvoyage-ai/gtm-engineer-skills</a></li>
+</ul>
+<h2>daymade/claude-code-skills  ·  ★1237</h2>
+<ul>
+<li>Professional Claude Code skills marketplace featuring production-ready skills for enhanced development workflows.</li>
+<li>Updated: 2026-07-01</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/daymade/claude-code-skills">https://github.com/daymade/claude-code-skills</a></li>
+</ul>
+<h2>NeoLabHQ/context-engineering-kit  ·  ★1195</h2>
+<ul>
+<li>Hand-crafted Claude Code Skills focused on improving agent results quality. Compatible with OpenCode, Cursor, Antigravity, Gemini CLI, and others.</li>
+<li>Updated: 2026-07-01</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/NeoLabHQ/context-engineering-kit">https://github.com/NeoLabHQ/context-engineering-kit</a></li>
+</ul>
+<h2>adamlyttleapps/claude-skill-app-onboarding-questionnaire  ·  ★1086</h2>
+<ul>
+<li> A Claude Code skill that designs and builds high-converting questionnaire-style app onboarding flows — modelled    on proven conversion patterns from top subscription apps like Mob, Headspace and Noom</li>
+<li>Updated: 2026-07-02</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/adamlyttleapps/claude-skill-app-onboarding-questionnaire">https://github.com/adamlyttleapps/claude-skill-app-onboarding-questionnaire</a></li>
+</ul>
+<h2>Aaronontheweb/dotnet-skills  ·  ★1039</h2>
+<ul>
+<li>Claude Code skills and sub-agents for .NET Developers</li>
+<li>Updated: 2026-07-02</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/Aaronontheweb/dotnet-skills">https://github.com/Aaronontheweb/dotnet-skills</a></li>
+</ul>
+<h2>CharlesWiltgen/Axiom  ·  ★1010</h2>
+<ul>
+<li>Battle-tested Claude Code skills for modern xOS (iOS, iPadOS, watchOS, tvOS) development</li>
+<li>Updated: 2026-07-02</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/CharlesWiltgen/Axiom">https://github.com/CharlesWiltgen/Axiom</a></li>
+</ul>
+<h2>bevibing/tutor-skills  ·  ★997</h2>
+<ul>
+<li>A Claude Code skill that turns PDFs, docs, and codebases into Obsidian study vaults</li>
+<li>Updated: 2026-07-02</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/bevibing/tutor-skills">https://github.com/bevibing/tutor-skills</a></li>
+</ul>
+<h2>taishi-i/awesome-japanese-nlp-resources  ·  ★986</h2>
+<ul>
+<li>A curated list of resources for Japanese natural language processing (NLP): Python libraries, LLMs, dictionaries, corpora, and datasets. Includes Claude Code skills to search resources.</li>
+<li>Updated: 2026-07-01</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/taishi-i/awesome-japanese-nlp-resources">https://github.com/taishi-i/awesome-japanese-nlp-resources</a></li>
+</ul>
+<h2>0xfurai/claude-code-subagents  ·  ★946</h2>
+<ul>
+<li>A comprehensive collection of 100+ production-ready development subagents for Claude Code</li>
+<li>Updated: 2026-07-01</li>
+<li>Query hit: <code>claude code subagent</code></li>
+<li><a href="https://github.com/0xfurai/claude-code-subagents">https://github.com/0xfurai/claude-code-subagents</a></li>
+</ul>
+<h2>aiwithremy/claude-skills-llm-council  ·  ★900</h2>
+<ul>
+<li>LLM Council — a Claude Code skill that runs your decisions through 5 AI advisors with peer review</li>
+<li>Updated: 2026-07-02</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/aiwithremy/claude-skills-llm-council">https://github.com/aiwithremy/claude-skills-llm-council</a></li>
+</ul>
+<h2>alchaincyf/huashu-md-html  ·  ★824</h2>
+<ul>
+<li>md/html 双向流水线 · 三个能力一站式：万物→md / md→精美html / html→md。封装 markitdown + Pandoc + html-to-markdown + trafilatura。4 套反 AI slop 主题。Claude Code skill.</li>
+<li>Updated: 2026-07-01</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/alchaincyf/huashu-md-html">https://github.com/alchaincyf/huashu-md-html</a></li>
+</ul>
+<h2>alirezarezvani/claude-code-skill-factory  ·  ★821</h2>
+<ul>
+<li>Claude Code Skill Factory — A powerful open-source toolkit for building and deploying production-ready Claude Skills, Code Agents, custom Slash Commands, and LLM Prompts at scale. Easily generate structured skill templates, automate workflow integration, and accelerate AI agent development with a clean, developer-friendly setup.</li>
+<li>Updated: 2026-07-02</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/alirezarezvani/claude-code-skill-factory">https://github.com/alirezarezvani/claude-code-skill-factory</a></li>
+</ul>
+<h2>wshuyi/x-article-publisher-skill  ·  ★819</h2>
+<ul>
+<li>Claude Code skill for publishing Markdown articles to X (Twitter) Articles</li>
+<li>Updated: 2026-07-01</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/wshuyi/x-article-publisher-skill">https://github.com/wshuyi/x-article-publisher-skill</a></li>
+</ul>
+<h2>deusyu/translate-book  ·  ★817</h2>
+<ul>
+<li>Claude Code skill that translates entire books (PDF/DOCX/EPUB) into any language using parallel subagents</li>
+<li>Updated: 2026-07-02</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/deusyu/translate-book">https://github.com/deusyu/translate-book</a></li>
+</ul>
+<h2>komal-SkyNET/claude-skill-homeassistant  ·  ★733</h2>
+<ul>
+<li>Claude Code skill to supercharge and manage all Home Assistant workflows</li>
+<li>Updated: 2026-07-01</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/komal-SkyNET/claude-skill-homeassistant">https://github.com/komal-SkyNET/claude-skill-homeassistant</a></li>
+</ul>
+<h2>zsyggg/paper-craft-skills  ·  ★732</h2>
+<ul>
+<li>Claude Code skills for academic papers: deep analysis, comics, summaries | 论文工艺：深度解读、漫画生成、速览总结</li>
+<li>Updated: 2026-07-02</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/zsyggg/paper-craft-skills">https://github.com/zsyggg/paper-craft-skills</a></li>
+</ul>
+<h2>yunshu0909/yunshu_skillshub  ·  ★691</h2>
+<ul>
+<li>云舒精选的 Claude Code Skills 集合，提升开发和产品管理效率</li>
+<li>Updated: 2026-07-01</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/yunshu0909/yunshu_skillshub">https://github.com/yunshu0909/yunshu_skillshub</a></li>
+</ul>
+<h2>mohi-devhub/antivibe  ·  ★652</h2>
+<ul>
+<li>Learn what AI writes, not just accept it. A Claude Code skill that turns AI-generated code into educational deep dives.</li>
+<li>Updated: 2026-07-01</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/mohi-devhub/antivibe">https://github.com/mohi-devhub/antivibe</a></li>
+</ul>
+<h2>mhattingpete/claude-skills-marketplace  ·  ★635</h2>
+<ul>
+<li>Claude Code Skills for software engineering workflows - Git automation, testing, and code review</li>
+<li>Updated: 2026-07-02</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/mhattingpete/claude-skills-marketplace">https://github.com/mhattingpete/claude-skills-marketplace</a></li>
+</ul>
+<h2>zhuyansen/wx-favorites-report  ·  ★619</h2>
+<ul>
+<li>微信收藏可视化 Claude Code Skill — 从加密 DB 到交互式 HTML 报告的端到端管线</li>
+<li>Updated: 2026-07-01</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/zhuyansen/wx-favorites-report">https://github.com/zhuyansen/wx-favorites-report</a></li>
+</ul>
+<h2>anthropics/launch-your-agent  ·  ★600</h2>
+<ul>
+<li>Claude Code skills that take a founder from idea to a live Claude Managed Agent: interview, scope a v0, launch in their own account, grade it, iterate, and schedule it</li>
+<li>Updated: 2026-07-02</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/anthropics/launch-your-agent">https://github.com/anthropics/launch-your-agent</a></li>
+</ul>
+<h2>iamzifei/show-me-the-money  ·  ★598</h2>
+<ul>
+<li>Claude Code skill suite that builds and runs a 24/7 automated business from scratch — from idea discovery to revenue generation.</li>
+<li>Updated: 2026-07-02</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/iamzifei/show-me-the-money">https://github.com/iamzifei/show-me-the-money</a></li>
+</ul>
+<h2>lijigang/ljg-skill-xray-paper  ·  ★587</h2>
+<ul>
+<li>论文X光机 — Claude Code Skill，解构学术论文，提炼餐巾纸公式</li>
+<li>Updated: 2026-06-30</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/lijigang/ljg-skill-xray-paper">https://github.com/lijigang/ljg-skill-xray-paper</a></li>
+</ul>
+<h2>Wechat-ggGitHub/wechat-claude-code  ·  ★578</h2>
+<ul>
+<li>Chat with Claude Code from WeChat - a Claude Code Skill</li>
+<li>Updated: 2026-07-01</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/Wechat-ggGitHub/wechat-claude-code">https://github.com/Wechat-ggGitHub/wechat-claude-code</a></li>
+</ul>
+<h2>xiaopu-ai/web-design  ·  ★567</h2>
+<ul>
+<li>A Claude Code SKILL for designing beautiful, consistent web pages — spec first, code second. </li>
+<li>Updated: 2026-07-01</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/xiaopu-ai/web-design">https://github.com/xiaopu-ai/web-design</a></li>
+</ul>
+<h2>blader/napkin  ·  ★564</h2>
+<ul>
+<li>A Claude Code skill that gives the agent persistent memory of its mistakes via a per-repo markdown scratchpad.</li>
+<li>Updated: 2026-07-02</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/blader/napkin">https://github.com/blader/napkin</a></li>
+</ul>
+<h2>DanMcInerney/architect-loop  ·  ★550</h2>
+<ul>
+<li>Claude Fable 5 as architect, GPT-5.5 Codex as builder, the repo as memory - a research-backed Claude Code skill for the cross-vendor agent loop</li>
+<li>Updated: 2026-07-02</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/DanMcInerney/architect-loop">https://github.com/DanMcInerney/architect-loop</a></li>
+</ul>
+<h2>u7079256/paperjury  ·  ★529</h2>
+<ul>
+<li>Pre-submission AI review stress-test for research papers. A Claude Code skill: review, verdict, revise, verify.</li>
+<li>Updated: 2026-07-02</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/u7079256/paperjury">https://github.com/u7079256/paperjury</a></li>
+</ul>
+<h2>ksimback/tech-debt-skill  ·  ★528</h2>
+<ul>
+<li>Claude Code skill that produces a thorough, file-cited tech debt audit of an entire codebase</li>
+<li>Updated: 2026-07-01</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/ksimback/tech-debt-skill">https://github.com/ksimback/tech-debt-skill</a></li>
+</ul>
+<h2>ArtemXTech/personal-os-skills  ·  ★513</h2>
+<ul>
+<li>Claude Code skills for Obsidian | Claude Code x Obsidian Lab starts May 5</li>
+<li>Updated: 2026-07-01</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/ArtemXTech/personal-os-skills">https://github.com/ArtemXTech/personal-os-skills</a></li>
+</ul>
+<h2>laolaoshiren/claude-code-skills-zh  ·  ★510</h2>
+<ul>
+<li>🛠️ 最实用的 Claude Code Skills 合集 | 精选 100+ | 18个原创可安装技能 | 按场景分类 | 复制即装</li>
+<li>Updated: 2026-07-02</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/laolaoshiren/claude-code-skills-zh">https://github.com/laolaoshiren/claude-code-skills-zh</a></li>
+</ul>
+<h2>levnikolaevich/claude-code-skills  ·  ★506</h2>
+<ul>
+<li>Plugin suite + bundled MCP servers for Claude Code. Full delivery lifecycle: Agile pipeline with multi-model AI review, project bootstrap, documentation generation, codebase audits, performance optimization, community workflows. Includes hex-line (hash-verified editing), hex-graph (code knowledge graph), and hex-ssh (remote SSH) MCP servers.</li>
+<li>Updated: 2026-07-01</li>
+<li>Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/levnikolaevich/claude-code-skills">https://github.com/levnikolaevich/claude-code-skills</a></li>
+</ul>
+<h2>PaddlePaddle/ERNIE-SDK  ·  ★376</h2>
+<ul>
+<li>ERNIE Bot Agent is a Large Language Model (LLM) Agent Framework, powered by the advanced capabilities of ERNIE Bot and the platform resources of Baidu AI Studio.</li>
+<li>Updated: 2026-06-30</li>
+<li>Query hit: <code>llm agent framework</code></li>
+<li><a href="https://github.com/PaddlePaddle/ERNIE-SDK">https://github.com/PaddlePaddle/ERNIE-SDK</a></li>
+</ul>
+<h2>rahulvrane/awesome-claude-agents  ·  ★359</h2>
+<ul>
+<li>collection of awesome claude code subagents!</li>
+<li>Updated: 2026-06-23</li>
+<li>Query hit: <code>claude code subagent</code></li>
+<li><a href="https://github.com/rahulvrane/awesome-claude-agents">https://github.com/rahulvrane/awesome-claude-agents</a></li>
+</ul>
+<h2>dsifry/metaswarm  ·  ★335</h2>
+<ul>
+<li>A self-improving multi-agent orchestration framework for Claude Code, Gemini CLI, and Codex CLI — 18 agents, 13 skills, 15 commands, TDD enforcement, quality gates, spec-driven development</li>
+<li>Updated: 2026-06-28</li>
+<li>Query hit: <code>multi-agent orchestration framework</code></li>
+<li><a href="https://github.com/dsifry/metaswarm">https://github.com/dsifry/metaswarm</a></li>
+</ul>
+<h2>foreveryh/mentis  ·  ★297</h2>
+<ul>
+<li>Mentis: A powerful multi-agent orchestration framework built on LangGraph.</li>
+<li>Updated: 2026-06-30</li>
+<li>Query hit: <code>multi-agent orchestration framework</code></li>
+<li><a href="https://github.com/foreveryh/mentis">https://github.com/foreveryh/mentis</a></li>
+</ul>
+<h2>mubaidr/gem-team  ·  ★182</h2>
+<ul>
+<li>Self-Learning Multi-agent orchestration framework for spec-driven development and automated verification.  With smarter tool calling and leaner context.</li>
+<li>Updated: 2026-07-01</li>
+<li>Query hit: <code>multi-agent orchestration framework</code></li>
+<li><a href="https://github.com/mubaidr/gem-team">https://github.com/mubaidr/gem-team</a></li>
+</ul>
+<h2>The-Swarm-Corporation/swarms-rs  ·  ★169</h2>
+<ul>
+<li>The Enterprise-Grade Production-Ready Multi-Agent Orchestration Framework in Rust</li>
+<li>Updated: 2026-07-02</li>
+<li>Query hit: <code>multi-agent orchestration framework</code></li>
+<li><a href="https://github.com/The-Swarm-Corporation/swarms-rs">https://github.com/The-Swarm-Corporation/swarms-rs</a></li>
+</ul>
+<h2>chefkannofriend-source/mbbb-baker-agent  ·  ★144</h2>
+<ul>
+<li>Claude Code subagent for pastry recipe lookup and Baker&#x27;s Percentage calculation</li>
+<li>Updated: 2026-06-17</li>
+<li>Query hit: <code>claude code subagent</code></li>
+<li><a href="https://github.com/chefkannofriend-source/mbbb-baker-agent">https://github.com/chefkannofriend-source/mbbb-baker-agent</a></li>
+</ul>
+<h2>CyberTron957/agent-teams  ·  ★140</h2>
+<ul>
+<li>A Multi-Agent Orchestration Framework</li>
+<li>Updated: 2026-07-02</li>
+<li>Query hit: <code>multi-agent orchestration framework</code></li>
+<li><a href="https://github.com/CyberTron957/agent-teams">https://github.com/CyberTron957/agent-teams</a></li>
+</ul>
+<h2>jwangkun/Pi-Multi-Agent  ·  ★121</h2>
+<ul>
+<li>Production-Grade Multi-Agent Orchestration Framework</li>
+<li>Updated: 2026-06-30</li>
+<li>Query hit: <code>multi-agent orchestration framework</code></li>
+<li><a href="https://github.com/jwangkun/Pi-Multi-Agent">https://github.com/jwangkun/Pi-Multi-Agent</a></li>
+</ul>
+<h2>WHU-MYTH-Lab/humanus.cpp  ·  ★121</h2>
+<ul>
+<li>Lightweight C++ LLM agent framework</li>
+<li>Updated: 2026-06-29</li>
+<li>Query hit: <code>llm agent framework</code></li>
+<li><a href="https://github.com/WHU-MYTH-Lab/humanus.cpp">https://github.com/WHU-MYTH-Lab/humanus.cpp</a></li>
+</ul>
+<h2>rubenzantingh/claude-code-magento-agents  ·  ★114</h2>
+<ul>
+<li>Collection of Claude Code Subagents designed to be used for Magento (2) development.</li>
+<li>Updated: 2026-07-01</li>
+<li>Query hit: <code>claude code subagent</code></li>
+<li><a href="https://github.com/rubenzantingh/claude-code-magento-agents">https://github.com/rubenzantingh/claude-code-magento-agents</a></li>
+</ul>
+<h2>doiito/gliding_horse  ·  ★106</h2>
+<ul>
+<li>Gliding Horse is a multi-agent orchestration framework built in Rust that supports PDCA scheduling and knowledge graph-based agents, with comprehensive Chinese documentation, and is suitable for building enterprise-level AI agent systems.</li>
+<li>Updated: 2026-07-02</li>
+<li>Query hit: <code>multi-agent orchestration framework</code></li>
+<li><a href="https://github.com/doiito/gliding_horse">https://github.com/doiito/gliding_horse</a></li>
+</ul>
+<h2>martymcenroe/AssemblyZero  ·  ★105</h2>
+<ul>
+<li>Parameterized multi-agent orchestration framework for Claude Code and Gemini</li>
+<li>Updated: 2026-07-01</li>
+<li>Query hit: <code>multi-agent orchestration framework</code></li>
+<li><a href="https://github.com/martymcenroe/AssemblyZero">https://github.com/martymcenroe/AssemblyZero</a></li>
+</ul>
+<h2>bijutharakan/multi-agent-squad  ·  ★87</h2>
+<ul>
+<li>Production-ready multi-agent orchestration framework for Claude Code. Features specialized AI agents, automated Git workflows, and comprehensive development automation.</li>
+<li>Updated: 2026-06-20</li>
+<li>Query hit: <code>multi-agent orchestration framework</code></li>
+<li><a href="https://github.com/bijutharakan/multi-agent-squad">https://github.com/bijutharakan/multi-agent-squad</a></li>
+</ul>
+<h2>sanghun0724/awesome-swift-claude-code-subagents  ·  ★71</h2>
+<ul>
+<li>awesome-swift-claude-code-subagents</li>
+<li>Updated: 2026-05-03</li>
+<li>Query hit: <code>claude code subagent</code></li>
+<li><a href="https://github.com/sanghun0724/awesome-swift-claude-code-subagents">https://github.com/sanghun0724/awesome-swift-claude-code-subagents</a></li>
+</ul>
+<h2>Filip-Podstavec/claude-leverage  ·  ★66</h2>
+<ul>
+<li>Make any repo AI-first - write sustainable code from the start, or refactor a legacy codebase to prepare it for agent-driven development.Building blocks for Claude Code: subagents, slash commands, hooks, and workflow patterns. Copy what you need. A working developer&#x27;s stack for Claude Code.</li>
+<li>Updated: 2026-07-01</li>
+<li>Query hit: <code>claude code subagent</code></li>
+<li><a href="https://github.com/Filip-Podstavec/claude-leverage">https://github.com/Filip-Podstavec/claude-leverage</a></li>
+</ul>
+<h2>rshah515/claude-code-subagents  ·  ★61</h2>
+<ul>
+<li>Comprehensive collection of 133+ specialized AI subagents for Claude Code covering the entire software development lifecycle</li>
+<li>Updated: 2026-06-27</li>
+<li>Query hit: <code>claude code subagent</code></li>
+<li><a href="https://github.com/rshah515/claude-code-subagents">https://github.com/rshah515/claude-code-subagents</a></li>
+</ul>
+<h2>ryanthedev/oberskills  ·  ★52</h2>
+<ul>
+<li>Discipline plugins for Claude Code — prompt engineering, agent dispatch, writing, and search</li>
+<li>Updated: 2026-07-02</li>
+<li>Query hit: <code>prompt engineering agent</code></li>
+<li><a href="https://github.com/ryanthedev/oberskills">https://github.com/ryanthedev/oberskills</a></li>
+</ul>
+<h2>Dingent/Dingent  ·  ★51</h2>
+<ul>
+<li>A lightweight, user-friendly LLM Agent framework focused on simplifying data retrieval application development.</li>
+<li>Updated: 2026-06-24</li>
+<li>Query hit: <code>llm agent framework</code></li>
+<li><a href="https://github.com/Dingent/Dingent">https://github.com/Dingent/Dingent</a></li>
+</ul></div></section>
+
+</body>
+</html>

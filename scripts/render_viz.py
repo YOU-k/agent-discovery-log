@@ -7,6 +7,8 @@ Structure (all static, no external assets, GitHub Pages serves /docs):
   movers.html   累计涨幅 Top 30
   daily.html    每日新发现（柱图 + 按天明细）
   repos.html    全部追踪（紧凑行，点击展开完整分析）
+  reports/*.html  每天的日报（由 discoveries/*.md 渲出）——留在本站域内，
+                  不跳 github.com（那边对部分网络不可达，Pages 域名稳定）
 
 Usage:
     python3 scripts/render_viz.py [--refresh]
@@ -22,9 +24,7 @@ import argparse
 import datetime as dt
 import html
 import json
-import os
 import re
-import subprocess
 import sys
 from pathlib import Path
 from typing import Any
@@ -32,6 +32,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 STATE = ROOT / "state" / "seen.json"
 OUT_DIR = ROOT / "docs"
+DISCOVERIES = ROOT / "discoveries"
 
 sys.path.insert(0, str(ROOT / "scripts"))
 import discover  # noqa: E402  (daily_rate / is_watched / refresh_stars)
@@ -196,6 +197,17 @@ td:nth-child(1) { overflow-wrap: anywhere; }
           font-size: 12px; margin-top: 14px; }
 .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px;
             margin-right: 6px; vertical-align: -1px; }
+
+/* 日报正文（reports/*.html） */
+.report h1 { font-size: 22px; margin: 0 0 10px; }
+.report h2 { font-size: 16px; margin: 26px 0 8px; font-weight: 600; }
+.report p { color: var(--ink-2); font-size: 14px; margin: 6px 0; }
+.report ul { margin: 6px 0 14px; padding-left: 22px; }
+.report li { margin: 3px 0; color: var(--ink-2); font-size: 14px; }
+.report table { table-layout: auto; font-size: 13px; }
+.report code { background: var(--line-soft); border-radius: 4px; padding: 1px 5px; font-size: 12.5px; }
+.report a { color: var(--series); }
+.back { display: inline-block; margin: 0 0 14px; color: var(--ink-3); font-size: 13px; }
 """
 
 JS = """
@@ -226,22 +238,6 @@ if (allBtn) {
 
 def esc(s: Any) -> str:
     return html.escape(str(s or ""), quote=True)
-
-
-def repo_slug() -> str:
-    """owner/repo，用于「当天日报」链接。CI 里有 GITHUB_REPOSITORY，本地取 git remote。"""
-    slug = os.environ.get("GITHUB_REPOSITORY", "")
-    if slug:
-        return slug
-    try:
-        url = subprocess.run(
-            ["git", "remote", "get-url", "origin"], capture_output=True, text=True, timeout=10,
-        ).stdout.strip()
-        m = re.search(r"github\.com[:/]([^/]+/[^/]+?)(?:\.git)?$", url)
-        return m.group(1) if m else ""
-    except Exception:
-        return ""
-
 
 def repo_rows(seen: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
     """Flatten seen.json into display rows with then/now/delta stars + velocity."""
@@ -348,6 +344,81 @@ def page_shell(active: str, body: str, generated: str) -> str:
 </body>
 </html>
 """
+
+
+def _md_inline(text: str) -> str:
+    """行内：**加粗**、`代码`、[文字](链接)、<url> 裸链接。"""
+    s = esc(text)
+    s = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", s)
+    s = re.sub(r"`([^`]+)`", r"<code>\1</code>", s)
+    s = re.sub(r"\[([^\]]+)\]\((https?://[^)]+)\)", r'<a href="\2">\1</a>', s)
+    s = re.sub(r"&lt;(https?://[^&]+)&gt;", r'<a href="\1">\1</a>', s)
+    return s
+
+
+def tiny_md(md_text: str) -> str:
+    """极简 md→html，只覆盖日报用到的语法：标题、列表、表格、段落。
+
+    日报是我们自己生成的，格式可控，所以不需要完整 markdown 解析器。
+    """
+    out: list[str] = []
+    in_list = False
+    table_rows: list[str] = []
+
+    def flush_list() -> None:
+        nonlocal in_list
+        if in_list:
+            out.append("</ul>")
+            in_list = False
+
+    def flush_table() -> None:
+        nonlocal table_rows
+        if table_rows:
+            head, *body = table_rows
+            cells = lambda row: [c.strip() for c in row.strip().strip("|").split("|")]  # noqa: E731
+            out.append("<table><thead><tr>" + "".join(f"<th>{_md_inline(c)}</th>" for c in cells(head)) + "</tr></thead><tbody>")
+            for row in body:
+                if set(row) <= set("|-: "):
+                    continue
+                out.append("<tr>" + "".join(f"<td>{_md_inline(c)}</td>" for c in cells(row)) + "</tr>")
+            out.append("</tbody></table>")
+            table_rows = []
+
+    for line in md_text.splitlines():
+        if line.startswith("|"):
+            flush_list()
+            table_rows.append(line)
+            continue
+        flush_table()
+        if line.startswith("- "):
+            if not in_list:
+                out.append("<ul>")
+                in_list = True
+            out.append(f"<li>{_md_inline(line[2:])}</li>")
+            continue
+        flush_list()
+        if line.startswith("## "):
+            out.append(f"<h2>{_md_inline(line[3:])}</h2>")
+        elif line.startswith("# "):
+            out.append(f"<h1>{_md_inline(line[2:])}</h1>")
+        elif line.strip():
+            out.append(f"<p>{_md_inline(line)}</p>")
+    flush_list()
+    flush_table()
+    return "\n".join(out)
+
+
+def report_pages(dates: list[str], generated: str) -> dict[str, str]:
+    """把 discoveries/*.md 渲成站内页面。md 不存在的那天不出页面。"""
+    pages = {}
+    for d in dates:
+        md_path = DISCOVERIES / f"{d}.md"
+        if not md_path.exists():
+            continue
+        body = ('<section><a class="back" href="../daily.html">← 每日新发现</a>\n'
+                f'<div class="report">{tiny_md(md_path.read_text(encoding="utf-8"))}</div></section>')
+        pages[f"reports/{d}.html"] = page_shell("", body, generated)
+    return pages
 
 
 def detail_html(r: dict[str, Any]) -> str:
@@ -479,11 +550,11 @@ def daily_page(rows: list[dict[str, Any]], generated: str) -> str:
     axis = (f'<span>{esc(days[0][0])}</span><span>峰值 {max_n} 个/天</span>'
             f'<span>{esc(days[-1][0])}</span>') if days else ""
 
-    slug = repo_slug()
     day_blocks = []
     for d, names in sorted(by_day.items(), reverse=True):
-        report = (f' · <a href="https://github.com/{esc(slug)}/blob/main/discoveries/{esc(d)}.md">当天日报 →</a>'
-                  if slug else "")
+        # 日报渲成站内页面（github.com 对部分网络不可达，Pages 域名稳定）
+        report = (f' · <a href="reports/{esc(d)}.html">当天日报 →</a>'
+                  if (DISCOVERIES / f"{d}.md").exists() else "")
         links = " ".join(
             f'<a href="https://github.com/{esc(fn)}">{esc(fn.split("/")[-1])}</a>' for fn in names[:12]
         )
@@ -502,7 +573,7 @@ def daily_page(rows: list[dict[str, Any]], generated: str) -> str:
 </section>
 <section>
   <h2>按天明细</h2>
-  <p class="sub">点击项目名去 GitHub；「当天日报」是含完整分析的 markdown。</p>
+  <p class="sub">点击项目名去 GitHub；「当天日报」是站内渲染的完整分析页。</p>
 {"".join(day_blocks)}
 </section>"""
     return page_shell("daily.html", body, generated)
@@ -566,7 +637,7 @@ def render_pages(seen: dict[str, dict[str, Any]]) -> dict[str, str]:
         r["_bar_label"] = f"+{r['delta']:,}"
     movers_html = bar_chart(top, "delta")
 
-    return {
+    pages = {
         "index.html": home_page(rows, generated),
         "velocity.html": chart_page("velocity.html", "日均涨速",
                                     f"首次收录以来的平均 stars/天，Top {TOP_CHART}。橙色 = 已自动关注。",
@@ -577,6 +648,10 @@ def render_pages(seen: dict[str, dict[str, Any]]) -> dict[str, str]:
         "daily.html": daily_page(rows, generated),
         "repos.html": repos_page(rows, generated),
     }
+    # 每天的日报也渲成站内页面（留在 Pages 域内，不依赖 github.com 可达性）
+    dates = sorted({r["first_seen"] for r in rows if r["first_seen"]})
+    pages.update(report_pages(dates, generated))
+    return pages
 
 
 def render(seen: dict[str, dict[str, Any]]) -> str:
@@ -597,7 +672,9 @@ def main() -> int:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     pages = render_pages(seen)
     for name, html_text in pages.items():
-        (OUT_DIR / name).write_text(html_text, encoding="utf-8")
+        out_path = OUT_DIR / name
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        out_path.write_text(html_text, encoding="utf-8")
     print(f"[INFO] wrote {len(pages)} pages to {OUT_DIR.relative_to(ROOT)}")
     return 0
 

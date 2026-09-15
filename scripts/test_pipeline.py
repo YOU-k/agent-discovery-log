@@ -104,8 +104,8 @@ def main() -> int:
     print("\n渲染:")
     pages = render_viz.render_pages(seen)
     home, repos_pg = pages["index.html"], pages["repos.html"]
-    ok &= check("五个页面都渲得出来",
-                set(pages) == {"index.html", "velocity.html", "movers.html", "daily.html", "repos.html"}
+    ok &= check("五个主页面都渲得出来（另有 reports/ 子页）",
+                {"index.html", "velocity.html", "movers.html", "daily.html", "repos.html"} <= set(pages)
                 and all(len(p) > 2000 for p in pages.values()),
                 f"{len(pages)} 页")
     for frag in ("<!doctype html>", "Agent Discovery", "tiles", "全部追踪", "日均涨速"):

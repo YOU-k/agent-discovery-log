@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent Discovery · </title>
+<style>
+/* 调色板取自 dataviz 参考实例，两模式都跑过 validate_palette：
+   light #2a78d6/#eb6834 on #fcfcfb、dark #3987e5/#d95926 on #1a1a19，
+   五项检查全 PASS（all-pairs CVD ΔE 24.7/26.8，normal 33.6/31.8，对比度 ≥3:1）。
+   蓝 = 数据序列，橙 = 「自动关注」状态，两者不混用。 */
+:root {
+  color-scheme: light;
+  --bg: #ffffff;
+  --surface: #fcfcfb;
+  --line: #e7e5e0;
+  --line-soft: #f2f1ed;
+  --ink: #0b0b0b;
+  --ink-2: #52514e;
+  --ink-3: #8a8880;
+  --series: #2a78d6;
+  --series-soft: #dce9f9;
+  --hot: #eb6834;
+  --hot-soft: #fbe4da;
+  --pos: #0a6b3d;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #131312; --surface: #1a1a19; --line: #302f2c; --line-soft: #232322;
+    --ink: #ffffff; --ink-2: #c3c2b7; --ink-3: #8a8880;
+    --series: #3987e5; --series-soft: #1e3a5f; --hot: #d95926; --hot-soft: #3a241b;
+    --pos: #4bbd85;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink);
+  font: 15px/1.6 ui-sans-serif, -apple-system, "Segoe UI", "Noto Sans SC", sans-serif;
+  margin: 0 auto; max-width: 1120px; padding: 48px 24px 96px;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; }
+a:hover { text-decoration: underline; text-underline-offset: 2px; }
+
+/* 页头 + 导航 */
+.head { margin-bottom: 24px; }
+h1 { font-size: 30px; letter-spacing: -0.02em; margin: 0 0 6px; font-weight: 600; }
+.meta { color: var(--ink-3); font-size: 13px; margin: 0; font-variant-numeric: tabular-nums; }
+.meta .fresh { color: var(--ink-2); }
+.nav { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 28px; }
+.nav a { border: 1px solid var(--line); border-radius: 999px; padding: 5px 15px;
+         font-size: 13px; color: var(--ink-2); }
+.nav a:hover { border-color: var(--ink-3); text-decoration: none; }
+.nav a.cur { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+/* 模块卡片 */
+section { background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+          padding: 24px 24px 26px; margin: 0 0 20px; }
+section > h2 { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+               color: var(--ink-3); margin: 0 0 2px; }
+section > .sub { color: var(--ink-3); font-size: 13px; margin: 0 0 18px; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+         gap: 14px; margin: 0 0 20px; }
+a.card { display: block; background: var(--surface); border: 1px solid var(--line);
+         border-radius: 14px; padding: 20px 22px; transition: border-color .15s ease; }
+a.card:hover { border-color: var(--ink-3); text-decoration: none; }
+.card h3 { margin: 0 0 4px; font-size: 16px; font-weight: 600; }
+.card .d { color: var(--ink-3); font-size: 13px; margin: 0 0 14px; }
+.card .preview { font-size: 13px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.card .preview b { color: var(--ink); }
+.card .go { color: var(--series); font-size: 13px; margin-top: 12px; display: block; }
+
+/* Stat tiles —— 单个数字不该画成图 */
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1px;
+         background: var(--line); border: 1px solid var(--line); border-radius: 14px;
+         overflow: hidden; margin: 0 0 28px; }
+.tile { background: var(--surface); padding: 20px 22px; }
+.tile .k { color: var(--ink-3); font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; }
+.tile .v { font-size: 30px; font-weight: 600; letter-spacing: -0.02em; margin-top: 6px;
+           font-variant-numeric: tabular-nums; }
+.tile .v small { font-size: 14px; font-weight: 500; color: var(--ink-3); margin-left: 4px; }
+
+/* 条形图：细 mark、4px 圆头、锚在基线 */
+.bar-row { display: grid; grid-template-columns: minmax(150px, 280px) 1fr 96px; gap: 14px;
+           align-items: center; padding: 5px 0; border-radius: 6px; }
+.bar-row:hover { background: var(--line-soft); }
+.bar-row .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13.5px; }
+.bar-track { background: var(--line-soft); border-radius: 4px; height: 10px; }
+.bar { background: var(--series); height: 10px; border-radius: 0 4px 4px 0; min-width: 3px; display: block; }
+.bar.hot { background: var(--hot); }
+.delta { color: var(--ink-2); font-variant-numeric: tabular-nums; text-align: right; font-size: 13px; }
+
+/* 每日发现：列图 */
+.cols { display: flex; align-items: flex-end; gap: 2px; height: 116px; }
+.col { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end;
+       align-items: stretch; min-width: 0; border-radius: 4px 4px 0 0; }
+.col:hover { background: var(--line-soft); }
+.col .v { background: var(--series); width: 100%; border-radius: 3px 3px 0 0; min-height: 2px; }
+.axis { display: flex; justify-content: space-between; color: var(--ink-3);
+        font-size: 11px; margin-top: 8px; font-variant-numeric: tabular-nums; }
+.day { border-top: 1px solid var(--line-soft); padding: 10px 2px; }
+.day .dt { color: var(--ink-2); font-size: 13.5px; font-variant-numeric: tabular-nums; }
+.day .dt a { color: var(--series); }
+.day .repos { color: var(--ink-3); font-size: 13px; margin-top: 2px; }
+.day .repos a { color: var(--ink-2); margin-right: 4px; }
+
+/* 表格 */
+.wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+th, td { border-bottom: 1px solid var(--line-soft); padding: 9px 10px; text-align: left;
+         vertical-align: middle; }
+thead th { color: var(--ink-3); font-weight: 600; white-space: nowrap; font-size: 11px;
+           letter-spacing: 0.06em; text-transform: uppercase;
+           border-bottom: 1px solid var(--line); position: sticky; top: 0; background: var(--surface); }
+tbody tr.r:hover { background: var(--line-soft); }
+td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+td.pos { color: var(--pos); }
+.spark { display: block; }
+.pill { display: inline-block; border: 1px solid var(--line); border-radius: 999px;
+        padding: 1px 9px; font-size: 11.5px; color: var(--ink-2); white-space: nowrap; }
+.pill.f { border-color: var(--series); color: var(--series); }
+.dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+       background: var(--hot); margin-right: 7px; vertical-align: 1px; }
+.one { color: var(--ink-2); font-size: 13px; }
+
+/* 可展开行：默认只留摘要列，详情收进点击展开的下一行 */
+tr.r { cursor: pointer; }
+tr.r:focus-visible { outline: 2px solid var(--series); outline-offset: -2px; }
+.car { display: inline-block; color: var(--ink-3); font-size: 11px;
+       transition: transform .15s ease; }
+tr.r.open .car { transform: rotate(90deg); color: var(--ink-2); }
+tr.detail > td { background: var(--line-soft); padding: 14px 18px 16px;
+                 border-bottom: 1px solid var(--line); cursor: default; }
+.dl { display: grid; grid-template-columns: 88px 1fr; gap: 5px 18px; margin: 0; }
+.dl dt { color: var(--ink-3); font-size: 12.5px; }
+.dl dd { margin: 0; color: var(--ink-2); font-size: 13.5px; }
+.toggle-all { float: right; border: 1px solid var(--line); background: transparent;
+              color: var(--ink-3); border-radius: 999px; padding: 2px 12px;
+              font-size: 12px; cursor: pointer; font-family: inherit; }
+.toggle-all:hover { color: var(--ink-2); border-color: var(--ink-3); }
+
+table { table-layout: fixed; }
+th:nth-child(1), td:nth-child(1) { width: 32%; }
+th:nth-child(2), td:nth-child(2) { width: 96px; }
+th:nth-child(3), td:nth-child(3) { width: 104px; }
+th:nth-child(4), td:nth-child(4) { width: 84px; }
+th:nth-child(5), td:nth-child(5) { width: 88px; }
+th:nth-child(6), td:nth-child(6) { width: 128px; }
+th:nth-child(7), td:nth-child(7) { width: 30px; }
+td:nth-child(1) { overflow-wrap: anywhere; }
+.legend { display: flex; gap: 18px; align-items: center; color: var(--ink-3);
+          font-size: 12px; margin-top: 14px; }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px;
+            margin-right: 6px; vertical-align: -1px; }
+
+/* 日报正文（reports/*.html） */
+.report h1 { font-size: 22px; margin: 0 0 10px; }
+.report h2 { font-size: 16px; margin: 26px 0 8px; font-weight: 600; }
+.report p { color: var(--ink-2); font-size: 14px; margin: 6px 0; }
+.report ul { margin: 6px 0 14px; padding-left: 22px; }
+.report li { margin: 3px 0; color: var(--ink-2); font-size: 14px; }
+.report table { table-layout: auto; font-size: 13px; }
+.report code { background: var(--line-soft); border-radius: 4px; padding: 1px 5px; font-size: 12.5px; }
+.report a { color: var(--series); }
+.back { display: inline-block; margin: 0 0 14px; color: var(--ink-3); font-size: 13px; }
+</style>
+</head>
+<body>
+<header class="head">
+  <h1>Agent Discovery</h1>
+  <p class="meta"><span class="fresh">数据更新于 2026-09-15 04:52 UTC</span> · 每晚 22:00 UTC 自动更新</p>
+</header>
+<nav class="nav">
+  <a href="index.html">主页</a>
+  <a href="velocity.html">日均涨速</a>
+  <a href="movers.html">累计涨幅</a>
+  <a href="daily.html">每日新发现</a>
+  <a href="repos.html">全部追踪</a>
+</nav>
+<section><a class="back" href="../daily.html">← 每日新发现</a>
+<div class="report"><h1>Agent Discovery · 2026-08-30</h1>
+<p>Found <strong>7 new repos</strong> across 14 queries + HN + census.</p>
+<p>Sorted by LLM relevance score (higher = more relevant).</p>
+<h2>[score 9/10] Vincentwei1021/video-talkcraft  ·  ★149</h2>
+<ul>
+<li><strong>类型</strong>: Claude Code skill</li>
+<li>Agent skill that turns Claude Code / Codex into a motion-design studio for voiceover-driven explainer videos — word-level voiceover sync, 78 motion recipe cards, an anti-slideshow camera system, Remotion rendering.</li>
+<li><strong>是什么</strong>: 把AI变成口播视频动效工作室的技能</li>
+<li><strong>能做什么</strong>: 做解说视频，自动对齐配音和字幕，生成动效</li>
+<li><strong>大家怎么用</strong>: 在Claude Code里安装，输入稿子和音频，自动出片</li>
+<li><strong>举个例子</strong>: 给Claude Code一段口播稿和配音，它生成带字级字幕和动效的Remotion视频</li>
+<li><strong>和已有项目比</strong>: 相比同作者的video-shotcraft，专注口播视频，有更精细的字级同步和动效配方</li>
+<li>Updated: 2026-08-30</li>
+<li>Source: <code>github</code> · Query hit: <code>claude code skill created:&gt;2026-07-01</code></li>
+<li><a href="https://github.com/Vincentwei1021/video-talkcraft">https://github.com/Vincentwei1021/video-talkcraft</a></li>
+</ul>
+<h2>[score 8/10] Vuk97/forward-implementation-first  ·  ★124</h2>
+<ul>
+<li><strong>类型</strong>: Claude Code skill</li>
+<li>Stop your coding agent from stalling real work on self-invented bookkeeping - receipts, hashes, locks, certification rituals. Ship first, then verify. Skill for Claude Code, Codex, and other agents.</li>
+<li><strong>是什么</strong>: 防止AI代理沉迷于做无用功的技能</li>
+<li><strong>能做什么</strong>: 让编码代理专注真正任务，不做多余记录和检查</li>
+<li><strong>大家怎么用</strong>: 在Claude Code中安装，AI会先实现功能，后处理验证</li>
+<li><strong>举个例子</strong>: 让Claude Code跑一个数据处理流程，它跳过繁琐的哈希校验，直接输出结果</li>
+<li><strong>和已有项目比</strong>: 独特地解决代理内耗问题，同类技能很少见</li>
+<li>Updated: 2026-08-30</li>
+<li>Source: <code>census</code> · Query hit: <code>census: claude code skill</code></li>
+<li><a href="https://github.com/Vuk97/forward-implementation-first">https://github.com/Vuk97/forward-implementation-first</a></li>
+</ul>
+<h2>[score 7/10] arjun988/blender-skills  ·  ★138</h2>
+<ul>
+<li><strong>类型</strong>: Claude Code skill</li>
+<li>94 specialist Blender skills for Cursor, Claude Code, Kiro &amp; Codex -&gt; MCP-powered production pipeline from blockout to engine export.</li>
+<li><strong>是什么</strong>: Blender三维建模的94个专业技能包</li>
+<li><strong>能做什么</strong>: 让AI辅助做3D建模和渲染，从粗模到出图</li>
+<li><strong>大家怎么用</strong>: 用Claude Code配合Blender MCP，AI操控Blender执行建模操作</li>
+<li><strong>举个例子</strong>: 在Cursor中让AI用Blender skills生成一个低多边形场景，自动完成建模和材质</li>
+<li><strong>和已有项目比</strong>: 相比通用agent-skills合集，更专注Blender，技能更专业和系统</li>
+<li>Updated: 2026-08-30</li>
+<li>Source: <code>github</code> · Query hit: <code>claude code skill created:&gt;2026-07-01</code></li>
+<li><a href="https://github.com/arjun988/blender-skills">https://github.com/arjun988/blender-skills</a></li>
+</ul>
+<h2>[score 7/10] Ayueh0102/Ronnier-skill  ·  ★87</h2>
+<ul>
+<li><strong>类型</strong>: Claude Code skill</li>
+<li>色彩科學／色度學完整中文學習筆記，包裝成 Claude Code skill，也支援 Codex。涵蓋 CIE 色度學、CIEDE2000、CIECAM02、色適應與演色性。</li>
+<li><strong>是什么</strong>: 色彩科学的中文学习笔记，包装成技能</li>
+<li><strong>能做什么</strong>: 学习色彩学知识，或让AI解答色彩问题</li>
+<li><strong>大家怎么用</strong>: 在Claude Code中安装，用中文提问色彩学问题，自动载入知识</li>
+<li><strong>举个例子</strong>: 问“亮度明度区别”，skill会给出详细解释和公式</li>
+<li><strong>和已有项目比</strong>: 填补了色彩科学知识库在中文Claude Code技能中的空白</li>
+<li>Updated: 2026-08-30</li>
+<li>Source: <code>census</code> · Query hit: <code>census: claude code skill</code></li>
+<li><a href="https://github.com/Ayueh0102/Ronnier-skill">https://github.com/Ayueh0102/Ronnier-skill</a></li>
+</ul>
+<h2>[score 7/10] genoskietv/AdalFlow-Optimizer  ·  ★55</h2>
+<ul>
+<li><strong>类型</strong>: 多智能体框架</li>
+<li>Build &amp; Auto-Optimize LLM Apps in 2026: The Ultimate AdalFlow Guide</li>
+<li><strong>是什么</strong>: 让LLM应用自我优化的反思层框架</li>
+<li><strong>能做什么</strong>: 构建能自我批评和调整的AI流水线</li>
+<li><strong>大家怎么用</strong>: 开发者用它构建反思循环，自动优化提示词和输出</li>
+<li><strong>举个例子</strong>: 构建一个问答系统，它会根据历史反馈自动调整提问策略，提高准确率</li>
+<li><strong>和已有项目比</strong>: 相比AutoAgent等框架，更强调反思优化，但实用性待验证</li>
+<li>Updated: 2026-08-29</li>
+<li>Source: <code>census</code> · Query hit: <code>census: llm agent framework</code></li>
+<li><a href="https://github.com/genoskietv/AdalFlow-Optimizer">https://github.com/genoskietv/AdalFlow-Optimizer</a></li>
+</ul>
+<h2>[score 6/10] phileiny/h3-storyboard-skill  ·  ★117</h2>
+<ul>
+<li><strong>类型</strong>: Claude Code skill</li>
+<li>Claude Code skill for MiniMax H3 shot breakdown and character performance. Facial expression only renders when the shot has a &lt;d&gt; dialogue tag — measured, 42 dB vs 18 dB.</li>
+<li><strong>是什么</strong>: 把剧本变成MiniMax H3分镜的技能</li>
+<li><strong>能做什么</strong>: 制作H3视频时，自动拆分镜头和指导角色表情</li>
+<li><strong>大家怎么用</strong>: 在Claude Code中提供剧本，该skill生成H3提示词</li>
+<li><strong>举个例子</strong>: 输入一段剧情，它输出带镜头和表情描述的分镜列表，供H3渲染</li>
+<li><strong>和已有项目比</strong>: 专注H3视频生成，强调表情渲染，比一般的翻译提示词技能更专业</li>
+<li>Updated: 2026-08-30</li>
+<li>Source: <code>census</code> · Query hit: <code>census: claude code skill</code></li>
+<li><a href="https://github.com/phileiny/h3-storyboard-skill">https://github.com/phileiny/h3-storyboard-skill</a></li>
+</ul>
+<h2>[score 6/10] camilleroux/genart-skill  ·  ★102</h2>
+<ul>
+<li><strong>类型</strong>: Claude Code skill</li>
+<li>Generative art skill for Claude Code — deterministic, hash-seeded, onchain-ready</li>
+<li><strong>是什么</strong>: 生成艺术创作技能，面向链上平台</li>
+<li><strong>能做什么</strong>: 创作可验证的确定性生成艺术，适合NFT</li>
+<li><strong>大家怎么用</strong>: 在Claude Code中安装，AI辅助写生成艺术代码</li>
+<li><strong>举个例子</strong>: 让AI用p5.js写一个哈希种子的生成艺术草图，并验证确定性</li>
+<li><strong>和已有项目比</strong>: 同类生成艺术技能较少，这个更专业且支持链上标准</li>
+<li>Updated: 2026-08-30</li>
+<li>Source: <code>census</code> · Query hit: <code>census: claude code skill</code></li>
+<li><a href="https://github.com/camilleroux/genart-skill">https://github.com/camilleroux/genart-skill</a></li>
+</ul>
+<h2>Trending since first seen</h2>
+<table><thead><tr><th>Repo</th><th>First seen</th><th>Stars then → now</th><th>Δ</th></tr></thead><tbody>
+<tr><td><a href="https://github.com/JuliusBrussee/caveman">JuliusBrussee/caveman</a></td><td>2026-07-02</td><td>79188 → 101873</td><td>+22685</td></tr>
+<tr><td><a href="https://github.com/ayghri/i-have-adhd">ayghri/i-have-adhd</a></td><td>2026-07-19</td><td>3084 → 25762</td><td>+22678</td></tr>
+<tr><td><a href="https://github.com/virgiliojr94/book-to-skill">virgiliojr94/book-to-skill</a></td><td>2026-07-02</td><td>7442 → 27307</td><td>+19865</td></tr>
+<tr><td><a href="https://github.com/blader/humanizer">blader/humanizer</a></td><td>2026-07-02</td><td>27141 → 39026</td><td>+11885</td></tr>
+<tr><td><a href="https://github.com/alirezarezvani/claude-skills">alirezarezvani/claude-skills</a></td><td>2026-07-02</td><td>19625 → 25267</td><td>+5642</td></tr>
+<tr><td><a href="https://github.com/op7418/Humanizer-zh">op7418/Humanizer-zh</a></td><td>2026-07-02</td><td>12156 → 16323</td><td>+4167</td></tr>
+<tr><td><a href="https://github.com/VoltAgent/awesome-claude-code-subagents">VoltAgent/awesome-claude-code-subagents</a></td><td>2026-07-02</td><td>22698 → 24753</td><td>+2055</td></tr>
+<tr><td><a href="https://github.com/SimoneAvogadro/android-reverse-engineering-skill">SimoneAvogadro/android-reverse-engineering-skill</a></td><td>2026-07-02</td><td>6287 → 7605</td><td>+1318</td></tr>
+<tr><td><a href="https://github.com/elementalsouls/Claude-BugHunter">elementalsouls/Claude-BugHunter</a></td><td>2026-07-02</td><td>2828 → 3877</td><td>+1049</td></tr>
+<tr><td><a href="https://github.com/danyuchn/asd-ste100-skill">danyuchn/asd-ste100-skill</a></td><td>2026-08-09</td><td>617 → 1584</td><td>+967</td></tr>
+</tbody></table></div></section>
+
+</body>
+</html>
