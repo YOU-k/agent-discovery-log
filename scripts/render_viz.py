@@ -315,20 +315,21 @@ def bar_chart(rows: list[dict[str, Any]], value_key: str, hot: bool = False) -> 
     )
 
 
-def page_shell(active: str, body: str, generated: str) -> str:
+def page_shell(active: str, body: str, generated: str, title: str = "") -> str:
     """所有页共用的外壳：页头 + 导航。"""
     nav_items = []
     for href, label in NAV:
         cls = ' class="cur"' if href == active else ""
         nav_items.append(f'  <a href="{href}"{cls}>{label}</a>')
     nav = "\n".join(nav_items)
+    page_title = title or dict(NAV).get(active, "")
     script = f"<script>{JS}</script>" if active == "repos.html" else ""
     return f"""<!doctype html>
 <html lang="zh">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Agent Discovery · {dict(NAV).get(active, "")}</title>
+<title>Agent Discovery · {esc(page_title)}</title>
 <style>{CSS}</style>
 </head>
 <body>
@@ -417,7 +418,7 @@ def report_pages(dates: list[str], generated: str) -> dict[str, str]:
             continue
         body = ('<section><a class="back" href="../daily.html">← 每日新发现</a>\n'
                 f'<div class="report">{tiny_md(md_path.read_text(encoding="utf-8"))}</div></section>')
-        pages[f"reports/{d}.html"] = page_shell("", body, generated)
+        pages[f"reports/{d}.html"] = page_shell("", body, generated, title=f"日报 {d}")
     return pages
 
 
