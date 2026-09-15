@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Agent Discovery · 日报 2026-08-19</title>
+<title>Agent Discovery · 日报 2026-09-15</title>
 <style>
 /* 调色板取自 dataviz 参考实例，两模式都跑过 validate_palette：
    light #2a78d6/#eb6834 on #fcfcfb、dark #3987e5/#d95926 on #1a1a19，
@@ -186,16 +186,61 @@ td:nth-child(1) { overflow-wrap: anywhere; }
 </nav>
 
 <section><a class="back" href="../daily.html">← 每日新发现</a>
-<div class="report"><h1>Agent Discovery · 2026-08-19</h1>
-<p>Found <strong>1 new repos</strong> across 8 queries.</p>
-<p>Sorted by stars (no LLM scoring; set ANTHROPIC_API_KEY to enable).</p>
-<h2>danilo-znamerovszkij/draw-your-font  ·  ★601</h2>
+<div class="report"><h1>Agent Discovery · 2026-09-15</h1>
+<p>Found <strong>7 new repos</strong> across 14 queries + HN.</p>
+<p>Sorted by fit-to-my-stack, then relevance score.</p>
+<h2>[score 8/10] [fit 6/10] ordewell/ordewell  ·  ★88</h2>
 <ul>
-<li>Turn a photo of your handwriting into a real font (TTF/WOFF/WOFF2) - free, open source, no uploads. Node CLI + Claude Code skill.</li>
-<li>Updated: 2026-08-19</li>
-<li>Query hit: <code>claude code skill</code></li>
-<li><a href="https://github.com/danilo-znamerovszkij/draw-your-font">https://github.com/danilo-znamerovszkij/draw-your-font</a></li>
-</ul></div></section>
+<li><strong>类型</strong>: 多智能体框架</li>
+<li>Multi-agent task orchestration for coding agents. Turn one goal into an ordered plan of tasks — each with its own runner, model and mode — then execute and verify the results.</li>
+<li><strong>是什么</strong>: 把一个大目标拆成有序任务清单，每个任务配不同模型和执行方式，跑完自动验收</li>
+<li><strong>能做什么</strong>: 把科研大流程（数据下载→预处理→建模→出图→写报告）拆成多步骤 agent 流水线</li>
+<li><strong>大家怎么用</strong>: 在终端输入目标，规划器读仓库生成任务计划，逐条执行并验证结果</li>
+<li><strong>举个例子</strong>: 在终端敲一句「把这份10x数据跑完QC+聚类+标记基因」，它排出7步计划，每步指定模型，自动跑完并报告哪些步通过</li>
+<li><strong>和已有项目比</strong>: 和 AutoAgent、swarms 相比更偏「先规划后执行+逐步验证」，适合有序流水线而不是自由对话式协作</li>
+<li><strong>重复情况</strong>: 和 open-multi-agent、Shannon 部分重叠，它多了计划审核和每步验收</li>
+<li><strong>装不装</strong>: 观望：思路对口但成熟度未知</li>
+<li>Updated: 2026-09-15</li>
+<li>Source: <code>github</code> · Query hit: <code>agent orchestration cli created:&gt;2026-07-17</code></li>
+<li><a href="https://github.com/ordewell/ordewell">https://github.com/ordewell/ordewell</a></li>
+</ul>
+<h2>[score 7/10] [fit 5/10] andreylukin/bough  ·  ★9</h2>
+<ul>
+<li><strong>类型</strong>: 工具</li>
+<li>A terminal coding agent where the model writes one program instead of calling tools one at a time.</li>
+<li><strong>是什么</strong>: 终端写代码 agent，模型直接写一段程序干活，而不是一次调一个工具</li>
+<li><strong>能做什么</strong>: 让 agent 一次写完「改脚本+跑生信流程+看结果」的多步动作，省来回</li>
+<li><strong>大家怎么用</strong>: 在终端里给任务，模型写 JS 块调用文件/命令/MCP 工具，跑完把输出回传再决策</li>
+<li><strong>举个例子</strong>: 让它修一段出错的 scanpy 脚本，它一个回合里改文件、跑测试、看 diff 全搞定</li>
+<li><strong>和已有项目比</strong>: 和常见工具调用式 agent 不同，把工具当函数放进一段程序里跑，能分支判断省轮次</li>
+<li><strong>重复情况</strong>: 无重复</li>
+<li><strong>装不装</strong>: 观望：玩法新但只 Go 生态、小众</li>
+<li>Updated: 2026-09-15</li>
+<li>Source: <code>hn</code> · Query hit: <code>hn: Show HN: Bough, the agent I built to replace Claude Code at </code></li>
+<li>HN: <a href="https://news.ycombinator.com/item?id=49711939">10 points</a></li>
+<li><a href="https://github.com/andreylukin/bough">https://github.com/andreylukin/bough</a></li>
+</ul>
+<h2>域外雷达（不限领域的新建热门，未分析）</h2>
+<ul>
+<li><a href="https://github.com/Chuloo/mural">Chuloo/mural</a> · ★1032 — The language app you eventually delete. A native iPhone companion for learning through conversation.</li>
+<li><a href="https://github.com/sumimakito/Mac-Duo">sumimakito/Mac-Duo</a> · ★912 — Wish you could bring the iPhone Duo effect to your MacBook?</li>
+<li><a href="https://github.com/yifanzhang-pro/recurrent-looped-tranformer">yifanzhang-pro/recurrent-looped-tranformer</a> · ★825 — Official Project Page for Recurrent Looped Transformer (RLT)</li>
+<li><a href="https://github.com/kruzovic7/ai-data-extractor">kruzovic7/ai-data-extractor</a> · ★821 — Free open-source extractor for AI coding assistant chat histories. Supports Claude Code, Cursor, Windsurf, Aider, Cline/Roo Code, and more.</li>
+<li><a href="https://github.com/angusdevgo/IDM_Pro_Tool">angusdevgo/IDM_Pro_Tool</a> · ★708 — IDM激活与状态维护工具</li>
+</ul>
+<h2>Trending since first seen</h2>
+<table><thead><tr><th>Repo</th><th>First seen</th><th>Stars then → now</th><th>Δ</th></tr></thead><tbody>
+<tr><td><a href="https://github.com/ayghri/i-have-adhd">ayghri/i-have-adhd</a></td><td>2026-07-19</td><td>3084 → 46231</td><td>+43147</td></tr>
+<tr><td><a href="https://github.com/JuliusBrussee/caveman">JuliusBrussee/caveman</a></td><td>2026-07-02</td><td>79188 → 105784</td><td>+26596</td></tr>
+<tr><td><a href="https://github.com/virgiliojr94/book-to-skill">virgiliojr94/book-to-skill</a></td><td>2026-07-02</td><td>7442 → 30785</td><td>+23343</td></tr>
+<tr><td><a href="https://github.com/blader/humanizer">blader/humanizer</a></td><td>2026-07-02</td><td>27141 → 48545</td><td>+21404</td></tr>
+<tr><td><a href="https://github.com/alirezarezvani/claude-skills">alirezarezvani/claude-skills</a></td><td>2026-07-02</td><td>19625 → 25994</td><td>+6369</td></tr>
+<tr><td><a href="https://github.com/op7418/Humanizer-zh">op7418/Humanizer-zh</a></td><td>2026-07-02</td><td>12156 → 17307</td><td>+5151</td></tr>
+<tr><td><a href="https://github.com/TauricResearch/TradingAgents">TauricResearch/TradingAgents</a></td><td>2026-09-08</td><td>103415 → 106659</td><td>+3244</td></tr>
+<tr><td><a href="https://github.com/VoltAgent/awesome-claude-code-subagents">VoltAgent/awesome-claude-code-subagents</a></td><td>2026-07-02</td><td>22698 → 25096</td><td>+2398</td></tr>
+<tr><td><a href="https://github.com/Vincentwei1021/video-shotcraft">Vincentwei1021/video-shotcraft</a></td><td>2026-08-28</td><td>6517 → 8675</td><td>+2158</td></tr>
+<tr><td><a href="https://github.com/Nanako0129/sepia">Nanako0129/sepia</a></td><td>2026-08-29</td><td>644 → 2623</td><td>+1979</td></tr>
+</tbody></table></div></section>
 
 </body>
 </html>
