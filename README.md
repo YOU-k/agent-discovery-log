@@ -16,6 +16,9 @@ Three sources (see `scripts/discover.py` for details):
   Show HN 往往比 GitHub trending 早几天）
 - **GraphQL 普查**（每周日）— 上周 `created:` 窗口内 `stars:>=50` 的全量扫描，
   补足关键词采样的盲区；也可 `python3 scripts/discover.py --census` 手动触发
+- **域外雷达**（每日）— `created:>7天 stars:>=200` 纯限定词宽查询，不限领域，
+  每日最多 5 个、不参与 LLM 打分，报告和卡片里单独成节。主线查询是镜头，
+  这条通道是防盲区的兜底
 
 Edit `scripts/discover.py` to change.
 

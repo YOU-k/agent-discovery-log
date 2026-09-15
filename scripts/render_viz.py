@@ -208,6 +208,12 @@ td:nth-child(1) { overflow-wrap: anywhere; }
 .report code { background: var(--line-soft); border-radius: 4px; padding: 1px 5px; font-size: 12.5px; }
 .report a { color: var(--series); }
 .back { display: inline-block; margin: 0 0 14px; color: var(--ink-3); font-size: 13px; }
+
+/* 每页顶部的一句话导读 */
+.lede { border-left: 3px solid var(--series); background: var(--surface);
+        border-radius: 0 10px 10px 0; padding: 10px 16px; margin: 0 0 24px;
+        color: var(--ink-2); font-size: 14px; }
+.lede b { color: var(--ink); }
 """
 
 JS = """
@@ -315,14 +321,15 @@ def bar_chart(rows: list[dict[str, Any]], value_key: str, hot: bool = False) -> 
     )
 
 
-def page_shell(active: str, body: str, generated: str, title: str = "") -> str:
-    """所有页共用的外壳：页头 + 导航。"""
+def page_shell(active: str, body: str, generated: str, title: str = "", lede: str = "") -> str:
+    """所有页共用的外壳：页头 + 导航 + 可选的一句话导读。"""
     nav_items = []
     for href, label in NAV:
         cls = ' class="cur"' if href == active else ""
         nav_items.append(f'  <a href="{href}"{cls}>{label}</a>')
     nav = "\n".join(nav_items)
     page_title = title or dict(NAV).get(active, "")
+    lede_html = f'<div class="lede">{lede}</div>' if lede else ""
     script = f"<script>{JS}</script>" if active == "repos.html" else ""
     return f"""<!doctype html>
 <html lang="zh">
@@ -340,6 +347,7 @@ def page_shell(active: str, body: str, generated: str, title: str = "") -> str:
 <nav class="nav">
 {nav}
 </nav>
+{lede_html}
 {body}
 {script}
 </body>
@@ -497,6 +505,22 @@ def home_page(rows: list[dict[str, Any]], generated: str) -> str:
     peak_day = max(by_day.items(), key=lambda kv: kv[1]) if by_day else ("—", 0)
     watched_n = sum(1 for r in rows if r["watched"])
 
+    # 导读：优先用昨晚飞书卡片的 LLM 趋势小结（3 天内算新鲜），否则规则生成
+    lede = ""
+    summary_path = ROOT / "state" / "latest_summary.json"
+    try:
+        s = json.loads(summary_path.read_text(encoding="utf-8"))
+        age = (dt.date.today() - dt.date.fromisoformat(s["date"])).days
+        if age <= 3 and s.get("text"):
+            lede = f"<b>本周观察</b>（{esc(s['date'])}）：{esc(s['text'])}"
+    except (OSError, ValueError, KeyError):
+        pass
+    if not lede:
+        week_ago = (dt.date.today() - dt.timedelta(days=7)).isoformat()
+        new_7d = sum(1 for r in rows if r["first_seen"] >= week_ago)
+        top_txt = f"；当前涨速第一：<b>{esc(top_rate['full_name'])}</b>（日均 +{top_rate['rate']:,.0f}）" if top_rate else ""
+        lede = f"近 7 天新发现 <b>{new_7d}</b> 个 repo{top_txt}。"
+
     def preview(main: str, sub: str) -> str:
         return f'<p class="preview"><b>{esc(main)}</b><br>{esc(sub)}</p>'
 
@@ -523,17 +547,18 @@ def home_page(rows: list[dict[str, Any]], generated: str) -> str:
 <div class="cards">
 {cards_html}
 </div>"""
-    return page_shell("index.html", body, generated)
+    return page_shell("index.html", body, generated, lede=lede)
 
 
-def chart_page(active: str, title: str, sub: str, chart: str, generated: str, legend: str = "") -> str:
+def chart_page(active: str, title: str, sub: str, chart: str, generated: str,
+               legend: str = "", lede: str = "") -> str:
     body = f"""<section>
   <h2>{esc(title)}</h2>
   <p class="sub">{esc(sub)}</p>
 {chart}
 {legend}
 </section>"""
-    return page_shell(active, body, generated)
+    return page_shell(active, body, generated, lede=lede)
 
 
 def daily_page(rows: list[dict[str, Any]], generated: str) -> str:
@@ -577,7 +602,11 @@ def daily_page(rows: list[dict[str, Any]], generated: str) -> str:
   <p class="sub">点击项目名去 GitHub；「当天日报」是站内渲染的完整分析页。</p>
 {"".join(day_blocks)}
 </section>"""
-    return page_shell("daily.html", body, generated)
+    by_day_count = {d: len(v) for d, v in by_day.items()}
+    total_found = sum(by_day_count.values())
+    peak = max(by_day_count.items(), key=lambda kv: kv[1]) if by_day_count else ("—", 0)
+    lede = f"共 <b>{len(by_day_count)}</b> 天有新发现，合计 <b>{total_found}</b> 个；峰值在 <b>{esc(peak[0])}</b>（{peak[1]} 个）。"
+    return page_shell("daily.html", body, generated, lede=lede)
 
 
 def repos_page(rows: list[dict[str, Any]], generated: str) -> str:
@@ -616,7 +645,12 @@ def repos_page(rows: list[dict[str, Any]], generated: str) -> str:
   </table>
   </div>
 </section>"""
-    return page_shell("repos.html", body, generated)
+    n_scored = sum(1 for r in rows if r["score"])
+    n_watched = sum(1 for r in rows if r["watched"])
+    n_fit_hi = sum(1 for r in rows if (r.get("fit") or 0) >= 8)
+    lede = (f"共 <b>{len(rows)}</b> 个：已分析 {n_scored}，自动关注 {n_watched}，"
+            f"与你的技术栈高度契合（fit ≥ 8）{n_fit_hi} 个。点行展开看完整分析。")
+    return page_shell("repos.html", body, generated, lede=lede)
 
 
 def render_pages(seen: dict[str, dict[str, Any]]) -> dict[str, str]:
@@ -638,14 +672,25 @@ def render_pages(seen: dict[str, dict[str, Any]]) -> dict[str, str]:
         r["_bar_label"] = f"+{r['delta']:,}"
     movers_html = bar_chart(top, "delta")
 
+    vel_lede = ""
+    if top_rated:
+        floor = top_rated[-1]["rate"]
+        vel_lede = (f"当前涨速第一：<b>{esc(top_rated[0]['full_name'])}</b>"
+                    f"（日均 +{top_rated[0]['rate']:,.0f}）；Top {len(top_rated)} 门槛 ≈ 日均 +{floor:,.0f}。")
+    movers_lede = ""
+    if top:
+        total_top = sum(r["delta"] for r in top)
+        movers_lede = (f"累计第一：<b>{esc(top[0]['full_name'])}</b>（+{top[0]['delta']:,} ★）；"
+                       f"Top {len(top)} 合计 +{total_top:,}。")
+
     pages = {
         "index.html": home_page(rows, generated),
         "velocity.html": chart_page("velocity.html", "日均涨速",
                                     f"首次收录以来的平均 stars/天，Top {TOP_CHART}。橙色 = 已自动关注。",
-                                    rate_html, generated, rate_legend),
+                                    rate_html, generated, rate_legend, vel_lede),
         "movers.html": chart_page("movers.html", "累计涨幅",
                                   f"从首次收录到现在涨了多少星，Top {TOP_CHART}。",
-                                  movers_html, generated),
+                                  movers_html, generated, "", movers_lede),
         "daily.html": daily_page(rows, generated),
         "repos.html": repos_page(rows, generated),
     }

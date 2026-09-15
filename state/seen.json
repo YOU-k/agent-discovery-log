@@ -3,8 +3,8 @@
     "first_seen": "2026-07-02",
     "stars_at_first_seen": 79188,
     "matched_query": "claude code skill",
-    "score": null,
-    "one_liner": null,
+    "score": 7,
+    "one_liner": "让 agent 说原始话，砍掉 65% token",
     "stars_history": [
       [
         "2026-07-02",
@@ -82,7 +82,15 @@
         "2026-09-14",
         105583
       ]
-    ]
+    ],
+    "category": "",
+    "use_for": "省 token、加快长流程跑、降低 agent 废话",
+    "usage": "装上后 agent 输出变极简，术语照旧但省字",
+    "example": "跑长 pipeline 时开启，agent 回复省一半 token 但仍能读懂",
+    "compare": "追踪里已有它本身，重复度极高，无需另装",
+    "fit": 6,
+    "overlap": "和 JuliusBrussee/caveman 完全重复，已追踪",
+    "verdict": "不装：已在追踪列表里"
   },
   "blader/humanizer": {
     "first_seen": "2026-07-02",
@@ -260,8 +268,8 @@
     "first_seen": "2026-07-02",
     "stars_at_first_seen": 19625,
     "matched_query": "claude code skill",
-    "score": null,
-    "one_liner": null,
+    "score": 8,
+    "one_liner": "380 个 Claude 技能+多 agent 插件大合集",
     "stars_history": [
       [
         "2026-07-02",
@@ -339,7 +347,15 @@
         "2026-09-14",
         25957
       ]
-    ]
+    ],
+    "category": "",
+    "use_for": "找科研/写作/合规/生产力现成技能直接用",
+    "usage": "从 marketplace 挑需要的那几个装",
+    "example": "装它的 academic research stack，做 litreview 与 grant 起草",
+    "compare": "和 VoltAgent/awesome-agent-skills 同为资源合集，它含实际可跑的技能包",
+    "fit": 7,
+    "overlap": "和 alirezarezvani/claude-skills 已追踪同名仓库",
+    "verdict": "观望：已在追踪里，重复"
   },
   "op7418/Humanizer-zh": {
     "first_seen": "2026-07-02",
@@ -431,8 +447,8 @@
     "first_seen": "2026-07-02",
     "stars_at_first_seen": 9412,
     "matched_query": "llm agent framework",
-    "score": null,
-    "one_liner": null,
+    "score": 8,
+    "one_liner": "零代码全自动 LLM agent 框架",
     "stars_history": [
       [
         "2026-07-02",
@@ -510,7 +526,15 @@
         "2026-09-14",
         9788
       ]
-    ]
+    ],
+    "category": "",
+    "use_for": "搭一个能自己调工具做分析的 agent",
+    "usage": "用自然语言描述任务，框架自动生成 agent 并跑工具",
+    "example": "描述「分析这批单细胞数据出报告」，自动装配分析 agent 并执行",
+    "compare": "和 tutti、swarms 都属多 agent 框架，它更强调零代码自装配",
+    "fit": 5,
+    "overlap": "和已在追踪的 HKUDS/AutoAgent 完全重复",
+    "verdict": "不装：已在追踪里"
   },
   "virgiliojr94/book-to-skill": {
     "first_seen": "2026-07-02",
@@ -774,8 +798,8 @@
     "first_seen": "2026-07-02",
     "stars_at_first_seen": 6287,
     "matched_query": "claude code skill",
-    "score": null,
-    "one_liner": null,
+    "score": 5,
+    "one_liner": "反编译安卓 APK 提取 API 的技能",
     "stars_history": [
       [
         "2026-07-02",
@@ -853,14 +877,22 @@
         "2026-09-14",
         7818
       ]
-    ]
+    ],
+    "category": "",
+    "use_for": "做安卓逆向，跟生信科研无关",
+    "usage": "丢 APK/XAPK 给它提取 Retrofit 接口和硬编码 URL",
+    "example": "把 APK 丢进去，得到 Ktor/Retrofit 接口清单",
+    "compare": "和 src-hunter、P4nda0s/reverse-skills 同类但偏安卓",
+    "fit": 2,
+    "overlap": "和已在追踪的 SimoneAvogadro/android-reverse-engineering-skill 完全重复",
+    "verdict": "不装：已在追踪里，且与科研无关"
   },
   "trailofbits/skills": {
     "first_seen": "2026-07-02",
     "stars_at_first_seen": 5956,
     "matched_query": "claude code skill",
-    "score": null,
-    "one_liner": null,
+    "score": 6,
+    "one_liner": "Trail of Bits 的安全审计类技能市场",
     "stars_history": [
       [
         "2026-07-02",
@@ -938,14 +970,22 @@
         "2026-09-14",
         7079
       ]
-    ]
+    ],
+    "category": "",
+    "use_for": "做合约/代码安全审计，跟生信科研间接",
+    "usage": "从 marketplace 选插件装",
+    "example": "跑 /plugin marketplace add trailofbits/skills 装安全审计技能",
+    "compare": "与已在追踪的同名仓库重复，方向明确是安全",
+    "fit": 3,
+    "overlap": "与追踪列表里的 trailofbits/skills 完全重复",
+    "verdict": "不装：已在追踪里，非科研方向"
   },
   "zarazhangrui/codebase-to-course": {
     "first_seen": "2026-07-02",
     "stars_at_first_seen": 5099,
     "matched_query": "claude code skill",
-    "score": null,
-    "one_liner": null,
+    "score": 7,
+    "one_liner": "把代码库变成一个能滚动学习的交互式 HTML 课程",
     "stars_history": [
       [
         "2026-07-02",
@@ -1023,14 +1063,22 @@
         "2026-09-14",
         5553
       ]
-    ]
+    ],
+    "category": "Claude Code skill",
+    "use_for": "给刚接手的生信流程或自己写的算法包生成一份看得懂的中文教程页",
+    "usage": "在 Claude Code 里指一个仓库路径，它就读代码生成单页 HTML",
+    "example": "输入 /codebase-to-course 指向自己的 scanpy 分析管线，产出带图讲解的 HTML 教程",
+    "compare": "和 zarazhangrui/codebase-to-course 跟已在追踪的同名条目重复，重点是生成学习课程而非技能集合",
+    "fit": 6,
+    "overlap": "和自身的同名跟踪条目重复，本项目就是那个",
+    "verdict": "观望：教程向，日常生信未必常用"
   },
   "VRSEN/agency-swarm": {
     "first_seen": "2026-07-02",
     "stars_at_first_seen": 4467,
     "matched_query": "multi-agent orchestration framework",
-    "score": null,
-    "one_liner": null,
+    "score": 8,
+    "one_liner": "用组织架构的方式搭建多智能体协作应用的框架",
     "stars_history": [
       [
         "2026-07-02",
@@ -1108,14 +1156,22 @@
         "2026-09-14",
         4560
       ]
-    ]
+    ],
+    "category": "多智能体框架",
+    "use_for": "想把分析、写论文、找文献拆成几个 agent 分工时可用",
+    "usage": "定义 agent 角色和工具，再让它们互相委派任务跑流程",
+    "example": "定义「读文献 agent」和「画图 agent」，让主管 agent 分配任务跑一篇 report",
+    "compare": "和 Shannon、open-multi-agent 比更偏 OpenAI SDK 封装、上手简单，但无科研特化",
+    "fit": 4,
+    "overlap": "和 Kocoro-lab/Shannon、open-multi-agent 框架层面重叠",
+    "verdict": "观望：科研用不上那么重，除非真做 agent 编排"
   },
   "glitternetwork/pinme": {
     "first_seen": "2026-07-02",
     "stars_at_first_seen": 3698,
     "matched_query": "claude code skill",
-    "score": null,
-    "one_liner": null,
+    "score": 3,
+    "one_liner": "一条命令把前端项目部署到网上的 CLI",
     "stars_history": [
       [
         "2026-07-02",
@@ -1193,14 +1249,22 @@
         "2026-09-14",
         3743
       ]
-    ]
+    ],
+    "category": "工具",
+    "use_for": "做个人主页或把分析结果网页发布出去",
+    "usage": "装好后 npm 跑一条命令就部署 workeer+数据库全栈",
+    "example": "在 Claude Code 里输入 /pinme，它把你的单细胞可视化网页一键上线",
+    "compare": "已在追踪里没有同类部署工具，属于填补空白，但跟科研分析无直接关系",
+    "fit": 2,
+    "overlap": "无重复",
+    "verdict": "不装：和日常生信/论文几乎不搭边"
   },
   "taishi-i/awesome-ChatGPT-repositories": {
     "first_seen": "2026-07-02",
     "stars_at_first_seen": 3119,
     "matched_query": "claude code skill",
-    "score": null,
-    "one_liner": null,
+    "score": 6,
+    "one_liner": "2500+ 个 ChatGPT/OpenAI 相关开源仓库的清单，可被 Claude 检索",
     "stars_history": [
       [
         "2026-07-02",
@@ -1278,14 +1342,22 @@
         "2026-09-14",
         3247
       ]
-    ]
+    ],
+    "category": "资源合集",
+    "use_for": "想找 LLM 工具或 agent 库时直接从 Claude Code 里搜",
+    "usage": "装成 skill 后，用自然语言描述需求让它从清单里挑仓库",
+    "example": "输入「找能接本地模型的 agent 框架」，它返回匹配的 GitHub 项目",
+    "compare": "和 VoltAgent/awesome-agent-skills 比更老更聚焦 ChatGPT 生态，覆盖面窄",
+    "fit": 3,
+    "overlap": "和 Voltagent/awesome-agent-skills 部分重叠，它偏 ChatGPT 早期生态",
+    "verdict": "观望：清单偏旧，找工具还有更全的合集"
   },
   "nowork-studio/NotFair": {
     "first_seen": "2026-07-02",
     "stars_at_first_seen": 3034,
     "matched_query": "claude code skill",
-    "score": null,
-    "one_liner": null,
+    "score": 6,
+    "one_liner": "给 AI agent 用的 SEO、GEO、营销技能包",
     "stars_history": [
       [
         "2026-07-02",
@@ -1363,14 +1435,22 @@
         "2026-09-14",
         3787
       ]
-    ]
+    ],
+    "category": "资源合集",
+    "use_for": "推广自己论文博客或课题组主页的搜索可见度",
+    "usage": "在 Claude Code 里跑 SEO 审计、关键词、投放检查等 skill",
+    "example": "输入站网址，agent 跑 site audit 输出 SEO 问题和修改建议",
+    "compare": "和 onvoyage-ai/gtm-engineer-skills 重叠明显，后者更聚焦 AEO/GEO",
+    "fit": 1,
+    "overlap": "和 gtm-engineer-skills 重叠，两者都是营销方向",
+    "verdict": "不装：营销向，科研写作几乎用不到"
   },
   "lackeyjb/playwright-skill": {
     "first_seen": "2026-07-02",
     "stars_at_first_seen": 2851,
     "matched_query": "claude code skill",
-    "score": null,
-    "one_liner": null,
+    "score": 8,
+    "one_liner": "让 agent 现场写并跑 Playwright 浏览器自动化",
     "stars_history": [
       [
         "2026-07-02",
@@ -1448,14 +1528,22 @@
         "2026-09-14",
         3118
       ]
-    ]
+    ],
+    "category": "Claude Code skill",
+    "use_for": "抓取需要登录/JS 渲染的数据库页面、自动下载数据",
+    "usage": "让 Claude 自动写 Playwright 脚本、开浏览器、断言、循环",
+    "example": "让 Claude 打开 GEO 数据库网页，搜索关键词并把结果表抓成 CSV",
+    "compare": "已在追踪里同类是浏览器自动化 MCP，这条是轻量 skill 版可临时写代码",
+    "fit": 5,
+    "overlap": "和 mcp_excalidraw 工具类重叠小，定位不同",
+    "verdict": "装：抓生物数据、跑网页流程很实用"
   },
   "elementalsouls/Claude-BugHunter": {
     "first_seen": "2026-07-02",
     "stars_at_first_seen": 2828,
     "matched_query": "claude code skill",
-    "score": null,
-    "one_liner": null,
+    "score": 7,
+    "one_liner": "给漏洞挖掘和红队用的 Claude 技能大包",
     "stars_history": [
       [
         "2026-07-02",
@@ -1533,14 +1621,22 @@
         "2026-09-14",
         4487
       ]
-    ]
+    ],
+    "category": "Claude Code skill",
+    "use_for": "和科研无关，除非做安全工作",
+    "usage": "装上后 Claude 会按 83 个安全技能走渗透测试流程",
+    "example": "对着授权目标输入 /bughunt，agent 按漏洞模式跑探测并输出报告",
+    "compare": "和 trailofbits/skills、P4nda0s/reverse-skills 同类，覆盖广度更大",
+    "fit": 1,
+    "overlap": "和 trailofbits/skills、reverse-skills 部分重叠，它多了管理面攻击矩阵",
+    "verdict": "不装：安全向，和生信科研不搭"
   },
   "dominikmartn/nothing-design-skill": {
     "first_seen": "2026-07-02",
     "stars_at_first_seen": 2568,
     "matched_query": "claude code skill",
-    "score": null,
-    "one_liner": null,
+    "score": 4,
+    "one_liner": "按 Nothing 设计风格生成 UI 的 Claude 技能",
     "stars_history": [
       [
         "2026-07-02",
@@ -1618,14 +1714,22 @@
         "2026-09-14",
         2782
       ]
-    ]
+    ],
+    "category": "Claude Code skill",
+    "use_for": "做 PPT 或报告网页时换个极简工业风",
+    "usage": "在 Claude Code 里说 Nothing style，它按 token 输出 HTML/CSS",
+    "example": "输入 /nothing-design，让它把一页分析结果做成黑白极简 HTML",
+    "compare": "和 PPT-Design-Skill 比不是做 PPTX，只做网页风 UI，风格单一",
+    "fit": 2,
+    "overlap": "和 PPT-Design-Skill 部分重叠，它偏网页 UI 风格",
+    "verdict": "不装：单一设计风，科研报告用不上"
   },
   "Agentchengfeng/chengfeng-videocut-skills": {
     "first_seen": "2026-07-02",
     "stars_at_first_seen": 2468,
     "matched_query": "claude code skill",
-    "score": null,
-    "one_liner": null,
+    "score": 5,
+    "one_liner": "用 Claude Code 做视频剪辑的 agent 插件",
     "stars_history": [
       [
         "2026-07-02",
@@ -1703,14 +1807,22 @@
         "2026-09-14",
         2995
       ]
-    ]
+    ],
+    "category": "Claude Code skill",
+    "use_for": "做课题宣传片或会议视频剪辑",
+    "usage": "装 plugin 后再装 Runtime，让 agent 操作视频工程项目",
+    "example": "输入视频素材，agent 按脚本剪出一条会议宣讲短片",
+    "compare": "和 zenstory-ai/drama-skills、video-shotcraft 都是视频向，但偏本地剪辑工具",
+    "fit": 1,
+    "overlap": "和 video-shotcraft 部分重叠，它偏真实视频剪辑非生成",
+    "verdict": "不装：剪辑需要额外 Runtime，科研用不上"
   },
   "heshengtao/comfyui_LLM_party": {
     "first_seen": "2026-07-02",
     "stars_at_first_seen": 2294,
     "matched_query": "llm agent framework",
-    "score": null,
-    "one_liner": null,
+    "score": 7,
+    "one_liner": "把 LLM agent 接进 ComfyUI 的节点式框架",
     "stars_history": [
       [
         "2026-07-02",
@@ -1788,14 +1900,22 @@
         "2026-09-14",
         2359
       ]
-    ]
+    ],
+    "category": "多智能体框架",
+    "use_for": "做多模态 demo 或把文本模型和图生成串起来",
+    "usage": "在 ComfyUI 里连节点搭 LLM+MCP+图像处理工作流",
+    "example": "用节点把 GPT-4 接到 FLUX 上，输入文本自动出图像并调工具",
+    "compare": "和 open-multi-agent、Shannon 不同，它是节点式图形编排偏创意工作流",
+    "fit": 3,
+    "overlap": "和 mcp_excalidraw 轻微重叠，都是可视化编排但场景不同",
+    "verdict": "观望：好玩但对科研 pipeline 不是刚需"
   },
   "tradermonty/claude-trading-skills": {
     "first_seen": "2026-07-02",
     "stars_at_first_seen": 2210,
     "matched_query": "claude code skill",
-    "score": null,
-    "one_liner": null,
+    "score": 6,
+    "one_liner": "股票/ETF 投资分析和交易复盘技能包",
     "stars_history": [
       [
         "2026-07-02",
@@ -1873,7 +1993,15 @@
         "2026-09-14",
         2829
       ]
-    ]
+    ],
+    "category": "Claude Code skill",
+    "use_for": "个人理财或基金复盘，跟科研无关",
+    "usage": "跑市场分析、技术图表、经济日历、策略开发等 skill",
+    "example": "输入持仓列表，agent 输出风险管理和交易日志模板",
+    "compare": "和 TradingAgents 同类但偏轻量 skill，不做实时撮合",
+    "fit": 1,
+    "overlap": "和 TradingAgents 部分重叠，它更轻、无实时交易",
+    "verdict": "不装：投资向，和科研任务零重叠"
   },
   "yctimlin/mcp_excalidraw": {
     "first_seen": "2026-07-02",
@@ -1965,8 +2093,8 @@
     "first_seen": "2026-07-02",
     "stars_at_first_seen": 2065,
     "matched_query": "multi-agent orchestration framework",
-    "score": null,
-    "one_liner": null,
+    "score": 8,
+    "one_liner": "面向生产的多智能体编排框架，带 token 预算和回放调试",
     "stars_history": [
       [
         "2026-07-02",
@@ -2044,7 +2172,15 @@
         "2026-09-14",
         2246
       ]
-    ]
+    ],
+    "category": "多智能体框架",
+    "use_for": "想搭一个稳定跑长流程的多 agent 科研自动化时可用",
+    "usage": "用 Go/Rust 部署，定义工作流让 swarm 协作跑任务",
+    "example": "定义文献综述 agent，让它按 token 预算跑完一轮综述流程",
+    "compare": "比 agency-swarm 更工程化，有回放和 token 控制，但对个人偏重",
+    "fit": 4,
+    "overlap": "和 agency-swarm、open-multi-agent 重叠，定位更偏生产级",
+    "verdict": "观望：能力强但部署重，日常生信用不到"
   },
   "kaushikb11/awesome-llm-agents": {
     "first_seen": "2026-07-02",
@@ -2136,8 +2272,8 @@
     "first_seen": "2026-07-02",
     "stars_at_first_seen": 1464,
     "matched_query": "claude code skill",
-    "score": null,
-    "one_liner": null,
+    "score": 7,
+    "one_liner": "逆向工程分析技能包，配套 IDA 工具用",
     "stars_history": [
       [
         "2026-07-02",
@@ -2215,7 +2351,15 @@
         "2026-09-14",
         2129
       ]
-    ]
+    ],
+    "category": "Claude Code skill",
+    "use_for": "破解/安全分析，和生信科研不搭",
+    "usage": "从 IDA 导出反编译结果后，用 agent 分析符号、结构、写脚本",
+    "example": "导入 IDA 导出文件，agent 自动重建数据结构并生成注释",
+    "compare": "和 trailofbits/skills、Claude-BugHunter 同类，这条更偏 IDA 静态分析",
+    "fit": 1,
+    "overlap": "和 Claude-BugHunter 部分重叠，它偏符号/结构重建",
+    "verdict": "不装：逆向安全向，和科研栈无关"
   },
   "skills-directory/skill-codex": {
     "first_seen": "2026-07-02",
@@ -2307,8 +2451,8 @@
     "first_seen": "2026-07-02",
     "stars_at_first_seen": 1244,
     "matched_query": "claude code skill",
-    "score": null,
-    "one_liner": null,
+    "score": 6,
+    "one_liner": "提升网站 AI 搜索可见性（GEO/AEO）的技能包",
     "stars_history": [
       [
         "2026-07-02",
@@ -2386,14 +2530,22 @@
         "2026-09-14",
         1304
       ]
-    ]
+    ],
+    "category": "Claude Code skill",
+    "use_for": "推广论文主页或博客让 AI 搜索里更容易被引用",
+    "usage": "跑审计、关键词、内容规划、AI 图表等 skill 生成营销产物",
+    "example": "输入课题组主页，agent 跑 AEO 审计并给出可被引用的内容结构",
+    "compare": "比 NotFair 更聚焦 GEO/AEO，产物是具体文件，同一切口",
+    "fit": 1,
+    "overlap": "和 NotFair 重叠，两者都是营销可见度方向",
+    "verdict": "不装：营销向，论文/生信用不上"
   },
   "daymade/claude-code-skills": {
     "first_seen": "2026-07-02",
     "stars_at_first_seen": 1237,
     "matched_query": "claude code skill",
-    "score": null,
-    "one_liner": null,
+    "score": 7,
+    "one_liner": "Claude Code 技能市场，含造技能用的 skill-creator",
     "stars_history": [
       [
         "2026-07-02",
@@ -2471,14 +2623,22 @@
         "2026-09-14",
         1391
       ]
-    ]
+    ],
+    "category": "资源合集",
+    "use_for": "学怎么自己写技能，给自己科研流程做定制 skill",
+    "usage": "从 marketplace 装 skill-creator，用自然语言生成自己的 skill",
+    "example": "用 skill-creator 说「帮我做一个 scanpy 质检 skill」，它自动打包出 SKILL.md",
+    "compare": "和 skillmatic-ai/awesome-agent-skills 比更偏可用技能而非教程，含元技能",
+    "fit": 4,
+    "overlap": "和 libukai/awesome-agent-skills 部分重叠，它多了能造技能的元技能",
+    "verdict": "观望：要自己造科研 skill 时再装"
   },
   "NeoLabHQ/context-engineering-kit": {
     "first_seen": "2026-07-02",
     "stars_at_first_seen": 1195,
     "matched_query": "claude code skill",
-    "score": null,
-    "one_liner": null,
+    "score": 8,
+    "one_liner": "提高 agent 输出质量的一批上下文工程技能",
     "stars_history": [
       [
         "2026-07-02",
@@ -2556,14 +2716,22 @@
         "2026-09-14",
         1694
       ]
-    ]
+    ],
+    "category": "Claude Code skill",
+    "use_for": "写 report 或做分析时让 agent 输出更稳、更省 token",
+    "usage": "装成 plugin 后 Claude 自动调用，用自解释命令触发各类技巧",
+    "example": "在做多步分析时它自动套结构化推理技能，减少幻觉与重复",
+    "compare": "和 caveman、i-have-adhd 同向但更全面，主打上下文工程模式库",
+    "fit": 6,
+    "overlap": "和 caveman、i-have-adhd 部分重叠，它覆盖面更广偏工程化",
+    "verdict": "装：写 report 和多步分析时提升质量省 token"
   },
   "adamlyttleapps/claude-skill-app-onboarding-questionnaire": {
     "first_seen": "2026-07-02",
     "stars_at_first_seen": 1086,
     "matched_query": "claude code skill",
-    "score": null,
-    "one_liner": null,
+    "score": 4,
+    "one_liner": "做 App 订阅引导问卷的技能，抄头部订阅产品的转化套路",
     "stars_history": [
       [
         "2026-07-02",
@@ -2641,14 +2809,22 @@
         "2026-09-14",
         1201
       ]
-    ]
+    ],
+    "category": "Claude Code skill",
+    "use_for": "做 App 做营销引导页，跟科研不搭",
+    "usage": "在 App 项目里运行 /app-onboarding-questionnaire，按 14 屏套路生成",
+    "example": "在 App 项目输入该命令，agent 分析代码后生成完整引导问卷页面",
+    "compare": "已在追踪里无同类，属产品增长空白，但和科研栈无关",
+    "fit": 1,
+    "overlap": "无重复",
+    "verdict": "不装：App 增长向，科研用不到"
   },
   "Aaronontheweb/dotnet-skills": {
     "first_seen": "2026-07-02",
     "stars_at_first_seen": 1039,
     "matched_query": "claude code skill",
-    "score": null,
-    "one_liner": null,
+    "score": 6,
+    "one_liner": "给 .NET 开发者的 Claude 技能和子 agent 包",
     "stars_history": [
       [
         "2026-07-02",
@@ -2726,14 +2902,22 @@
         "2026-09-14",
         1156
       ]
-    ]
+    ],
+    "category": "Claude Code skill",
+    "use_for": "写 C#/.NET 项目，和 Python 生信栈不搭",
+    "usage": "装 plugin 后 Claude 用 .NET 相关 skill 和 5 个专用 agent",
+    "example": "让 Claude 按 skill 规范帮你写 ASP.NET 服务并做性能优化",
+    "compare": "和 Axiom（Apple 生态）、claude-code-subagents 同类，只是语言不同",
+    "fit": 1,
+    "overlap": "和 Axiom 部分重叠，都是特定语言生态技能包",
+    "verdict": "不装：.NET 栈，和 Python 生信不搭"
   },
   "CharlesWiltgen/Axiom": {
     "first_seen": "2026-07-02",
     "stars_at_first_seen": 1010,
     "matched_query": "claude code skill",
-    "score": null,
-    "one_liner": null,
+    "score": 6,
+    "one_liner": "Apple 平台开发（iOS/SwiftUI 等）的 Claude 技能大包",
     "stars_history": [
       [
         "2026-07-02",
@@ -2811,14 +2995,22 @@
         "2026-09-14",
         1160
       ]
-    ]
+    ],
+    "category": "Claude Code skill",
+    "use_for": "做 iOS/macOS 应用，跟科研栈无关",
+    "usage": "装好后 Claude 自动用 276 个技能和 42 个 agent 检查苹果开发问题",
+    "example": "用 /skills 触发内存泄漏扫描 agent，指出 SwiftUI 并发问题",
+    "compare": "和 dotnet-skills 同类只是生态不同，工程化程度更高",
+    "fit": 1,
+    "overlap": "和 dotnet-skills 部分重叠，生态不同",
+    "verdict": "不装：Apple 平台向，和科研不搭"
   },
   "bevibing/tutor-skills": {
     "first_seen": "2026-07-02",
     "stars_at_first_seen": 997,
     "matched_query": "claude code skill",
-    "score": null,
-    "one_liner": null,
+    "score": 8,
+    "one_liner": "把 PDF/文档/代码库变成 Obsidian 学习库并自动出题考你",
     "stars_history": [
       [
         "2026-07-02",
@@ -2896,7 +3088,15 @@
         "2026-09-14",
         1141
       ]
-    ]
+    ],
+    "category": "Claude Code skill",
+    "use_for": "把论文、方法学资料整理成互链笔记，用问答巩固",
+    "usage": "跑 /tutor-setup 生成 StudyVault，再用 /tutor 每轮出 4 题批改",
+    "example": "把一堆单细胞方法论文 PDF 塞进去，得到 Obsidian 笔记 + 每轮 4 题的测验",
+    "compare": "和 book-to-skill、virgiliojr94 比它带复习闭环和 Obsidian 输出，更偏学习场景",
+    "fit": 7,
+    "overlap": "和 book-to-skill 部分重叠，它多了出题与进度追踪",
+    "verdict": "装：读论文 + 内化知识正好用得上"
   },
   "taishi-i/awesome-japanese-nlp-resources": {
     "first_seen": "2026-07-02",
@@ -6651,8 +6851,8 @@
     "first_seen": "2026-07-03",
     "stars_at_first_seen": 515,
     "matched_query": "claude code skill",
-    "score": null,
-    "one_liner": null,
+    "score": 6,
+    "one_liner": "SRC 众测漏洞挖掘 Claude Code 技能",
     "stars_history": [
       [
         "2026-07-03",
@@ -6730,14 +6930,22 @@
         "2026-09-14",
         619
       ]
-    ]
+    ],
+    "category": "",
+    "use_for": "做安全的漏洞挖掘，跟生信科研无关",
+    "usage": "给一个目标 URL，按 recon→enum→hunt→report 走",
+    "example": "输入一个目标，Claude 调 MCP 工具做侦察和漏洞验证",
+    "compare": "和 SimoneAvogadro/android-reverse-engineering-skill 同类，它更偏黑盒 web 漏洞",
+    "fit": 1,
+    "overlap": "和 trailofbits/skills、P4nda0s/reverse-skills 部分重叠",
+    "verdict": "不装：安全领域，科研用不上"
   },
   "Hao0321/claude-skill-social-post": {
     "first_seen": "2026-07-05",
     "stars_at_first_seen": 513,
     "matched_query": "claude code skill",
-    "score": null,
-    "one_liner": null,
+    "score": 3,
+    "one_liner": "学你口吻自动发 FB/IG/X 的技能",
     "stars_history": [
       [
         "2026-07-05",
@@ -6815,14 +7023,22 @@
         "2026-09-14",
         671
       ]
-    ]
+    ],
+    "category": "",
+    "use_for": "做社媒运营，跟科研零关系",
+    "usage": "排期 14 天内容日历，确认后自动发帖",
+    "example": "输入主题后它按你的口吻生成贴文并按日历发布",
+    "compare": "无同类，属社媒发布领域，和科研工作流无关",
+    "fit": 1,
+    "overlap": "无重复",
+    "verdict": "不装：科研人员不需要社媒自动发"
   },
   "nutthouse/tutti": {
     "first_seen": "2026-07-06",
     "stars_at_first_seen": 52,
     "matched_query": "agent orchestration cli",
-    "score": null,
-    "one_liner": null,
+    "score": 7,
+    "one_liner": "Terraform 式多 agent 运行层，管角色与工作流",
     "stars_history": [
       [
         "2026-07-06",
@@ -6900,14 +7116,22 @@
         "2026-09-14",
         121
       ]
-    ]
+    ],
+    "category": "",
+    "use_for": "把一条生信 pipeline 拆给多个 agent 分角色跑",
+    "usage": "tt init 生成配置，tt up 起常驻 agent 团队",
+    "example": "写 tutti.toml 定义训模型+跑 QC+写报告三个 agent，tt up 一起跑",
+    "compare": "和 AutoAgent 都是多 agent 框架，它更重 operations 和审计",
+    "fit": 4,
+    "overlap": "和 HKUDS/AutoAgent、VRSEN/agency-swarm 部分重叠",
+    "verdict": "观望：概念对味但生信实操未验证"
   },
   "axtonliu/smart-illustrator": {
     "first_seen": "2026-07-07",
     "stars_at_first_seen": 516,
     "matched_query": "claude code skill",
-    "score": null,
-    "one_liner": null,
+    "score": 6,
+    "one_liner": "给文章自动插图的技能，三引擎出图",
     "stars_history": [
       [
         "2026-07-07",
@@ -6985,14 +7209,22 @@
         "2026-09-14",
         557
       ]
-    ]
+    ],
+    "category": "",
+    "use_for": "给论文、slides、博客自动配示意图",
+    "usage": "把文章丢进去，它按内容自动选 Gemini/Excalidraw/Mermaid",
+    "example": "把一段生信流程说明丢进去，得到 Excalidraw 手绘流程图 PNG",
+    "compare": "和 hand-drawn-styles 部分重叠，但它真出图且能选引擎",
+    "fit": 7,
+    "overlap": "和 threerocks/hand-drawn-styles 部分重叠，它多了生图执行",
+    "verdict": "装：写 report/slides 顺带出示意图"
   },
   "growthenginenowoslawski/coldoutboundskills": {
     "first_seen": "2026-07-08",
     "stars_at_first_seen": 519,
     "matched_query": "claude code skill",
-    "score": null,
-    "one_liner": null,
+    "score": 3,
+    "one_liner": "冷邮件销售外呼的 30 个 Claude Code 技能",
     "stars_history": [
       [
         "2026-07-08",
@@ -7070,14 +7302,22 @@
         "2026-09-14",
         707
       ]
-    ]
+    ],
+    "category": "",
+    "use_for": "做 B2B 销售外呼，跟科研无关",
+    "usage": "从 ICP 定向到话术到发信，一套流程",
+    "example": "跑 /cold-email-kickoff 生成一整套销售外呼计划",
+    "compare": "无同类，纯商业外呼领域，科研完全用不上",
+    "fit": 1,
+    "overlap": "无重复",
+    "verdict": "不装：跟科研、论文零交集"
   },
   "freshtechbro/claudedesignskills": {
     "first_seen": "2026-07-14",
     "stars_at_first_seen": 540,
     "matched_query": "claude code skill",
-    "score": null,
-    "one_liner": null,
+    "score": 4,
+    "one_liner": "Three.js/GSAP 等 3D 动效的 Claude Code 技能集",
     "stars_history": [
       [
         "2026-07-14",
@@ -7155,14 +7395,22 @@
         "2026-09-14",
         900
       ]
-    ]
+    ],
+    "category": "",
+    "use_for": "做交互式 3D 网页、数据可视化动画",
+    "usage": "通过 plugin marketplace 装单个技能用",
+    "example": "跑 /plugin install threejs-webgl 做 scRNA 3D 可视化网页",
+    "compare": "和 scroll-craft、auteur 同类但更重 3D/WebGL 技术栈",
+    "fit": 2,
+    "overlap": "和 nateherkai/scroll-craft、agiwhitelist/auteur 部分重叠",
+    "verdict": "不装：科研用不上 3D 网页技术栈"
   },
   "ayghri/i-have-adhd": {
     "first_seen": "2026-07-19",
     "stars_at_first_seen": 3084,
     "matched_query": "claude code skill",
-    "score": null,
-    "one_liner": null,
+    "score": 7,
+    "one_liner": "让 agent 别埋答案、先说结论的精简输出技能",
     "stars_history": [
       [
         "2026-07-19",
@@ -7240,14 +7488,22 @@
         "2026-09-14",
         45409
       ]
-    ]
+    ],
+    "category": "",
+    "use_for": "看代码报错、读论文摘要、跑 pipeline 结果时少废话",
+    "usage": "装上后 agent 直接给行动清单，不写「希望有帮助」",
+    "example": "报错信息丢给 agent，它先给结论再列编号步骤，不啰嗦",
+    "compare": "和 op7418/Humanizer-zh 方向相反：一个去 AI 味，一个去啰嗦埋答案",
+    "fit": 7,
+    "overlap": "和 blader/humanizer 部分重叠，它更针对 agent 输出结构",
+    "verdict": "装：日常读报错、读 report 省时间"
   },
   "rshankras/claude-code-apple-skills": {
     "first_seen": "2026-07-20",
     "stars_at_first_seen": 541,
     "matched_query": "claude code skill",
-    "score": null,
-    "one_liner": null,
+    "score": 4,
+    "one_liner": "苹果平台开发的 164 个 Claude Code 技能",
     "stars_history": [
       [
         "2026-07-20",
@@ -7325,14 +7581,22 @@
         "2026-09-14",
         733
       ]
-    ]
+    ],
+    "category": "",
+    "use_for": "做 iOS/macOS 应用，跟生信科研无关",
+    "usage": "Apple 开发者用它做产品验证、代码生成、上架优化",
+    "example": "在 Claude Code 里用 /apple:* 走 idea 到 App Store 流程",
+    "compare": "纯 Apple 开发栈，和追踪列表里任何科研/agent 技能都没交集",
+    "fit": 1,
+    "overlap": "无重复",
+    "verdict": "不装：跟生信、论文完全无关"
   },
   "threerocks/hand-drawn-styles": {
     "first_seen": "2026-07-28",
     "stars_at_first_seen": 531,
     "matched_query": "claude code skill",
-    "score": null,
-    "one_liner": null,
+    "score": 4,
+    "one_liner": "手绘画风提示词配方库，输出生图 prompt",
     "stars_history": [
       [
         "2026-07-28",
@@ -7410,14 +7674,22 @@
         "2026-09-14",
         1174
       ]
-    ]
+    ],
+    "category": "",
+    "use_for": "给论文配图、slides 加手绘风示意图的 prompt",
+    "usage": "说画什么，agent 挑编号配方并拼好 prompt",
+    "example": "输入「用 xkcd 风画 scRNA 分析流程」，得到可直接喂生图模型的 prompt",
+    "compare": "和 smart-illustrator 部分重叠，它只出 prompt 不生图、更轻",
+    "fit": 3,
+    "overlap": "和 axtonliu/smart-illustrator 部分重叠，它多了多画风配方",
+    "verdict": "观望：偶尔做图配图能用，非主力"
   },
   "agiwhitelist/auteur": {
     "first_seen": "2026-07-30",
     "stars_at_first_seen": 680,
     "matched_query": "claude code skill",
-    "score": null,
-    "one_liner": null,
+    "score": 4,
+    "one_liner": "像拍电影一样指导做网站的 Claude Code 技能",
     "stars_history": [
       [
         "2026-07-30",
@@ -7495,7 +7767,15 @@
         "2026-09-14",
         1022
       ]
-    ]
+    ],
+    "category": "",
+    "use_for": "做高质感项目宣传页、个人主页",
+    "usage": "锁定美术方向后用本地 CLI 生成素材，再用 linter 卡关",
+    "example": "在 Claude Code 说 /auteur 做实验室官网，出带反垃圾 linter 质检的页面",
+    "compare": "和 scroll-craft 重叠但更重美术方向锁定与反 slop 检查",
+    "fit": 2,
+    "overlap": "和 nateherkai/scroll-craft 部分重叠，它多了 anti-slop linter",
+    "verdict": "不装：科研工位几乎不碰网页美术"
   },
   "Spark-To-Paper-Skills/paperjury": {
     "first_seen": "2026-08-09",
@@ -7587,8 +7867,8 @@
     "first_seen": "2026-08-09",
     "stars_at_first_seen": 617,
     "matched_query": "claude code skill",
-    "score": null,
-    "one_liner": null,
+    "score": 6,
+    "one_liner": "用航空简化英语规则重写 agent 指令",
     "stars_history": [
       [
         "2026-08-09",
@@ -7666,18 +7946,26 @@
         "2026-09-14",
         2030
       ]
-    ]
+    ],
+    "category": "",
+    "use_for": "让 agent 间指令、method 描述少歧义、少啰嗦",
+    "usage": "装 Skill 后让它把含糊英文改写成 STE 风格",
+    "example": "把一段论文 method 描述丢进去，输出每句一个意思的简洁英文",
+    "compare": "和 humanizer 类反向：humanizer 去 AI 味，它去歧义、专供 agent 读",
+    "fit": 5,
+    "overlap": "和 blader/humanizer 部分重叠，方向相反",
+    "verdict": "观望：论文里未必用得上，但 agent 通信有用"
   },
   "chaseai-yt/crucible": {
     "first_seen": "2026-08-13",
     "stars_at_first_seen": 1163,
     "matched_query": "claude code skill",
-    "score": 10,
-    "one_liner": "与claudex-loop类似的技能，强化计划审查。",
-    "category": "Claude Code skill",
-    "use_for": "在编写代码前，用双模型审查计划确保可行性。",
-    "usage": "在Claude Code中启动，自动执行计划强化流程。",
-    "example": "程序员用“/crucible”提出功能需求，两个AI模型交替审查并优化方案。",
+    "score": 8,
+    "one_liner": "Claude+Codex 交叉审查计划再互换角色实现",
+    "category": "",
+    "use_for": "写方法学算法前让两个模型互相挑刺再动手",
+    "usage": "在 Claude Code 里跑四阶段流程，计划先被 Codex 对抗审查",
+    "example": "输入 /claudex-loop \"设计一个多组学整合算法\"，两模型审完再写代码",
     "stars_history": [
       [
         "2026-08-13",
@@ -7756,7 +8044,10 @@
         1859
       ]
     ],
-    "compare": "与claudex-loop几乎相同，但可能更侧重某些场景，提升计划质量。"
+    "compare": "和追踪里的 claudex-loop 几乎一样；这个更强调四阶段和 cross-model 检查",
+    "fit": 5,
+    "overlap": "和 chaseai-yt/claudex-loop 高度重复，二选一即可",
+    "verdict": "观望：和已追踪的 claudex-loop 太像"
   },
   "Leutenegger/book-to-skill": {
     "first_seen": "2026-08-13",
@@ -7777,11 +8068,11 @@
     "stars_at_first_seen": 601,
     "matched_query": "claude code skill",
     "score": 5,
-    "one_liner": "将手写照片转换为字体文件的工具。",
-    "category": "工具",
-    "use_for": "个人定制字体，用于设计或文档。",
-    "usage": "上传手写字母照片，本地生成TTF/WOFF字体，无需联网。",
-    "example": "设计师拍下手写字母，用此工具生成个性化字体，应用到自己的作品中。",
+    "one_liner": "把手写照片变成真字体的技能和 CLI",
+    "category": "",
+    "use_for": "做海报或个人笔记配字，跟科研基本不沾边",
+    "usage": "拍一张手写字母照丢给 Claude Code，产出字体文件",
+    "example": "在 Claude Code 输入 /draw-your-font 加手写照片，得到可安装字体",
     "stars_history": [
       [
         "2026-08-19",
@@ -7860,18 +8151,21 @@
         773
       ]
     ],
-    "compare": "填补了手写字体生成的空白，简单易用，无需上传保护隐私。"
+    "compare": "无同类，属图像→字体这条冷门链路，科研上无对口需求",
+    "fit": 2,
+    "overlap": "无重复",
+    "verdict": "不装：跟单细胞生信论文无关"
   },
   "yylo-dev/yylo": {
     "first_seen": "2026-08-21",
     "stars_at_first_seen": 56,
     "matched_query": "agent orchestration cli",
     "score": 7,
-    "one_liner": "一个编排AI编程代理的命令行工具。",
-    "category": "工具",
-    "use_for": "管理和协调多个AI代理协同开发项目。",
-    "usage": "开发者通过命令行启动、监控和分配任务给AI代理。",
-    "example": "团队用yylo同时运行多个编码代理，分别处理不同模块，提高开发效率。",
+    "one_liner": "命令行编排 AI 编码 agent 跑可复现工作流",
+    "category": "",
+    "use_for": "把重复的分析脚本流程交给 agent 自动跑并留痕",
+    "usage": "用 yy init 定义任务，agent 在 git 仓库里执行并出 receipt",
+    "example": "在项目里跑 yy init --task \"跑完 scRNA 预处理\"，agent 逐步骤执行并留记录",
     "stars_history": [
       [
         "2026-08-21",
@@ -7950,18 +8244,21 @@
         59
       ]
     ],
-    "compare": "提供了完整的任务管理和工作流记录，比单纯使用代理更结构化。"
+    "compare": "和 tutti、claudex-loop 都是 agent 编排，它更强调 receipt 与 git 边界",
+    "fit": 4,
+    "overlap": "和 tutti、chaseai-yt/crucible 重叠，都属于 agent 编排层",
+    "verdict": "观望：概念好但生物信息场景适配未知"
   },
   "chaseai-yt/claudex-loop": {
     "first_seen": "2026-08-24",
     "stars_at_first_seen": 1196,
     "matched_query": "claude code skill",
-    "score": 10,
-    "one_liner": "一个Claude Code技能，用两个AI模型交叉审查计划。",
+    "score": 9,
+    "one_liner": "两个模型交叉审查计划再互换角色实现",
     "category": "Claude Code skill",
-    "use_for": "提升开发计划的质量，减少编码错误。",
-    "usage": "在Claude Code中调用此技能，它会自动进行计划强化和审查。",
-    "example": "开发者输入“/claudex”并描述需求，Claude和Codex会轮流审查计划，发现问题并修正。",
+    "use_for": "算法方案先让另一个模型挑刺，再动手写代码",
+    "usage": "装好后触发四阶段流程，Claude 协调 Codex 审查",
+    "example": "在 Claude Code 里说「按 claudex-loop 做这个新模型方案」，Claude 出计划、Codex 挑错、再换手实现",
     "stars_history": [
       [
         "2026-08-24",
@@ -8040,18 +8337,21 @@
         1859
       ]
     ],
-    "compare": "首创跨模型对抗审查，比单一模型审查更全面，能发现隐藏缺陷。"
+    "compare": "和追踪列表里的 chaseai-yt/crucible 几乎同源，它是完整循环版",
+    "fit": 7,
+    "overlap": "和 crucible 高度重叠",
+    "verdict": "装：方案硬审查对算法开发有用"
   },
   "nateherkai/scroll-craft": {
     "first_seen": "2026-08-24",
     "stars_at_first_seen": 618,
     "matched_query": "claude code skill",
-    "score": 6,
-    "one_liner": "用于创建高质量滚动驱动网站的Claude Code技能。",
-    "category": "Claude Code skill",
-    "use_for": "设计带有创意滚动效果的网站页面。",
-    "usage": "在Claude Code中调用此技能，根据描述生成网站代码。",
-    "example": "设计师输入“/scrollcraft 创建一个产品展示页”，得到带有滚动动画的HTML/CSS。",
+    "score": 4,
+    "one_liner": "做滚动动效高端网页的 Claude Code 技能",
+    "category": "",
+    "use_for": "做个人主页、项目展示页、组会汇报的可视化网页",
+    "usage": "装进 Claude Code，让它按设计标准生成带动效的落地页",
+    "example": "在 Claude Code 说「用 scroll-craft 做一个单细胞项目展示页」，得到可滚动动画网页",
     "stars_history": [
       [
         "2026-08-24",
@@ -8130,18 +8430,21 @@
         2430
       ]
     ],
-    "compare": "专注于滚动叙事设计，与其他网页设计技能相比更注重交互体验。"
+    "compare": "和 auteur、blog 型技能重叠但偏动效实现；科研网页需求少，非刚需",
+    "fit": 2,
+    "overlap": "和 agiwhitelist/auteur 部分重叠，它更重滚动动效",
+    "verdict": "不装：网页动效跟生信科研几乎无关"
   },
   "limenagent/prodagent": {
     "first_seen": "2026-08-27",
     "stars_at_first_seen": 51,
     "matched_query": "llm agent framework",
     "score": 8,
-    "one_liner": "一个生产级的AI代理框架，强调稳定性和可靠性。",
+    "one_liner": "1800 行的小 agent 框架内核，讲清原理",
     "category": "多智能体框架",
-    "use_for": "用于构建需要严格控制和容错的企业级AI应用。",
-    "usage": "开发者用它来创建有状态、可恢复的多代理系统，通过配置预算和防护措施。",
-    "example": "金融公司用prodagent构建自动交易系统，设置每秒调用次数限制，防止失控。",
+    "use_for": "想懂 agent 框架底层、自己搭轻量编排",
+    "usage": "跑 make play 看事件流，再按阅读顺序读源码",
+    "example": "读完后照着内核给自己写一个「数据质控→分析→出报告」的最小编排",
     "stars_history": [
       [
         "2026-08-27",
@@ -8216,14 +8519,17 @@
         76
       ]
     ],
-    "compare": "相比其他框架，它更注重确定性、故障恢复和安全性，适合对稳定性要求高的场景。"
+    "compare": "和 open-multi-agent、AutoAgent 同类，它胜在极小可读像教材",
+    "fit": 5,
+    "overlap": "和 open-multi-agent 部分重叠，它更教学化",
+    "verdict": "观望：想懂原理值得读，不必日常用"
   },
   "VoltAgent/awesome-agent-skills": {
     "first_seen": "2026-08-28",
     "stars_at_first_seen": 32928,
     "matched_query": "awesome agent skills",
-    "score": 9,
-    "one_liner": "精选 1000+ 真实 AI 技能，非 AI 批量生成，兼容多个主流 agent",
+    "score": 7,
+    "one_liner": "精选 1000+ 真实 agent 技能的大合集",
     "stars_history": [
       [
         "2026-08-28",
@@ -8295,17 +8601,20 @@
       ]
     ],
     "category": "资源合集",
-    "use_for": "找现成技能装进 Claude Code 等，快速提升 AI 干活能力",
-    "usage": "浏览目录找技能，用 /skills add 或手动链接安装，再让 AI 调用",
-    "example": "在 Claude Code 里输入 /skills add https://github.com/owner/repo，即可添加技能",
-    "compare": "与同类合集相比，主打真实工程团队技能，质量更可靠"
+    "use_for": "找现成技能，挑科研/写作/办公相关的来装",
+    "usage": "当目录浏览，按分类挑技能复制到项目里",
+    "example": "",
+    "compare": "和 heilcheng、libukai 的合集同类，规模大且真实团队多",
+    "fit": 5,
+    "overlap": "和 awesome-agent-skills 系列多个仓库高度重叠",
+    "verdict": "装：常翻的技能目录，顺手找料"
   },
   "Vincentwei1021/video-shotcraft": {
     "first_seen": "2026-08-28",
     "stars_at_first_seen": 6517,
     "matched_query": "claude code skill created:>2026-06-29",
-    "score": 8,
-    "one_liner": "AI 视频制作技能，用 Remotion 做电影感产品视频",
+    "score": 7,
+    "one_liner": "用 Remotion 做电影感产品视频的技能",
     "stars_history": [
       [
         "2026-08-28",
@@ -8376,18 +8685,21 @@
         8561
       ]
     ],
-    "category": "工具",
-    "use_for": "自动生成分镜、动效预览和可编辑模板，做产品宣传片",
-    "usage": "在 Claude Code 或 Codex 中安装技能，输入需求生成视频项目",
-    "example": "输入产品卖点，技能自动生成 152 种镜头卡片和 209 个动效预览",
-    "compare": "比通用视频生成更专业，提供生产级模板和精确控制"
+    "category": "Claude Code skill",
+    "use_for": "做课题宣传片、成果展示短片，比幻灯片有质感",
+    "usage": "给需求，agent 排分镜渲染成片",
+    "example": "输入项目介绍，输出带运镜的产品感短视频",
+    "compare": "同作者视频系列，它偏电影感产品片，talkcraft 偏口播",
+    "fit": 4,
+    "overlap": "和 video-talkcraft 高度重叠，用途略不同",
+    "verdict": "观望：做展示视频有用，非科研刚需"
   },
   "heilcheng/awesome-agent-skills": {
     "first_seen": "2026-08-28",
     "stars_at_first_seen": 6147,
     "matched_query": "awesome agent skills",
-    "score": 8,
-    "one_liner": "社区维护的 Agent Skills 目录，带教程和指南",
+    "score": 7,
+    "one_liner": "带教程指南的社区 agent 技能目录",
     "stars_history": [
       [
         "2026-08-28",
@@ -8459,17 +8771,20 @@
       ]
     ],
     "category": "资源合集",
-    "use_for": "查找技能并学习如何快速上手使用",
-    "usage": "访问网站或直接查看 README，挑选技能并加载进 agent",
-    "example": "打开 agent-skill.co 搜索技能，复制安装命令到 Claude Code",
-    "compare": "比 VoltAgent 的更侧重入门指南，适合新手"
+    "use_for": "入门找技能，看分类和安装方法",
+    "usage": "浏览在线目录，按平台指引加载技能",
+    "example": "",
+    "compare": "和 libukai、VoltAgent 合集同类，它文档教程更友好",
+    "fit": 5,
+    "overlap": "和 libukai/awesome-agent-skills 高度重叠",
+    "verdict": "装：当技能字典随时查，备用"
   },
   "libukai/awesome-agent-skills": {
     "first_seen": "2026-08-28",
     "stars_at_first_seen": 5019,
     "matched_query": "awesome agent skills",
-    "score": 8,
-    "one_liner": "Agent Skills 中文指南，精选技能+教程",
+    "score": 7,
+    "one_liner": "中文的 Agent Skills 终极指南+精选技能",
     "stars_history": [
       [
         "2026-08-28",
@@ -8541,17 +8856,20 @@
       ]
     ],
     "category": "资源合集",
-    "use_for": "中文用户快速了解技能概念和获取资源",
-    "usage": "按教程安装技能，或参考中文文档自己构建",
-    "example": "阅读快速入门，安装一个技能到 Claude Code 试试",
-    "compare": "中文资源更友好，补充了少而精的原则"
+    "use_for": "中文入门技能生态，学怎么构建自己的 skill",
+    "usage": "看快速入门和案例，跟着搭技能",
+    "example": "",
+    "compare": "和 heilcheng、VoltAgent 合集同类，中文教程更细",
+    "fit": 5,
+    "overlap": "和 awesome-agent-skills 系列重叠，中文内容更多",
+    "verdict": "装：中文入门指南，做技能时参考"
   },
   "eternityspring/shuohao-skills": {
     "first_seen": "2026-08-28",
     "stars_at_first_seen": 2303,
     "matched_query": "claude code skill created:>2026-06-29",
-    "score": 7,
-    "one_liner": "AI 短剧制作技能集，从小说到分镜全流程",
+    "score": 5,
+    "one_liner": "从小说到分镜的 AI 短剧制作技能集",
     "stars_history": [
       [
         "2026-08-28",
@@ -8622,18 +8940,21 @@
         3352
       ]
     ],
-    "category": "Claude Code skill",
-    "use_for": "把小说改编成短剧剧本、角色设定、分镜等",
-    "usage": "安装技能，按流程输入小说，逐步生成各环节内容",
-    "example": "输入小说，用 novel-outline 技能生成大纲五件套",
-    "compare": "专注短剧垂直领域，流程完整且质量门多"
+    "category": "资源合集",
+    "use_for": "做短剧内容，和科研写作关系不大",
+    "usage": "按管线拆角色、写剧本、出分镜",
+    "example": "丢一本小说，输出改编大纲和分镜素材",
+    "compare": "和 drama-skills、h3-storyboard 同类，覆盖整条短剧管线",
+    "fit": 2,
+    "overlap": "和 zenstory-ai/drama-skills 高度重叠",
+    "verdict": "不装：纯内容创作，科研用不上"
   },
   "zenstory-ai/drama-skills": {
     "first_seen": "2026-08-28",
     "stars_at_first_seen": 1296,
     "matched_query": "claude code skill created:>2026-06-29",
     "score": 7,
-    "one_liner": "AI 短剧创作技能套件，覆盖剧本到视频提示词",
+    "one_liner": "把点子做成短剧剧本、分镜、视频提示词的技能组",
     "stars_history": [
       [
         "2026-08-28",
@@ -8704,18 +9025,21 @@
         1905
       ]
     ],
-    "category": "Claude Code skill",
-    "use_for": "制作分集剧本、视觉设定、分镜和生成提示词",
-    "usage": "导入技能，在一流 agent 中生成文件并确认后执行生产",
-    "example": "把点子交给技能，得到剧本.md 和图片提示词.md",
-    "compare": "强调确认机制，防止未经确认的生产操作"
+    "category": "Claude Code skill 合集",
+    "use_for": "批量生成剧情化内容脚本与分镜，做科普视频或组会开场",
+    "usage": "在 Claude Code 里装好后按技能名触发，产出五份 Markdown 工程文件",
+    "example": "在 Claude Code 里说「用 drama-skills 把这个课题编成三集科普短剧」，得到剧本+分镜+视频提示词",
+    "compare": "和 eternityspring/shuohao-skills 几乎重复，都是小说到分镜；这里多了资产与审查环节",
+    "fit": 2,
+    "overlap": "和 shuohao-skills 重复，同一短剧产线",
+    "verdict": "不装：科研用不上，纯内容创作"
   },
   "Anionex/agent-vision-toolkit": {
     "first_seen": "2026-08-28",
     "stars_at_first_seen": 1114,
     "matched_query": "claude code skill created:>2026-06-29",
-    "score": 9,
-    "one_liner": "给纯文本模型看图的工具箱，支持多图和 UI 还原",
+    "score": 8,
+    "one_liner": "给纯文本模型加「眼睛」，能看图问答和截图 OCR",
     "stars_history": [
       [
         "2026-08-28",
@@ -8786,18 +9110,21 @@
         1203
       ]
     ],
-    "category": "工具",
-    "use_for": "让无视觉模型识别图片、OCR、还原前端界面",
-    "usage": "安装技能，用于图片问答、自动化测试等",
-    "example": "粘贴截图给 Claude Code，技能识别并生成代码",
-    "compare": "填补了文本模型视觉能力空白，集成方便"
+    "category": "Claude Code skill / 视觉工具",
+    "use_for": "读论文插图、看显微镜图、把复杂图表转成文字描述",
+    "usage": "装进 Claude Code/Codex 后直接粘贴图片提问，或走 CLI 批处理",
+    "example": "在 Claude Code 里粘贴一张 UMAP 图问「这群细胞标志基因像什么」，它给出解读",
+    "compare": "追踪列表里没有纯视觉桥接类技能，它补了「文本模型看图」这类空白",
+    "fit": 7,
+    "overlap": "无重复",
+    "verdict": "装：读图看论文图很有用"
   },
   "sunchaokun/PPT-Design-Skill": {
     "first_seen": "2026-08-28",
     "stars_at_first_seen": 1024,
     "matched_query": "claude code skill created:>2026-06-29",
-    "score": 8,
-    "one_liner": "专业 PPT 设计技能，4 万+ 风格，可编辑 PPTX",
+    "score": 7,
+    "one_liner": "专业 PPT 设计技能，出可编辑 PPTX",
     "stars_history": [
       [
         "2026-08-28",
@@ -8869,17 +9196,20 @@
       ]
     ],
     "category": "Claude Code skill",
-    "use_for": "从需求到交付高质量演示文稿，支持精确布局",
-    "usage": "选择 Build Mode 逐页设计，或快速生成草稿",
-    "example": "输入汇报主题，生成 PPTX 并视觉复核",
-    "compare": "比通用生成更专业，提供像素级控制和验收"
+    "use_for": "把组会/答辩/结题报告内容做成体面的 PPT",
+    "usage": "在 Claude Code 里描述需求，它走需求分析→视觉方向→生成 PPTX",
+    "example": "在 Claude Code 里说「把这份生信分析报告做成 15 页答辩 PPT」，得到可编辑 pptx",
+    "compare": "和 zLanqing 的 Office 技能部分重叠，但它专攻视觉设计和 4 万风格库",
+    "fit": 8,
+    "overlap": "和 genoffice、zLanqing Office 部分重叠，它专精 PPT 视觉",
+    "verdict": "装：做 PPT 直接省事"
   },
   "Raymondhou0917/speak-human-tw": {
     "first_seen": "2026-08-28",
     "stars_at_first_seen": 901,
     "matched_query": "claude code skill created:>2026-06-29",
-    "score": 8,
-    "one_liner": "繁体中文去 AI 味改写，抓 38 种写作痕迹",
+    "score": 7,
+    "one_liner": "繁体中文去 AI 味改写，抓 38 种痕迹",
     "stars_history": [
       [
         "2026-08-28",
@@ -8951,17 +9281,20 @@
       ]
     ],
     "category": "Claude Code skill",
-    "use_for": "让 AI 写的文案更像台湾人写的，校正用语",
-    "usage": "在 Claude Code 等中调用技能，自动改写文案",
-    "example": "输入 AI 草稿，技能输出去除 AI 味的版本",
-    "compare": "专业针对繁中，提供检核表自评，其他类似工具较少"
+    "use_for": "润色中文报告和科普稿，让论文摘要读着不像机器",
+    "usage": "把草稿丢进去让它逐句改写并给自检表",
+    "example": "在 Claude Code 里输入 /speak-human-tw 加一段摘要，得到更自然的中文版",
+    "compare": "和 op7418/Humanizer-zh、blader/humanizer 同类，它是繁体台湾用语向",
+    "fit": 6,
+    "overlap": "和 Humanizer-zh 高度重叠",
+    "verdict": "观望：写简体论文用不上繁体的"
   },
   "Archive228/loopkit": {
     "first_seen": "2026-08-28",
     "stars_at_first_seen": 751,
     "matched_query": "claude code skill created:>2026-06-29",
     "score": 9,
-    "one_liner": "33+ 实战技能和极简 .claude 配置，用于编码 agent",
+    "one_liner": "33 个实战技能配极简 .claude 骨架",
     "stars_history": [
       [
         "2026-08-28",
@@ -9032,18 +9365,21 @@
         756
       ]
     ],
-    "category": "工具",
-    "use_for": "开箱即用的技能集，强化 Plan→Act→Verify 工作流",
-    "usage": "一键安装配置，直接在项目中使用技能",
-    "example": "安装后，Claude Code 自动遵循计划执行验证",
-    "compare": "比单技能更完整，提供一套集成的工作流"
+    "category": "skill 合集 + harness",
+    "use_for": "给自己搭一套计划-执行-验证的开发流程模板",
+    "usage": "一条 curl 装 .claude 目录，然后用里面的技能跑任务",
+    "example": "在项目里跑安装脚本后，用 plan/verify 技能拆一个生信脚本任务并验收",
+    "compare": "和 alirezarezvani/claude-skills、daymade 类似，它胜在自带 harness 结构",
+    "fit": 6,
+    "overlap": "和 claude-skills、daymade/claude-code-skills 部分重叠，它多了 harness",
+    "verdict": "观望：技能太杂，挑几个抄思路"
   },
   "karanb192/itr-wala": {
     "first_seen": "2026-08-28",
     "stars_at_first_seen": 735,
     "matched_query": "claude code skill created:>2026-06-29",
-    "score": 7,
-    "one_liner": "从终端报印度所得税，计算引擎确定性高",
+    "score": 3,
+    "one_liner": "从终端报印度所得税",
     "stars_history": [
       [
         "2026-08-28",
@@ -9115,17 +9451,20 @@
       ]
     ],
     "category": "Claude Code skill",
-    "use_for": "计算税额、生成填报文件，无需人工",
-    "usage": "克隆安装，运行命令自动计算税",
-    "example": "输入收入数据，技能输出税额和申报文件",
-    "compare": "垂直领域实用，替代昂贵 CA 服务"
+    "use_for": "报印度税，跟科研完全无关",
+    "usage": "克隆后跑 install.sh 装成技能再按提示填表",
+    "example": "在终端输入报税指令，它算好税额生成申报数据",
+    "compare": "追踪列表没有报税类，填补的是税务自动化空白",
+    "fit": 1,
+    "overlap": "无重复",
+    "verdict": "不装：跟科研无关"
   },
   "zenstory-ai/novel-to-game": {
     "first_seen": "2026-08-28",
     "stars_at_first_seen": 713,
     "matched_query": "claude code skill created:>2026-06-29",
-    "score": 8,
-    "one_liner": "把小说变成可玩游戏，分阶段工作流",
+    "score": 6,
+    "one_liner": "把小说改造成可玩游戏的分阶段工作流",
     "stars_history": [
       [
         "2026-08-28",
@@ -9196,18 +9535,21 @@
         778
       ]
     ],
-    "category": "多智能体框架",
-    "use_for": "小说改编游戏，从概念到 QA 全流程",
-    "usage": "导入技能，选择 runtime，逐步生成游戏",
-    "example": "输入小说，技能生成游戏脚本和资源",
-    "compare": "与其他改编工具相比，更注重来源可溯性"
+    "category": "Claude Code skill 合集",
+    "use_for": "做科普小游戏或教学 demo，跟主业无关",
+    "usage": "给一个小说文本加目标运行环境，它产出设计文档和可玩版本",
+    "example": "输入一段小说选目标浏览器，得到一个能打开的网页小游戏",
+    "compare": "和 drama-skills 同厂不同方向，一个做剧一个做游戏",
+    "fit": 2,
+    "overlap": "和 drama-skills 同厂互补不重复",
+    "verdict": "不装：科研场景几乎用不上"
   },
   "lawve-ai/awesome-legal-skills": {
     "first_seen": "2026-08-28",
     "stars_at_first_seen": 667,
     "matched_query": "awesome agent skills",
-    "score": 8,
-    "one_liner": "法律工作 AI 技能列表，238 个技能",
+    "score": 5,
+    "one_liner": "258 个法律工作 AI 技能清单",
     "stars_history": [
       [
         "2026-08-28",
@@ -9279,17 +9621,20 @@
       ]
     ],
     "category": "资源合集",
-    "use_for": "找现成法律技能，如审合同、合规检查",
-    "usage": "浏览列表，下载技能到 agent 使用",
-    "example": "找到 NDA 审查技能，安装后使用",
-    "compare": "专注法律领域，比通用合集更专业"
+    "use_for": "了解技能怎么组织，法律内容本身用不上",
+    "usage": "当目录翻，挑里面通用流程思路借鉴",
+    "example": "打开列表找到「合同审查」技能，学它怎么拆步骤再搬到审稿流程",
+    "compare": "和 VoltAgent/heilcheng 的技能合集同类，只是垂直到法律",
+    "fit": 2,
+    "overlap": "和 awesome-agent-skills 类重复",
+    "verdict": "不装：领域不搭，只看结构"
   },
   "skillmatic-ai/awesome-agent-skills": {
     "first_seen": "2026-08-28",
     "stars_at_first_seen": 665,
     "matched_query": "awesome agent skills",
     "score": 8,
-    "one_liner": "Agent Skills 权威资源，涵盖学习与构建",
+    "one_liner": "讲清楚 Agent Skills 是什么、怎么建的权威资料",
     "stars_history": [
       [
         "2026-08-28",
@@ -9361,17 +9706,20 @@
       ]
     ],
     "category": "资源合集",
-    "use_for": "学习技能原理和最佳实践，或查找现成技能",
-    "usage": "按指南学习，或直接使用推荐的技能",
-    "example": "访问 agentskills.io 了解技能，再安装到 Claude Code",
-    "compare": "更侧重教学和标准，适合系统学习"
+    "use_for": "入门技能体系，学怎么写自己的科研 skill",
+    "usage": "按 Learn→Use→Build 四阶段读，配官方文档",
+    "example": "读「Build 阶段」章节后，照模板写一个「单细胞聚类参数推荐」技能",
+    "compare": "和 VoltAgent/JackyST0 的合集同类，它更偏教学和标准解释",
+    "fit": 5,
+    "overlap": "和 awesome-agent-skills 系列重叠",
+    "verdict": "装：想自己写科研 skill 先看这个"
   },
   "JackyST0/awesome-agent-skills": {
     "first_seen": "2026-08-28",
     "stars_at_first_seen": 627,
     "matched_query": "awesome agent skills",
     "score": 7,
-    "one_liner": "精选 AI 技能列表，支持多种编程工具",
+    "one_liner": "精选 agent 技能清单，带在线搜索",
     "stars_history": [
       [
         "2026-08-28",
@@ -9443,17 +9791,20 @@
       ]
     ],
     "category": "资源合集",
-    "use_for": "查找适用于 Cursor、Copilot 等的技能",
-    "usage": "一键安装或搜索在线目录",
-    "example": "用 install.sh 安装全部技能",
-    "compare": "提供一键安装，方便快捷"
+    "use_for": "快速搜现成技能，找数据处理和写作类",
+    "usage": "用网页搜索或按分类翻",
+    "example": "在它的搜索页搜「data processing」，筛出能配进自己流程的技能",
+    "compare": "和其他 awesome-agent-skills 高度重合，它多了在线搜索入口",
+    "fit": 5,
+    "overlap": "和 VoltAgent/heilcheng 合集重复",
+    "verdict": "观望：合集太多，留一个够"
   },
   "crawfordxx/xiaoma-durex-copywriter": {
     "first_seen": "2026-08-28",
     "stars_at_first_seen": 580,
     "matched_query": "claude code skill created:>2026-06-29",
-    "score": 6,
-    "one_liner": "杜蕾斯式双层语义文案和海报生成技能",
+    "score": 5,
+    "one_liner": "杜蕾斯式文案与海报生成技能",
     "stars_history": [
       [
         "2026-08-28",
@@ -9525,17 +9876,20 @@
       ]
     ],
     "category": "Claude Code skill",
-    "use_for": "生成广告文案和海报，适合营销推广",
-    "usage": "触发技能，按流程选择方案并生成",
-    "example": "输入产品，技能生成 3-5 个文案方案",
-    "compare": "垂直营销领域，方法论独特"
+    "use_for": "写营销文案，科研写作完全用不上",
+    "usage": "触发词启动后给出多方案选一个再出图出文案",
+    "example": "说「写个节日海报文案」，它给 3 个方案再排版出图",
+    "compare": "追踪列表无同类文案技能，填补的是营销创作空白",
+    "fit": 1,
+    "overlap": "无重复",
+    "verdict": "不装：跟科研无关"
   },
   "Kulaxyz/token-diet": {
     "first_seen": "2026-08-28",
     "stars_at_first_seen": 479,
     "matched_query": "claude code skill created:>2026-06-29",
-    "score": 9,
-    "one_liner": "减少 token 消耗的技能，平均省 31% 费用",
+    "score": 7,
+    "one_liner": "常驻省 token 技能，平均账单降三成",
     "stars_history": [
       [
         "2026-08-28",
@@ -9607,17 +9961,20 @@
       ]
     ],
     "category": "Claude Code skill",
-    "use_for": "让 AI 回答更精简，降低 API 成本",
-    "usage": "安装后自动生效，可调节模式",
-    "example": "安装后，每次回复自动优化长度",
-    "compare": "与其他优化工具比，效果明确且可量化"
+    "use_for": "长跑 agent 任务省钱，生成代码文档更精简",
+    "usage": "一条命令装上就常驻，也能用命令切换档位",
+    "example": "装完后让 agent 改脚本，回复明显变短且保留关键信息",
+    "compare": "追踪列表无专门省 token 技能，填补成本控制空白",
+    "fit": 6,
+    "overlap": "无重复",
+    "verdict": "装：跑长任务省钱很实在"
   },
   "JimLiu/baocut": {
     "first_seen": "2026-08-28",
     "stars_at_first_seen": 469,
     "matched_query": "claude code skill created:>2026-06-29",
-    "score": 7,
-    "one_liner": "驱动 BaoCut 视频剪辑的 agent skill",
+    "score": 4,
+    "one_liner": "驱动 BaoCut 应用做转录字幕翻译剪辑",
     "stars_history": [
       [
         "2026-08-28",
@@ -9688,18 +10045,21 @@
         491
       ]
     ],
-    "category": "工具",
-    "use_for": "自然语言控制剪辑、字幕、翻译等",
-    "usage": "安装技能，在 agent 中描述操作",
-    "example": "输入“加字幕”，自动处理视频",
-    "compare": "结合原生应用，提供完整视频处理"
+    "category": "Claude Code skill",
+    "use_for": "给讲座视频或科普视频自动上字幕",
+    "usage": "装好后用自然语言让它转录音视频并加字幕导出",
+    "example": "在 Claude Code 里说「把这段讲座视频转录并配中英字幕」，它调 BaoCut 产出成片",
+    "compare": "和 Vincentwei1021/video-shotcraft 部分重叠，它偏转录剪辑不是特效",
+    "fit": 3,
+    "overlap": "和 video-shotcraft 部分重叠，它多了转录字幕",
+    "verdict": "观望：要 macOS 且科研视频不多"
   },
   "agentconnect-md/agentconnect": {
     "first_seen": "2026-08-28",
     "stars_at_first_seen": 413,
     "matched_query": "hn: A sandbox is not a permission model for multi-agent systems",
-    "score": 8,
-    "one_liner": "开源多智能体协作平台，类似 Claude Tag",
+    "score": 9,
+    "one_liner": "开源多智能体协作，可在 Slack 里 @ 一个 agent",
     "stars_history": [
       [
         "2026-08-28",
@@ -9774,17 +10134,20 @@
     "hn_points": 5,
     "hn_url": "https://news.ycombinator.com/item?id=49466057",
     "category": "多智能体框架",
-    "use_for": "在 Slack 等平台 @ 智能体协作办公",
-    "usage": "搭建系统，邀请 agent 加入团队",
-    "example": "在 Slack 发消息 @agent，自动执行任务",
-    "compare": "替代专有工具，支持多种平台"
+    "use_for": "把课题组的 agent 接进聊天工具一起干活",
+    "usage": "部署后从 Slack/飞书里 @ 智能体派活",
+    "example": "在飞书群里 @ 分析 agent 说「跑一下这批数据质控」，它回结果",
+    "compare": "和 open-multi-agent、AutoAgent 同类，它强在接聊天工具多人协作",
+    "fit": 4,
+    "overlap": "和 open-multi-agent 部分重叠，它多了聊天工具接入",
+    "verdict": "观望：跟科研栈隔一层，先看别人跑"
   },
   "UditAkhourii/neuroarxiv": {
     "first_seen": "2026-08-28",
     "stars_at_first_seen": 405,
     "matched_query": "claude code skill created:>2026-06-29",
-    "score": 7,
-    "one_liner": "设计新架构前先查 arXiv 论文，避免从零开始",
+    "score": 8,
+    "one_liner": "设计新架构前先查 arXiv 已有工作",
     "stars_history": [
       [
         "2026-08-28",
@@ -9856,10 +10219,13 @@
       ]
     ],
     "category": "Claude Code skill",
-    "use_for": "让 AI 基于研究文献设计方案",
-    "usage": "安装技能，AI 自动获取并阅读论文",
-    "example": "输入问题，技能给出基于论文的建议",
-    "compare": "与通用搜索不同，更强调独立阅读"
+    "use_for": "写算法前查先例，避免重复造轮子，写 related work",
+    "usage": "触发后它抓 arXiv 论文隔离读并汇成一条带引用的建议",
+    "example": "在 Claude Code 里说「我要做单细胞批次校正新方法」，它查出已有哪些做法并给第一步",
+    "compare": "和 academic-research-skills 的找文献部分重叠，但它专攻「动手前查先例」",
+    "fit": 9,
+    "overlap": "和 academic-research-skills 部分重叠，它多了设计前查先例",
+    "verdict": "装：做算法前查先例太对味"
   },
   "s0xDk/refactoring-ui-skill": {
     "first_seen": "2026-08-28",
@@ -10411,8 +10777,8 @@
     "first_seen": "2026-08-28",
     "stars_at_first_seen": 298,
     "matched_query": "claude code skill created:>2026-06-29",
-    "score": 8,
-    "one_liner": "说句话就自动写规格、拆任务、建项目的框架",
+    "score": 7,
+    "one_liner": "说句话就自动出项目，带进度看板",
     "stars_history": [
       [
         "2026-08-28",
@@ -10484,10 +10850,13 @@
       ]
     ],
     "category": "Claude Code skill",
-    "use_for": "把「搭个生信流程」这类模糊需求变成可执行项目",
-    "usage": "装后把想法丢给它，它问几个问题就开干并给仪表盘",
-    "example": "输入「做个小工具把 Seurat 对象转 anndata」，它自动拆任务并写出可用脚本",
-    "compare": "和 swarm/多智能体框架比更轻，一个 skill 搞定全自动开发，无需额外配置"
+    "use_for": "把粗糙想法快速变成可跑的脚本工程",
+    "usage": "问五到八个问题后它自写规格、拆任务、建并自检",
+    "example": "说「做一个自动下载 GEO 数据并质控的流程」，它建好项目并跑完自检",
+    "compare": "和 loopkit、claudex-loop 同类但更自动，主打全托管建项目",
+    "fit": 6,
+    "overlap": "和 loopkit 部分重叠，它更强调自动建整项目",
+    "verdict": "观望：科研流程需要精细控制，自动化太猛"
   },
   "Get-Concord-AI/concord-mcp": {
     "first_seen": "2026-08-28",
@@ -11511,7 +11880,7 @@
     "stars_at_first_seen": 188,
     "matched_query": "claude code skill created:>2026-06-29",
     "score": 7,
-    "one_liner": "跨 agent 共享的 AGENTS.md 规范和技能集",
+    "one_liner": "跨 agent 的共享规范与可复用技能集",
     "stars_history": [
       [
         "2026-08-28",
@@ -11582,11 +11951,14 @@
         213
       ]
     ],
-    "category": "Claude Code skill 合集",
-    "use_for": "抄 AGENTS.md 模板，统一自己 agent 的协作规范",
-    "usage": "复制 AGENTS.md 到仓库，按项目往里加域内容",
-    "example": "开新生信项目时先拷它的 AGENTS.md，再补上 scanpy 相关约定",
-    "compare": "和 VoltAgent/awesome-agent-skills 比它更瘦、偏规范文档，可当最小起步模板"
+    "category": "资源合集 / 标准",
+    "use_for": "给多工具统一 AGENTS.md 和技能格式",
+    "usage": "把 AGENTS.md 拷进项目再挂上需要的技能目录",
+    "example": "把它的 AGENTS.md 拷进生信流程仓库，统一 Claude/Codex 行为约定",
+    "compare": "和 daymade、alirezarezvani 类似，它更像参考写法和模板",
+    "fit": 6,
+    "overlap": "和 claude-skills 等技能集部分重叠",
+    "verdict": "观望：当模板参考，不必全装"
   },
   "itgoyo/awesome-agent-skills": {
     "first_seen": "2026-08-28",
@@ -11748,8 +12120,8 @@
     "first_seen": "2026-08-28",
     "stars_at_first_seen": 170,
     "matched_query": "claude code skill created:>2026-06-29",
-    "score": 6,
-    "one_liner": "给 agent 一个虚拟手机号收验证码",
+    "score": 3,
+    "one_liner": "让 agent 下单手机号收验证码",
     "stars_history": [
       [
         "2026-08-28",
@@ -11821,10 +12193,13 @@
       ]
     ],
     "category": "Claude Code skill",
-    "use_for": "自动注册需要手机号的网站服务",
-    "usage": "agent 调 API 下单号码、读短信码、还号码",
-    "example": "让 agent 注册一个国外数据集平台，它下单印尼号收到验证码完成注册",
-    "compare": "独一无二的验证码收取技能，别人都没有，但对科研几乎无用"
+    "use_for": "自动化注册账号，跟科研无关",
+    "usage": "装好后让它按国家下单号码并读回验证码",
+    "example": "说「用印尼号注册某服务」，它订号读码完成注册",
+    "compare": "追踪列表无同类，填补的是手机验证自动化空白",
+    "fit": 1,
+    "overlap": "无重复",
+    "verdict": "不装：跟科研无关"
   },
   "dashaworks/share-as-link-skill": {
     "first_seen": "2026-08-28",
@@ -13937,7 +14312,7 @@
     "stars_at_first_seen": 660,
     "matched_query": "claude code skill",
     "score": 7,
-    "one_liner": "一个Claude Code技能，让解释自动适应不同听众",
+    "one_liner": "自动按听众调整解释深度的技能",
     "stars_history": [
       [
         "2026-08-29",
@@ -14005,17 +14380,20 @@
       ]
     ],
     "category": "Claude Code skill",
-    "use_for": "向孩子、经理、家人等不同角色解释技术概念，自动调整语气和例子",
-    "usage": "用户输入讲解对象和目标，技能自动调整词汇和类比",
-    "example": "在Claude Code里输入“ELI5什么是数据库索引”，它会生成适合5岁孩子听的解释",
-    "compare": "与现有技能相比更聚焦沟通场景，填补了按听众定制解释的空白"
+    "use_for": "把算法讲给导师/合作者/家人听，或写科普段落",
+    "usage": "说「给经理解释这个」，它换词换比喻重讲",
+    "example": "输入一段复杂方法描述，输出给非专业合作者的白话版",
+    "compare": "列表内 humanizer 类改文风，它专攻听众适配调节深度",
+    "fit": 6,
+    "overlap": "和 humanizer 部分重叠，它侧重听众而非去 AI 味",
+    "verdict": "装：写 report 和科普时调深浅很省事"
   },
   "Nanako0129/sepia": {
     "first_seen": "2026-08-29",
     "stars_at_first_seen": 429,
     "matched_query": "claude code skill created:>2026-06-30",
     "score": 8,
-    "one_liner": "一个去AI味的写作技能，基于叙事结构修复",
+    "one_liner": "去 AI 味写作技能，先修叙事结构再改措辞",
     "stars_history": [
       [
         "2026-08-29",
@@ -14082,18 +14460,21 @@
         2607
       ]
     ],
-    "category": "Resource collection",
-    "use_for": "让小说和专业文档摆脱AI腔，按场景匹配写作规则",
-    "usage": "提供write、review、refactor、recreate四种操作",
-    "example": "在Claude Code中上传一篇AI小说，运行review诊断叙事结构问题",
-    "compare": "与humanizer不同，它从叙事架构而非词汇层面修复，基于论文数据"
+    "category": "Claude Code skill",
+    "use_for": "把论文/报告/release notes 写得不像 AI 生成的",
+    "usage": "写或改专业文字时调用，按场合切换规则",
+    "example": "把一段 AI 味的论文讨论丢进去，输出更自然的版本",
+    "compare": "比 blader/humanizer 更深，先修叙事架构再改词",
+    "fit": 8,
+    "overlap": "和 humanizer、Humanizer-zh 重叠，它多了结构层修复",
+    "verdict": "装：写论文和 report 去 AI 味直接可用"
   },
   "GENEXIS-AI/gpt-image-skill": {
     "first_seen": "2026-08-29",
     "stars_at_first_seen": 145,
     "matched_query": "claude code skill created:>2026-06-30",
-    "score": 6,
-    "one_liner": "从Codex或Claude Code用ChatGPT订阅生成图片",
+    "score": 4,
+    "one_liner": "用 ChatGPT 订阅在 agent 里生成/编辑图片",
     "stars_history": [
       [
         "2026-08-29",
@@ -14160,18 +14541,21 @@
         166
       ]
     ],
-    "category": "Tool",
-    "use_for": "无需API密钥，直接利用ChatGPT账号生成和编辑图片",
-    "usage": "安装技能后登录ChatGPT，直接提示即可生成",
-    "example": "在Claude Code中安装技能，输入“画一只戴帽子的猫”，生成PNG文件",
-    "compare": "与图片生成技能相比，它绕过API，适合已有ChatGPT订阅的用户"
+    "category": "Claude Code skill",
+    "use_for": "给 PPT 或论文做示意图、示意图配图",
+    "usage": "装后从 agent 直接出图存进项目目录",
+    "example": "描述一个通路示意图，输出 PNG 存本地当配图",
+    "compare": "列表内配图类技能少，它填补 agent 内直接出图的空白",
+    "fit": 3,
+    "overlap": "无重复",
+    "verdict": "观望：做 PPT 配图有点用，非核心"
   },
   "kostey/khms-memory": {
     "first_seen": "2026-08-29",
     "stars_at_first_seen": 6,
     "matched_query": "hn: KHMS – a file-based long-term memory an LLM agent installs i",
-    "score": 7,
-    "one_liner": "文件式长期记忆系统，供AI代理使用",
+    "score": 9,
+    "one_liner": "基于 Markdown 文件的 agent 长期记忆系统",
     "stars_history": [
       [
         "2026-08-29",
@@ -14241,18 +14625,21 @@
     "source": "hn",
     "hn_points": 10,
     "hn_url": "https://news.ycombinator.com/item?id=49478170",
-    "category": "Tool",
-    "use_for": "让代理记住知识卡片，通过钩子主动回忆相关卡片",
-    "usage": "通过git仓库管理不可变卡片，后台任务提议新知识",
-    "example": "代理在会话中自动加载相关卡片，基于历史知识回答",
-    "compare": "与记忆技能相比，它强调审核流程和证据链，适合需要可靠记忆的场景"
+    "category": "其他",
+    "use_for": "给 agent 建可审阅的科研知识库，存实验结论",
+    "usage": "卡片式存储，hook 自动把相关卡片推进会话",
+    "example": "",
+    "compare": "列表内无同类文件式记忆系统，填补 agent 长期记忆空白",
+    "fit": 7,
+    "overlap": "无重复",
+    "verdict": "装：个人知识库+agent 记忆正好对上日常"
   },
   "cbrock84/headcount": {
     "first_seen": "2026-08-29",
     "stars_at_first_seen": 190,
     "matched_query": "claude code skill created:>2026-06-30",
-    "score": 9,
-    "one_liner": "Claude Code 的智能体组织，像公司一样分部门管理技能",
+    "score": 8,
+    "one_liner": "把 Claude Code 编成公司组织架构的技能集合",
     "stars_history": [
       [
         "2026-08-29",
@@ -14319,18 +14706,21 @@
         1389
       ]
     ],
-    "category": "Claude Code skill",
-    "use_for": "给 Claude Code 装一堆技能，按部门分类，按需安装使用",
-    "usage": "把整个仓库或某个部门插件装进 Claude Code，在对话里调用对应技能",
-    "example": "开发者把'研发部'插件装上，输入'帮我审查代码'，它调用该部门技能完成审查",
-    "compare": "比单个技能合集更体系化，像开公司一样组织，适合想系统管理技能的人"
+    "category": "多智能体框架",
+    "use_for": "给科研项目配「部门」，如写作部、分析部、文献部",
+    "usage": "按需安装各部门插件，独立组合成工作流",
+    "example": "装个文献部门，让它专门管下载和整理论文",
+    "compare": "列表内 subagent 集合多，它按公司部门组织更成体系",
+    "fit": 5,
+    "overlap": "和 awesome-claude-code-subagents 部分重叠，它按部门划分",
+    "verdict": "观望：结构新颖但科研部门需自己裁剪"
   },
   "nshkrdotcom/synapse": {
     "first_seen": "2026-08-29",
     "stars_at_first_seen": 50,
     "matched_query": "multi-agent orchestration framework",
     "score": 8,
-    "one_liner": "一个无头声明式多智能体编排框架，用信号总线通信",
+    "one_liner": "Elixir 写的无头声明式多智能体编排框架",
     "stars_history": [
       [
         "2026-08-29",
@@ -14398,17 +14788,20 @@
       ]
     ],
     "category": "多智能体框架",
-    "use_for": "搭自己的多智能体系统，比如代码审查、数据处理，不用写底层代码",
-    "usage": "在 Elixir 项目里集成，注册信号和智能体，声明工作流，跑起来就行",
-    "example": "开发者用它搭代码审查，把代码提交事件发到总线，审查智能体自动响应并给结果",
-    "compare": "比现有框架更声明式，自带工作流持久化，适合喜欢 Elixir 的开发者"
+    "use_for": "搭多智能体工作流，但技术栈是 Elixir 不是 Python",
+    "usage": "定义信号总线和 workflow，配 Postgres 持久化",
+    "example": "用它搭个代码审查多智能体流程当参考",
+    "compare": "列表内多智能体框架多，它走 Elixir/Hex 生态较冷门",
+    "fit": 4,
+    "overlap": "和 swarms、AutoAgent 部分重叠，语言生态不同",
+    "verdict": "不装：Elixir 栈和 Python 科研流程不搭"
   },
   "IdoGol24/weir": {
     "first_seen": "2026-08-29",
     "stars_at_first_seen": 9,
     "matched_query": "hn: Show HN: Open tool for testing your AI Agents (No LLM)",
     "score": 8,
-    "one_liner": "给 AI 智能体做单元测试的工具，检查敏感数据泄露",
+    "one_liner": "用已有 trace 检测 agent 敏感数据泄露的 CI 关卡",
     "stars_history": [
       [
         "2026-08-29",
@@ -14479,17 +14872,20 @@
     "hn_points": 5,
     "hn_url": "https://news.ycombinator.com/item?id=49480942",
     "category": "工具",
-    "use_for": "在 CI 里测试智能体，确保它不会把密码等敏感信息发给不该发的目标",
-    "usage": "用 pip 装上，读取智能体开 tracing 导出的文件，跑扫描，出报告",
-    "example": "开发者把 weir 加进 CI，智能体跑完导出 trace，weir 检查后报错并指出泄露路径",
-    "compare": "独辟蹊径，别人做技能它做测试，能当 CI 门禁，填补了智能体安全测试空白"
+    "use_for": "给涉及患者/基因数据的 agent 流程做隐私合规检查",
+    "usage": "pip 装后扫 agent 的 OTel trace，发现问题非零退出",
+    "example": "跑 weir scan 检查 agent 是否把病人数据发到外部接口",
+    "compare": "列表内无同类隐私追踪工具，填补 agent 数据流安全空白",
+    "fit": 5,
+    "overlap": "无重复",
+    "verdict": "观望：涉隐私数据时有用，暂非必需"
   },
   "Vincentwei1021/video-talkcraft": {
     "first_seen": "2026-08-30",
     "stars_at_first_seen": 149,
     "matched_query": "claude code skill created:>2026-07-01",
-    "score": 9,
-    "one_liner": "把AI变成口播视频动效工作室的技能",
+    "score": 7,
+    "one_liner": "把口播稿+配音做成字级同步解说的动效视频",
     "stars_history": [
       [
         "2026-08-30",
@@ -14553,17 +14949,20 @@
       ]
     ],
     "category": "Claude Code skill",
-    "use_for": "做解说视频，自动对齐配音和字幕，生成动效",
-    "usage": "在Claude Code里安装，输入稿子和音频，自动出片",
-    "example": "给Claude Code一段口播稿和配音，它生成带字级字幕和动效的Remotion视频",
-    "compare": "相比同作者的video-shotcraft，专注口播视频，有更精细的字级同步和动效配方"
+    "use_for": "做组会/成果汇报的口播解说视频，比 PPT 更生动",
+    "usage": "给口播稿和配音，agent 排分镜用 Remotion 出片",
+    "example": "输入一段课题介绍口播稿+录音，输出带动效的解说视频",
+    "compare": "与 video-shotcraft 同系列，它专攻口播同步而非产品视频",
+    "fit": 4,
+    "overlap": "和 video-shotcraft 部分重叠，它多了口播字级同步",
+    "verdict": "观望：做报告视频可用，但非科研核心流程"
   },
   "arjun988/blender-skills": {
     "first_seen": "2026-08-30",
     "stars_at_first_seen": 138,
     "matched_query": "claude code skill created:>2026-07-01",
-    "score": 7,
-    "one_liner": "Blender三维建模的94个专业技能包",
+    "score": 6,
+    "one_liner": "94 个 Blender 建模动画技能，接 MCP 执行",
     "stars_history": [
       [
         "2026-08-30",
@@ -14627,17 +15026,20 @@
       ]
     ],
     "category": "Claude Code skill",
-    "use_for": "让AI辅助做3D建模和渲染，从粗模到出图",
-    "usage": "用Claude Code配合Blender MCP，AI操控Blender执行建模操作",
-    "example": "在Cursor中让AI用Blender skills生成一个低多边形场景，自动完成建模和材质",
-    "compare": "相比通用agent-skills合集，更专注Blender，技能更专业和系统"
+    "use_for": "做 3D 建模和动画，和科研基本不沾边",
+    "usage": "装进 Claude Code/Cursor，用 MCP 驱动 Blender 操作",
+    "example": "让它搭个 3D 分子结构模型图当封面配图",
+    "compare": "列表内无 Blender 类，属 3D 美术垂直领域空白",
+    "fit": 2,
+    "overlap": "无重复",
+    "verdict": "不装：3D 建模跟生信栈无关"
   },
   "Vuk97/forward-implementation-first": {
     "first_seen": "2026-08-30",
     "stars_at_first_seen": 124,
     "matched_query": "census: claude code skill",
-    "score": 8,
-    "one_liner": "防止AI代理沉迷于做无用功的技能",
+    "score": 9,
+    "one_liner": "阻止 agent 忙于自我记账、先交付再验证的规则",
     "stars_history": [
       [
         "2026-08-30",
@@ -14702,17 +15104,20 @@
     ],
     "source": "census",
     "category": "Claude Code skill",
-    "use_for": "让编码代理专注真正任务，不做多余记录和检查",
-    "usage": "在Claude Code中安装，AI会先实现功能，后处理验证",
-    "example": "让Claude Code跑一个数据处理流程，它跳过繁琐的哈希校验，直接输出结果",
-    "compare": "独特地解决代理内耗问题，同类技能很少见"
+    "use_for": "长流程 agent 跑生信管线时避免卡在元数据自证上",
+    "usage": "放进 agent 技能目录，让它先出结果再做校验",
+    "example": "跑多步 pipeline 时，agent 先产出结果文件再补校验标记",
+    "compare": "列表内无同类，专治 agent 把记账当产出的通病",
+    "fit": 6,
+    "overlap": "无重复",
+    "verdict": "装：管线开发防 agent 空转很实用"
   },
   "phileiny/h3-storyboard-skill": {
     "first_seen": "2026-08-30",
     "stars_at_first_seen": 117,
     "matched_query": "census: claude code skill",
-    "score": 6,
-    "one_liner": "把剧本变成MiniMax H3分镜的技能",
+    "score": 5,
+    "one_liner": "把剧本拆成 MiniMax H3 分镜提示词的技能",
     "stars_history": [
       [
         "2026-08-30",
@@ -14777,17 +15182,20 @@
     ],
     "source": "census",
     "category": "Claude Code skill",
-    "use_for": "制作H3视频时，自动拆分镜头和指导角色表情",
-    "usage": "在Claude Code中提供剧本，该skill生成H3提示词",
-    "example": "输入一段剧情，它输出带镜头和表情描述的分镜列表，供H3渲染",
-    "compare": "专注H3视频生成，强调表情渲染，比一般的翻译提示词技能更专业"
+    "use_for": "给 AI 视频生成拆分镜，和科研关系不大",
+    "usage": "给剧本，agent 输出带表情表演的 H3 分镜表",
+    "example": "输入一段剧本，得到每镜头的 H3 提示词清单",
+    "compare": "列表内分镜类有 drama-skills、shuohao-skills，较专一",
+    "fit": 2,
+    "overlap": "和 shuohao-skills 部分重叠，它专注 H3 格式",
+    "verdict": "不装：纯视频创作，科研用不上"
   },
   "camilleroux/genart-skill": {
     "first_seen": "2026-08-30",
     "stars_at_first_seen": 102,
     "matched_query": "census: claude code skill",
-    "score": 6,
-    "one_liner": "生成艺术创作技能，面向链上平台",
+    "score": 5,
+    "one_liner": "做确定性哈希种子生成艺术的编码技能",
     "stars_history": [
       [
         "2026-08-30",
@@ -14852,17 +15260,20 @@
     ],
     "source": "census",
     "category": "Claude Code skill",
-    "use_for": "创作可验证的确定性生成艺术，适合NFT",
-    "usage": "在Claude Code中安装，AI辅助写生成艺术代码",
-    "example": "让AI用p5.js写一个哈希种子的生成艺术草图，并验证确定性",
-    "compare": "同类生成艺术技能较少，这个更专业且支持链上标准"
+    "use_for": "生成可复现的艺术图，最多当期刊配图/封面",
+    "usage": "装进 Claude Code 写 p5.js/Canvas 生成式作品",
+    "example": "给个种子哈希，输出可复现的抽象图当论文封面",
+    "compare": "列表内无生成艺术类，属创意编码空白",
+    "fit": 3,
+    "overlap": "无重复",
+    "verdict": "不装：跟科研核心链路无交集"
   },
   "Ayueh0102/Ronnier-skill": {
     "first_seen": "2026-08-30",
     "stars_at_first_seen": 87,
     "matched_query": "census: claude code skill",
-    "score": 7,
-    "one_liner": "色彩科学的中文学习笔记，包装成技能",
+    "score": 5,
+    "one_liner": "色彩科学中文笔记打包成的知识库技能",
     "stars_history": [
       [
         "2026-08-30",
@@ -14927,17 +15338,20 @@
     ],
     "source": "census",
     "category": "Claude Code skill",
-    "use_for": "学习色彩学知识，或让AI解答色彩问题",
-    "usage": "在Claude Code中安装，用中文提问色彩学问题，自动载入知识",
-    "example": "问“亮度明度区别”，skill会给出详细解释和公式",
-    "compare": "填补了色彩科学知识库在中文Claude Code技能中的空白"
+    "use_for": "查色度学知识，做图表配色或写作时参考",
+    "usage": "装后直接中文提问色彩学问题，自动加载笔记",
+    "example": "问它 L*=50 对应多少 Y，直接给公式和答案",
+    "compare": "列表内无色彩学知识库，属垂直学科笔记空白",
+    "fit": 3,
+    "overlap": "无重复",
+    "verdict": "观望：画图配色偶尔用得上，非必需"
   },
   "genoskietv/AdalFlow-Optimizer": {
     "first_seen": "2026-08-30",
     "stars_at_first_seen": 55,
     "matched_query": "census: llm agent framework",
-    "score": 7,
-    "one_liner": "让LLM应用自我优化的反思层框架",
+    "score": 6,
+    "one_liner": "号称 LLM 应用自优化编排层，实则加载器引流包",
     "stars_history": [
       [
         "2026-08-30",
@@ -15001,18 +15415,21 @@
       ]
     ],
     "source": "census",
-    "category": "多智能体框架",
-    "use_for": "构建能自我批评和调整的AI流水线",
-    "usage": "开发者用它构建反思循环，自动优化提示词和输出",
-    "example": "构建一个问答系统，它会根据历史反馈自动调整提问策略，提高准确率",
-    "compare": "相比AutoAgent等框架，更强调反思优化，但实用性待验证"
+    "category": "工具",
+    "use_for": "理论上是 LLM 流水线优化，实际价值存疑",
+    "usage": "README 多为概念宣传，真实可用性难判断",
+    "example": "声称搭反射式推理循环，但多指向下载器",
+    "compare": "列表内多智能体框架众多，它像套壳推广页",
+    "fit": 3,
+    "overlap": "和 open-multi-agent 等部分重叠，实际更水",
+    "verdict": "不装：像引流下载器，不确定性太高"
   },
   "peintune/runjam": {
     "first_seen": "2026-09-01",
     "stars_at_first_seen": 146,
     "matched_query": "claude code skill created:>2026-07-03",
-    "score": 7,
-    "one_liner": "一个桌面应用，统一管理多个AI编程助手。",
+    "score": 5,
+    "one_liner": "一个桌面窗口管理 Claude Code/Codex/Gemini 的 GUI",
     "stars_history": [
       [
         "2026-09-01",
@@ -15071,18 +15488,21 @@
         231
       ]
     ],
-    "category": "工具",
-    "use_for": "把Claude Code、Codex CLI等装到一个窗口里，切换模型和项目管理更方便。",
-    "usage": "安装后自动检测已装的AI工具，一键添加，通过统一界面聊天和看文件。",
-    "example": "开发者小王在RunJam里同时打开Claude Code和Gemini CLI，边聊边对比哪个回答好。",
-    "compare": "同类工具不多，它填补了多AI助手统一管理的空白，免费开源，适合嫌切换麻烦的人。"
+    "category": "工具 / 桌面管理器",
+    "use_for": "同一窗口里管理多个 agent、项目、终端、编辑器",
+    "usage": "装好后在桌面里选项目、选 agent、聊天、看文件",
+    "example": "打开 RunJam，同一个项目切换 Claude 和 Codex，看同一份文件树",
+    "compare": "和 zhizhi/kit 等 runtime 不同，它偏界面管理；填补 GUI 空白",
+    "fit": 4,
+    "overlap": "无重复",
+    "verdict": "不装：你不缺终端"
   },
   "boyang-hu/website-rebuild-skill": {
     "first_seen": "2026-09-01",
     "stars_at_first_seen": 655,
     "matched_query": "claude code skill created:>2026-07-03",
-    "score": 7,
-    "one_liner": "复刻网站的AI技能，从代码还原并验证",
+    "score": 8,
+    "one_liner": "抓站镜像后逐行复刻网站并自动比对验收的技能",
     "stars_history": [
       [
         "2026-09-01",
@@ -15142,17 +15562,20 @@
       ]
     ],
     "category": "Claude Code skill",
-    "use_for": "给网址，AI帮你逐行复刻网站，并自动比对验证是否一致",
-    "usage": "在支持skills的agent中调用，输入目标网址，自动完成镜像、逆向、验收流程",
-    "example": "在Claude Code输入 /rebuild https://example.com，它会抓取并复刻网站，报告像素级比对结果",
-    "compare": "相比其他网页设计技能，它侧重于逆向工程和验证，而非创意设计，填补了网站复刻+自动验收的空白"
+    "use_for": "复刻别人网站页面，验证复刻结果是否逐像素一致",
+    "usage": "给 agent 一个网址，它抓取源站、还原代码、跑比对清单",
+    "example": "在 Claude Code 输入目标网址，它抓站→还原→逐像素比出报告",
+    "compare": "在已追踪列表里没有同类网页复刻技能，填补了前端克隆这类空白",
+    "fit": 3,
+    "overlap": "无重复",
+    "verdict": "不装：跟单细胞/论文日常完全用不上"
   },
   "tigerless-labs/influencer-discovery": {
     "first_seen": "2026-09-02",
     "stars_at_first_seen": 152,
     "matched_query": "claude code skill created:>2026-07-04",
     "score": 6,
-    "one_liner": "找网红的搜索工具，能自动搜集联系方式。",
+    "one_liner": "跨 15 渠道找创作者并抓联系方式写到表格的 skill",
     "stars_history": [
       [
         "2026-09-02",
@@ -15207,18 +15630,21 @@
         202
       ]
     ],
-    "category": "Claude Code skill",
-    "use_for": "想推广产品时，快速找到有粉丝的博主并获取其联系方式。",
-    "usage": "安装为Claude Code技能，输入关键词，它自动搜15个平台并整理到表格。",
-    "example": "输入“帮我找健身领域博主”，它自动搜索并输出包含联系方式、粉丝数的表格。",
-    "compare": "专注于营销获客，与纯编程技能不同，适合市场人员直接使用。"
+    "category": "Claude Code skill / 数据抓取",
+    "use_for": "做 influencer 营销的人找联系人；科研基本用不上",
+    "usage": "装 skill 后说明目标，它搜渠道并把联系方式写进 Google Sheet",
+    "example": "营销人说「跑 influencer-discovery 找美妆博主」，它把联系方式填进表格",
+    "compare": "和科研/办公 skill 定位完全不同",
+    "fit": 2,
+    "overlap": "无重复",
+    "verdict": "不装：领域不对口"
   },
   "speakeasy-api/kit": {
     "first_seen": "2026-09-02",
     "stars_at_first_seen": 18,
     "matched_query": "hn: Show HN: Kit. Claude Code but Concise",
-    "score": 9,
-    "one_liner": "一个新的编码AI助手，比Claude Code更轻快。",
+    "score": 7,
+    "one_liner": "给模型一个「写程序并运行」工具的轻量编码 agent",
     "stars_history": [
       [
         "2026-09-02",
@@ -15276,18 +15702,21 @@
     "source": "hn",
     "hn_points": 12,
     "hn_url": "https://news.ycombinator.com/item?id=49537801",
-    "category": "工具",
-    "use_for": "想要更快、更省钱的AI编程助手，替代Claude Code。",
-    "usage": "安装后登录使用，直接在终端对话，它会改代码、跑测试。",
-    "example": "在终端输入“修复这个测试失败”，kit会自动定位问题并修改代码。",
-    "compare": "与Claude Code同类，但更轻量、成本更低，且支持多工具调用。"
+    "category": "工具 / 编码 agent 运行时",
+    "use_for": "在终端跑编码任务，比 Claude Code 更快更省，可做子 agent 编排",
+    "usage": "kit init + auth 后在终端用，兼容 ACP/A2A",
+    "example": "在终端跑 kit 让它读你的生信脚本并修一个报错的语句",
+    "compare": "和 Claude Code/Codex 同类但更精简；填补轻量运行时空白",
+    "fit": 3,
+    "overlap": "和 claude-code-subagents 部分重叠，它是完整替代 runtime",
+    "verdict": "观望：看你是否想换 runtime"
   },
   "gozen3ji/consulting-pptx-skill": {
     "first_seen": "2026-09-03",
     "stars_at_first_seen": 180,
     "matched_query": "claude code skill created:>2026-07-05",
-    "score": 7,
-    "one_liner": "让 AI 生成正式商务 PPT 的技能包。",
+    "score": 8,
+    "one_liner": "和 carnot-tech 同款的咨询级 PPT skill（疑似 fork）",
     "stars_history": [
       [
         "2026-09-03",
@@ -15338,18 +15767,21 @@
         459
       ]
     ],
-    "category": "Claude Code skill",
-    "use_for": "快速制作提案书、报告等专业演示文稿，保证风格统一。",
-    "usage": "让 AI 读取规则文件，根据内容生成 HTML 预览，再转成可编辑的 PPTX。",
-    "example": "在 Claude Code 中输入项目报告要点，它自动按商务模板生成 PPTX 草稿。",
-    "compare": "相比 PPT-Design-Skill 侧重设计风格，这里更强调商务内容和机械检查规则。"
+    "category": "Claude Code skill / PPT 生成技能",
+    "use_for": "同上：做咨询风格 PPT/报告并机器检查规范",
+    "usage": "读规则→拼 HTML 零件→checker 检查→另一 agent 复查",
+    "example": "在 Claude Code 里说「按 consulting-pptx-skill 做导师汇报 PPT」，输出 HTML+PDF",
+    "compare": "与 carnot-tech/consulting-pptx-skill 内容几乎一致，二选一即可",
+    "fit": 8,
+    "overlap": "和 carnot-tech/consulting-pptx-skill 完全重复",
+    "verdict": "不装：与另一个二选一，别都装"
   },
   "BZDmathclub/bzd-math-modeling-skills": {
     "first_seen": "2026-09-03",
     "stars_at_first_seen": 162,
     "matched_query": "claude code skill created:>2026-07-05",
-    "score": 6,
-    "one_liner": "数学建模竞赛论文的 AI 评审技能。",
+    "score": 7,
+    "one_liner": "数学建模竞赛论文的智能评审 skill 合集",
     "stars_history": [
       [
         "2026-09-03",
@@ -15400,18 +15832,21 @@
         337
       ]
     ],
-    "category": "其他",
-    "use_for": "自查数学建模论文，模拟评委打分。",
-    "usage": "把赛题和论文输入技能，它会按国赛评分标准逐项打分并出报告。",
-    "example": "学生提交数模论文，AI 按评分细则模拟评审，给出得分和改进建议。",
-    "compare": "同类技能很少见，专项针对数模竞赛，填补了特定教育场景的空白。"
+    "category": "Claude Code skill / 竞赛评审技能",
+    "use_for": "读题、建模思路、论文自查、AIGC 痕迹审计、位次预估",
+    "usage": "从总控 skill 入口跑，按阶段调专项 skill",
+    "example": "拿到建模赛题后说「调用 $bzd-modeling-workflow」，它识别阶段并安排下一步",
+    "compare": "和 Spark-To-Paper-Skills/paperjury 思路类似，但针对建模竞赛",
+    "fit": 3,
+    "overlap": "和 paperjury 部分重叠，它多了建模竞赛评分",
+    "verdict": "不装：不做数模竞赛"
   },
   "op7418/guizang-yingzao-skill": {
     "first_seen": "2026-09-04",
     "stars_at_first_seen": 313,
     "matched_query": "claude code skill created:>2026-07-06",
     "score": 5,
-    "one_liner": "把照片变成艺术海报的技能。",
+    "one_liner": "把中国古建筑/旅行照片做成艺术指导海报的 skill",
     "stars_history": [
       [
         "2026-09-04",
@@ -15458,18 +15893,21 @@
         424
       ]
     ],
-    "category": "Claude Code skill",
-    "use_for": "给建筑、街拍照片自动设计编辑级海报，可指定风格。",
-    "usage": "通过npx安装，在agent里直接用$yingzao指令调用。",
-    "example": "摄影师输入“用$yingzao把这张古城照片做成海报”，得到3:4编辑海报。",
-    "compare": "同类技能多偏编程，此填补图像艺术设计空白，创作向独特。"
+    "category": "Claude Code skill / 图像海报",
+    "use_for": "做课题配图、宣传海报、文旅类内容视觉",
+    "usage": "装 skill 后用自然语言描述照片与用途，它生成海报",
+    "example": "说「用 yingzao 把这张藻井照片做成竖版海报」，它输出编辑级海报图",
+    "compare": "和 PPT-Design-Skill、notion-doc 定位不同，偏图像生成视频分镜",
+    "fit": 3,
+    "overlap": "无重复",
+    "verdict": "不装：跟科研主线关系弱"
   },
   "Tyche-MKR/scientific-agent-skills": {
     "first_seen": "2026-09-06",
     "stars_at_first_seen": 99,
     "matched_query": "census: claude code skill",
-    "score": 8,
-    "one_liner": "给AI用的科学实验技能包，自带数据查询。",
+    "score": 10,
+    "one_liner": "165 个科研技能 + 100 多个科学数据库接口",
     "stars_history": [
       [
         "2026-09-06",
@@ -15509,18 +15947,21 @@
       ]
     ],
     "source": "census",
-    "category": "技能库/数据集",
-    "use_for": "让AI帮你查文献、设计实验、分析数据，覆盖生物化学医学等。",
-    "usage": "装好后在AI里直接用，像普通技能一样调用，查数据库或执行实验步骤。",
-    "example": "学生在Cursor里问“怎么提取DNA”，AI就调出对应技能并给出详细步骤。",
-    "compare": "和awesome-agent-skills比，它专注科学领域，技能够专业，还有数据库支撑。"
+    "category": "Claude Code skill / 科研技能库",
+    "use_for": "生信/化学/医学全流程，接数据库、做分析、写论文",
+    "usage": "装成 skills 后按需调用，覆盖生信到药物发现",
+    "example": "在 Claude Code 里说「用 scientific-agent-skills 查这个基因的注释并跑通路富集」，它连数据库返回结果",
+    "compare": "和已在追踪的 K-Dense 同名，是 fit 最高的一站式科研 skill 库",
+    "fit": 10,
+    "overlap": "和 K-Dense-AI/scientific-agent-skills 重复，同一项目",
+    "verdict": "装：和你栈几乎完全对口"
   },
   "cocoyes/zhizhi-agent-runtime": {
     "first_seen": "2026-09-06",
     "stars_at_first_seen": 95,
     "matched_query": "census: agent orchestration",
     "score": 7,
-    "one_liner": "一个Go写的AI助手运行库，能规划任务并执行。",
+    "one_liner": "Go 写的可编排、可恢复、可审计的 agent 运行时",
     "stars_history": [
       [
         "2026-09-06",
@@ -15560,18 +16001,21 @@
       ]
     ],
     "source": "census",
-    "category": "多智能体框架",
-    "use_for": "让AI做多步任务，比如自动订餐、安排行程，遇到失败能自己恢复。",
-    "usage": "开发者把它当库嵌入自己的程序，定义工具然后让它规划执行。",
-    "example": "用Go写好订餐API，智能体根据你的要求自动下单并处理异常。",
-    "compare": "和agency-swarm比，它用Go实现更轻量，强调容错和可追踪，适合后端集成。"
+    "category": "多智能体框架 / agent 运行时",
+    "use_for": "自建 agent 系统，做规划、调度、失败恢复、可观测",
+    "usage": "把 Go 函数包成工具，让它规划并执行复杂任务",
+    "example": "开发者把生信脚本包成 Go 工具，让 zhizhi 编排多步分析并记录每步",
+    "compare": "填补生产级 Go agent 运行时空白；但和你的 Python 科研栈隔一层",
+    "fit": 3,
+    "overlap": "和 open-multi-agent 部分重叠，它更偏工程运行时",
+    "verdict": "观望：想自建 agent 时才考虑"
   },
   "heyman333/agent-notion-template-docs": {
     "first_seen": "2026-09-06",
     "stars_at_first_seen": 77,
     "matched_query": "census: claude code skill",
     "score": 6,
-    "one_liner": "让AI文档排版像Notion的样式。",
+    "one_liner": "让 AI 写的文档有 Notion 风格排版的 skill",
     "stars_history": [
       [
         "2026-09-06",
@@ -15611,18 +16055,21 @@
       ]
     ],
     "source": "census",
-    "category": "Claude Code skill",
-    "use_for": "让AI生成的文档有好看的排版，比如彩色备注、代码高亮。",
-    "usage": "装这个技能，AI写文档时自动套用模板。",
-    "example": "在Claude Code里说“帮我写个需求文档”，它就带Notion风格输出。",
-    "compare": "这和别的文档技能不同，专注视觉风格，让输出更美观。"
+    "category": "Claude Code skill / 文档样式",
+    "use_for": "把思路、报告、知识库整理成好看的 HTML/PDF",
+    "usage": "装 skill 后让 agent 用 Notion 组件写文档",
+    "example": "说「用 notion-doc 把我的实验记录整成 Notion 风格文档」，它输出带 callout 的 HTML",
+    "compare": "比 humanizer 侧重排版视觉；和 huashu-md-html 类似定位",
+    "fit": 6,
+    "overlap": "和 alchaincyf/huashu-md-html 部分重叠，它多了 Notion 视觉规范",
+    "verdict": "观望：个人知识库或许用得上"
   },
   "chigwell/Penelopa.ai": {
     "first_seen": "2026-09-06",
     "stars_at_first_seen": 71,
     "matched_query": "census: claude code skill",
     "score": 7,
-    "one_liner": "自动分析AI编程过程，发现常用模式。",
+    "one_liner": "分析你的 Codex/Claude 会话，提炼可复用 skill 和提示",
     "stars_history": [
       [
         "2026-09-06",
@@ -15662,18 +16109,21 @@
       ]
     ],
     "source": "census",
-    "category": "工具",
-    "use_for": "从使用记录中提炼窍门，生成可复用的技能或建议。",
-    "usage": "装好后AI干活时默默记录，之后告诉你哪里能优化。",
-    "example": "开发者让它分析本周编程会话，它总结出你老是改同样的错误，并生成自动化检查。",
-    "compare": "相比自动生成技能的工具，它基于真实数据更贴合你的用法。"
+    "category": "工具 / agent 自省",
+    "use_for": "从日常 agent 使用里自动总结经验、生成技能",
+    "usage": "装一次 hook，之后在面板看推荐并采纳成 skill",
+    "example": "连上后它发现你常写单细胞脚本，推荐生成一个「scanpy 预处理」skill",
+    "compare": "和 book-to-skill 思路不同，它从你的真实会话蒸馏技能",
+    "fit": 5,
+    "overlap": "和 book-to-skill 部分重叠，它多了会话挖掘",
+    "verdict": "观望：看它提炼质量再定"
   },
   "Junhan2/oh-my-fable": {
     "first_seen": "2026-09-06",
     "stars_at_first_seen": 50,
     "matched_query": "census: claude code skill",
-    "score": 6,
-    "one_liner": "专门优化Claude Fable模型的提示词。",
+    "score": 8,
+    "one_liner": "把随手一句话自动扩成高质量请求的 skill",
     "stars_history": [
       [
         "2026-09-06",
@@ -15713,18 +16163,21 @@
       ]
     ],
     "source": "census",
-    "category": "Claude Code skill",
-    "use_for": "让Claude在写代码或文档时更懂你的要求，提高质量。",
-    "usage": "安装后自动给会话加规则，根据场景调整。",
-    "example": "在Claude Code里说“修复登录bug”，它会自动补充上下文和验收标准。",
-    "compare": "和通用技能不同，它深度适配Fable模型，没有替代品。"
+    "category": "Claude Code skill / 提示工程",
+    "use_for": "提升 Claude Code/Opus/Sonnet 输出质量，不用手写长 prompt",
+    "usage": "装插件，hook 自动在会话里注入规则，无需改文件",
+    "example": "打「/fable-prompt 修这个标注 bug」，它自动补全目标、范围、完成标准再交给模型",
+    "compare": "和 humanizer、DreambigOu/ELI5 不同，它专攻 prompt 扩写与自动化",
+    "fit": 7,
+    "overlap": "和 DreambigOu/ELI5 部分重叠，它多了自动注入机制",
+    "verdict": "装：天天写 prompt 挺划算"
   },
   "bangtutorial/bang-motion": {
     "first_seen": "2026-09-06",
     "stars_at_first_seen": 50,
     "matched_query": "census: claude code skill",
-    "score": 6,
-    "one_liner": "做网页动画视频的技能，如片头。",
+    "score": 7,
+    "one_liner": "让 agent 做网页动效视频/片头的 skill，输出单 HTML",
     "stars_history": [
       [
         "2026-09-06",
@@ -15764,18 +16217,21 @@
       ]
     ],
     "source": "census",
-    "category": "Claude Code skill",
-    "use_for": "让AI生成有动态效果的网页动画，像产品宣传片。",
-    "usage": "让AI按这个技能输出单个HTML文件，双击就能看动画。",
-    "example": "输入“做一个30秒的产品广告”，它生成带摄像机运动的HTML。",
-    "compare": "和视频制作技能比，它专攻浏览器动画，输出简单易用。"
+    "category": "Claude Code skill / 动效制作",
+    "use_for": "做介绍片头、产品演示、动态解说，不像 PPT 像视频",
+    "usage": "装 skill 后说要做哪种风格，它生成 index.html 播放",
+    "example": "说「用 bang-motion 做个 15 秒课题介绍片头」，它生成单文件 HTML 动效",
+    "compare": "和 video-shotcraft、anything2explainer 定位不同，它偏网页动效",
+    "fit": 4,
+    "overlap": "和 Vincentwei1021/video-shotcraft 部分重叠，它多了网页动效风格",
+    "verdict": "观望：做汇报片头偶尔能用"
   },
   "carnot-tech/consulting-pptx-skill": {
     "first_seen": "2026-09-07",
     "stars_at_first_seen": 266,
     "matched_query": "claude code skill created:>2026-07-09",
-    "score": 7,
-    "one_liner": "生成高品质PPT的Claude Code技能包，含规则、模板和检查脚本。",
+    "score": 8,
+    "one_liner": "让 AI 做出咨询级 PPT 的 skill，含 110 条规范",
     "stars_history": [
       [
         "2026-09-07",
@@ -15810,18 +16266,21 @@
         459
       ]
     ],
-    "category": "Claude Code skill",
-    "use_for": "用于让AI自动生成符合商务规范的PPT，并自动检查违规，减少返工。",
-    "usage": "开发者将其作为Claude Code技能安装，使用命令生成PPT，然后运行检查脚本审查输出。",
-    "example": "在Claude Code中输入“/consulting-pptx 创建一个项目方案汇报PPT”，它依据约110条规则生成初稿，并自动检查违规。",
-    "compare": "相比同类PPT技能如PPT-Design-Skill，本技能更强调规则驱动的自动检查，适合规范严格的商务场景。"
+    "category": "Claude Code skill / PPT 生成技能",
+    "use_for": "做组会/汇报/答辩 PPT，HTML 排好导成 PDF",
+    "usage": "读规则→挑 HTML 零件拼页→跑 check_deck.py 检查→让另一个 agent 复查",
+    "example": "在 Claude Code 里说「按 consulting-pptx-skill 做我的单细胞组会 PPT」，它输出 HTML 并导成 PDF",
+    "compare": "比 Sunchaokun/PPT-Design-Skill 更强调规范与机器检查，偏咨询风",
+    "fit": 8,
+    "overlap": "和 PPT-Design-Skill 部分重叠，它多了规则检查脚本",
+    "verdict": "装：写 report 做 PPT 用得上"
   },
   "trailofbits/coop": {
     "first_seen": "2026-09-07",
     "stars_at_first_seen": 132,
     "matched_query": "hn: Coop – Isolated VM Environments for Running Claude Code and ",
-    "score": 8,
-    "one_liner": "给 Claude Code/Codex 跑隔离 VM 的 Rust CLI",
+    "score": 6,
+    "one_liner": "跑 Claude Code / Codex 的一次性隔离虚拟机",
     "stars_history": [
       [
         "2026-09-07",
@@ -15859,18 +16318,21 @@
     "source": "hn",
     "hn_points": 51,
     "hn_url": "https://news.ycombinator.com/item?id=49593842",
-    "category": "工具",
-    "use_for": "让 agent 装包跑脚本时不污染本机环境",
-    "usage": "coop up 起 VM，coop claude 进去跑 agent",
-    "example": "跑一个会装 rdkit 和 pytorch 的流程时，先在 coop VM 里跑，坏了就销毁重建",
-    "compare": "和通用 agent 技能集不同，它补的是沙箱执行层，别人都没这块"
+    "category": "工具 / 隔离运行环境",
+    "use_for": "让 AI agent 放心跑安装、编译、git 而不动你本机",
+    "usage": "coop up 起 VM，coop claude 在里面开 agent",
+    "example": "在 coop 里跑 claude 让它 pip install 一堆生信包，不怕污染本机环境",
+    "compare": "不是技能是基础设施；填补沙箱执行空白",
+    "fit": 4,
+    "overlap": "无重复",
+    "verdict": "观望：没用得到就先不上"
   },
   "TauricResearch/TradingAgents": {
     "first_seen": "2026-09-08",
     "stars_at_first_seen": 103415,
     "matched_query": "hn: Multi-Agents LLM Financial Trading Framework",
-    "score": 8,
-    "one_liner": "金融交易的多智能体框架",
+    "score": 10,
+    "one_liner": "金融交易的多智能体 LLM 框架",
     "stars_history": [
       [
         "2026-09-08",
@@ -15905,17 +16367,20 @@
     "hn_points": 113,
     "hn_url": "https://news.ycombinator.com/item?id=49605822",
     "category": "多智能体框架",
-    "use_for": "学习多智能体协作模式，但领域不相关",
-    "usage": "金融分析场景中模拟交易决策",
-    "example": "输入股票数据，得到多智能体分析报告",
-    "compare": "无重复，领域差异大"
+    "use_for": "学多智能体分工、辩论、决策流程的参考架构",
+    "usage": "跑一批不同角色的 agent 讨论买卖，看它们怎么达成决策",
+    "example": "读它的 agent 分工设计，借鉴到科研'分析+批判+总结'团队的搭建",
+    "compare": "它本身就是追踪对象，是你要学习的多智能体范式样板",
+    "fit": 2,
+    "overlap": "和 open-multi-agent 部分重叠，它专注金融决策流程",
+    "verdict": "不装：做生信用不上，但架构值得看"
   },
   "Imbad0202/academic-research-skills": {
     "first_seen": "2026-09-08",
     "stars_at_first_seen": 47038,
     "matched_query": "academic research skills",
-    "score": 10,
-    "one_liner": "完整学术研究技能套件",
+    "score": 8,
+    "one_liner": "学术研究全流程技能包，从找文献到定稿",
     "stars_history": [
       [
         "2026-09-08",
@@ -15946,18 +16411,21 @@
         48039
       ]
     ],
-    "category": "Claude Code skill",
-    "use_for": "辅助论文写作、文献调研与修改",
-    "usage": "在Claude Code中作为插件安装使用",
-    "example": "运行/ars-plan，对话规划论文结构",
-    "compare": "比同类技能更全面，覆盖研究全流程"
+    "category": "Claude Code skill 合集",
+    "use_for": "写论文、查引用、审稿回复、逻辑校验",
+    "usage": "Claude Code 里装插件，用 /ars-plan 走苏格拉底式提问",
+    "example": "在 Claude Code 输入 /ars-plan，它一步步问你的论文结构并给出大纲",
+    "compare": "已在追踪列表里就有它，功能覆盖最全但偏通用，缺生信专用流程",
+    "fit": 8,
+    "overlap": "和已在追踪的同名项目重复，本身就是它",
+    "verdict": "装：论文写作主力，已追踪直接用"
   },
   "K-Dense-AI/scientific-agent-skills": {
     "first_seen": "2026-09-08",
     "stars_at_first_seen": 43863,
     "matched_query": "scientific agent skills",
     "score": 9,
-    "one_liner": "大型科学技能库",
+    "one_liner": "165 个科研技能+100 多个科学数据库接口",
     "stars_history": [
       [
         "2026-09-08",
@@ -15988,18 +16456,21 @@
         44923
       ]
     ],
-    "category": "资源合集",
-    "use_for": "获取生物信息、药物设计等专用技能",
-    "usage": "安装到AI agent中直接调用",
-    "example": "输入基因列表，调用方法进行通路分析",
-    "compare": "技能更全面，覆盖我的科研领域"
+    "category": "科学技能库",
+    "use_for": "生信/化学/药研全流程，能调用 KEGG、UniProt 等",
+    "usage": "装进 Claude Code/Cursor，按需触发对应 skill",
+    "example": "提问“这组基因做 GO 富集”，agent 调 gseapy 技能出富集表和图",
+    "compare": "比通用学术技能库更偏科学计算和数据库，生信味最重",
+    "fit": 9,
+    "overlap": "和 qinyan、science-skills 部分重叠，它科学数据库更全",
+    "verdict": "装：生信数据库覆盖最广，主力用"
   },
   "Imbad0202/academic-research-skills-codex": {
     "first_seen": "2026-09-08",
     "stars_at_first_seen": 10344,
     "matched_query": "academic research skills",
-    "score": 9,
-    "one_liner": "Codex版学术研究技能",
+    "score": 8,
+    "one_liner": "上面那套学术技能包的 Codex 移植版",
     "stars_history": [
       [
         "2026-09-08",
@@ -16030,18 +16501,21 @@
         10824
       ]
     ],
-    "category": "Claude Code skill",
-    "use_for": "在Codex中完成学术写作",
-    "usage": "作为Codex插件安装执行",
-    "example": "使用Codex规划论文并生成初稿",
-    "compare": "与学术研究技能重复，但适配Codex"
+    "category": "Claude Code skill / Codex 版",
+    "use_for": "习惯 Codex 时用同一套学术流程",
+    "usage": "把 skill 目录拷到 ~/.codex/skills 里使用",
+    "example": "在 Codex CLI 里跑 deep-research 技能，自动拉文献综述草稿",
+    "compare": "和 Claude 版功能等价，只是换 Codex 运行；只装一个即可",
+    "fit": 8,
+    "overlap": "和 Imbad0202/academic-research-skills 重复，同一套内容",
+    "verdict": "观望：除非主用 Codex，否则不必再装"
   },
   "zLanqing/codex-claude-academic-skills": {
     "first_seen": "2026-09-08",
     "stars_at_first_seen": 3664,
     "matched_query": "academic skills",
-    "score": 8,
-    "one_liner": "中文科研技能集",
+    "score": 7,
+    "one_liner": "三个中文科研 skill：写作/Office/科学计算",
     "stars_history": [
       [
         "2026-09-08",
@@ -16072,18 +16546,21 @@
         3874
       ]
     ],
-    "category": "Claude Code skill",
-    "use_for": "论文写作与科研计算",
-    "usage": "在Claude Code中调用",
-    "example": "生成学术PPT或润色中文论文",
-    "compare": "中文支持好，更贴近我的工作"
+    "category": "Claude Code skill 合集",
+    "use_for": "中文论文、答辩 PPT、期刊级配图一站打包",
+    "usage": "在 Claude Code 或 Codex 里按任务调对应 skill",
+    "example": "让它把数据分析结果直接生成一页中文组会 PPT",
+    "compare": "比英文技能包更贴中文写作和学校模板，PPT/Word 是它的独门",
+    "fit": 8,
+    "overlap": "和 harness-anything 的 Office 部分重叠，它更轻但功能少",
+    "verdict": "装：中文写作和 Office 输出最顺手"
   },
   "FreedomIntelligence/OpenClaw-Medical-Skills": {
     "first_seen": "2026-09-08",
     "stars_at_first_seen": 2994,
     "matched_query": "medical skills",
-    "score": 8,
-    "one_liner": "医学AI技能库",
+    "score": 7,
+    "one_liner": "869 个医学 AI skill，面向 OpenClaw 平台",
     "stars_history": [
       [
         "2026-09-08",
@@ -16114,18 +16591,21 @@
         3006
       ]
     ],
-    "category": "资源合集",
-    "use_for": "获取医学领域专用技能",
-    "usage": "通过OpenClaw平台调用",
-    "example": "输入临床症状，获取诊断思路",
-    "compare": "医学专精，与我的领域有交集"
+    "category": "医学技能库",
+    "use_for": "临床/医学问题问答、医学文献、诊断辅助",
+    "usage": "挂到 OpenClaw/NanoClaw 平台给 agent 调用",
+    "example": "问“这组病人指标该怎么解读”，agent 调临床 skill 给结构化分析",
+    "compare": "比通用科学技能更偏临床，但不含单细胞/生信测序流程",
+    "fit": 7,
+    "overlap": "和 K-Dense 科学技能部分重叠，偏医学而非生信",
+    "verdict": "观望：跟你主战场（单细胞）不直接对口"
   },
   "google-deepmind/science-skills": {
     "first_seen": "2026-09-08",
     "stars_at_first_seen": 2922,
     "matched_query": "science skills",
     "score": 8,
-    "one_liner": "科学计算技能集",
+    "one_liner": "Google DeepMind 出的科研 agent 技能，接 30+ 数据库",
     "stars_history": [
       [
         "2026-09-08",
@@ -16156,18 +16636,21 @@
         3035
       ]
     ],
-    "category": "资源合集",
-    "use_for": "访问基因组、结构等数据库",
-    "usage": "通过npx或Antigravity安装",
-    "example": "输入UniProt ID，获取蛋白质信息",
-    "compare": "与科学技能库重叠，但更权威"
+    "category": "科学技能库",
+    "use_for": "基因组、结构生物学、化学信息、文献检索",
+    "usage": "用 npx skills add 装，或在 Antigravity 里勾 Science 插件",
+    "example": "给一段变异，agent 查 AlphaGenome 技能预测其功能影响",
+    "compare": "官方大厂出品、token 效率高，但技能数量比 K-Dense 少",
+    "fit": 8,
+    "overlap": "和 K-Dense 部分重叠，它多了 AlphaGenome/UniProt 的深度整合",
+    "verdict": "装：官方质量高，和 K-Dense 互补"
   },
   "delibae/claude-prism": {
     "first_seen": "2026-09-08",
     "stars_at_first_seen": 1777,
     "matched_query": "scientific skills",
-    "score": 7,
-    "one_liner": "离线科学写作工作区",
+    "score": 6,
+    "one_liner": "离线科研写作工作台，LaTeX+Python+100 技能本地跑",
     "stars_history": [
       [
         "2026-09-08",
@@ -16198,18 +16681,21 @@
         1780
       ]
     ],
-    "category": "工具",
-    "use_for": "本地LaTeX写作与技能调用",
-    "usage": "安装桌面应用本地启动",
-    "example": "在本地编写论文并运行Python计算",
-    "compare": "与通用写作工具不同，离线优势"
+    "category": "桌面应用",
+    "use_for": "写 LaTeX 论文、跑 Python 分析、离线可用",
+    "usage": "下载桌面 App 打开，本地模型/Claude API 都行",
+    "example": "在桌面里写 Methods 章节，它顺手跑你的 Python 图表脚本",
+    "compare": "和纯 skill 不同，它是带 UI 的应用，适合不熟 CLI 的人",
+    "fit": 7,
+    "overlap": "和 harness-anything、学术技能包部分重叠，它强在离线 UI",
+    "verdict": "观望：离线是亮点，但你 CLI 已够用"
   },
   "yb2460/harness-anything": {
     "first_seen": "2026-09-08",
     "stars_at_first_seen": 1722,
     "matched_query": "academic skills",
     "score": 7,
-    "one_liner": "办公软件控制中心",
+    "one_liner": "AI 控制 WPS/Office/Zotero/PS 的控制中枢",
     "stars_history": [
       [
         "2026-09-08",
@@ -16240,18 +16726,21 @@
         1778
       ]
     ],
-    "category": "工具",
-    "use_for": "用AI操作Office和Zotero",
-    "usage": "通过CLI命令调用",
-    "example": "自动生成PPT或整理文献",
-    "compare": "补充了办公自动化功能"
+    "category": "工具 / 办公自动化",
+    "use_for": "自动改 Word、做 PPT、跑 Zotero 文献流水线",
+    "usage": "pip 装 CLI，agent 通过命令行调 Office/Zotero",
+    "example": "让 agent 把分析结果写成一篇 Word 报告并存到指定路径",
+    "compare": "比 genoffice 更贴中文办公和 Zotero，but 是 Windows 限定",
+    "fit": 7,
+    "overlap": "和 zLanqing 的 office-academic-skill 部分重叠，它 Office 控制更细",
+    "verdict": "装：Windows 办公自动化的现成方案"
   },
   "lishix520/academic-paper-skills": {
     "first_seen": "2026-09-08",
     "stars_at_first_seen": 1273,
     "matched_query": "paper skills",
-    "score": 9,
-    "one_liner": "论文规划与写作框架",
+    "score": 7,
+    "one_liner": "论文规划和写作的双 skill 框架，带质检关卡",
     "stars_history": [
       [
         "2026-09-08",
@@ -16283,17 +16772,20 @@
       ]
     ],
     "category": "Claude Code skill",
-    "use_for": "从选题到成稿的完整流程",
-    "usage": "在Claude Code中运行",
-    "example": "输入想法，得到带检查点的论文提纲",
-    "compare": "系统化强于其他技能"
+    "use_for": "从 idea 到投稿稿的结构化流程，含审稿人模拟",
+    "usage": "先跑 strategist 出大纲，再跑 composer 写正文",
+    "example": "输入研究 idea，strategist 给出带 3-5 篇引文支撑的 gap 分析和大纲",
+    "compare": "比通用技能更强调“审稿人模拟+多轮验证”，流程更严格",
+    "fit": 7,
+    "overlap": "和 Imbad0202 学术技能重叠，它多了 7 维 35 项审稿模拟",
+    "verdict": "观望：已有 Imbad0202，功能不算强差异"
   },
   "Spark-To-Paper-Skills/spark-to-paper-skills": {
     "first_seen": "2026-09-08",
     "stars_at_first_seen": 965,
     "matched_query": "paper skills",
-    "score": 10,
-    "one_liner": "一句话生成论文草稿",
+    "score": 9,
+    "one_liner": "一句话 idea 进，一篇论文草稿出，约 10 美元",
     "stars_history": [
       [
         "2026-09-08",
@@ -16324,18 +16816,21 @@
         1034
       ]
     ],
-    "category": "Claude Code skill",
-    "use_for": "从想法到论文初稿的自动化",
-    "usage": "在Claude Code中调用",
-    "example": "输入一句想法，生成含引用与图表的完整论文",
-    "compare": "与学术研究技能互补，全自动化"
+    "category": "多智能体框架 / Claude Code skill 编排",
+    "use_for": "快速起稿论文、跑实验、自动引用核查",
+    "usage": "一个编排 skill + 13 个组合 skill，自动完成各阶段",
+    "example": "输入一句研究想法，它查文献、跑实验、编译出带真实引用的 PDF",
+    "compare": "比纯写作技能多“自动跑实验+可编辑矢量图”，编排最完整",
+    "fit": 8,
+    "overlap": "和 paperjury、academic-skills 部分重叠，它多了实验执行",
+    "verdict": "装：编排最全，适合快速起稿试水"
   },
   "LeonChaoX/qinyan-academic-skills": {
     "first_seen": "2026-09-08",
     "stars_at_first_seen": 876,
     "matched_query": "academic skills",
-    "score": 9,
-    "one_liner": "多领域学术技能合集",
+    "score": 8,
+    "one_liner": "187 个学术 skill，含 Nature 风格写作套件",
     "stars_history": [
       [
         "2026-09-08",
@@ -16366,18 +16861,21 @@
         891
       ]
     ],
-    "category": "资源合集",
-    "use_for": "覆盖文献到发表的技能",
-    "usage": "在支持的agent中安装单独技能",
-    "example": "使用Nature风格写作流程",
-    "compare": "与学术研究技能类似，但分类更细"
+    "category": "科学技能库",
+    "use_for": "文献发现、科学写作、生信、药研、临床、ML 分析",
+    "usage": "按类别按需装到 Claude Code/Codex/Cursor 等",
+    "example": "用它的 Nature 风格技能把 Methods 段落改写成投稿版",
+    "compare": "比 K-Dense 更全（覆盖基金申请、临床），但每个 skill 深度可能浅些",
+    "fit": 8,
+    "overlap": "和 K-Dense 大量重叠，它多了 Nature 风格和基金申请",
+    "verdict": "观望：跟 K-Dense 重叠大，挑差异 skill 装"
   },
   "xjtulyc/MedgeClaw": {
     "first_seen": "2026-09-08",
     "stars_at_first_seen": 642,
     "matched_query": "scientific skills",
-    "score": 8,
-    "one_liner": "生物医学AI研究助手",
+    "score": 7,
+    "one_liner": "用 WhatsApp 聊天驱动 RNA-seq/药研/临床分析的助手",
     "stars_history": [
       [
         "2026-09-08",
@@ -16408,18 +16906,21 @@
         642
       ]
     ],
-    "category": "工具",
-    "use_for": "聊天驱动RNA-seq等分析",
-    "usage": "通过OpenClaw和Claude集成",
-    "example": "通过聊天运行转录组分析流程",
-    "compare": "与科学技能库集成，界面友好"
+    "category": "多智能体框架 / 生物医学 agent",
+    "use_for": "远程发起生信分析、RStudio/Jupyter 里看结果",
+    "usage": "OpenClaw 网关接 Claude Code + K-Dense 140 技能，Docker 跑环境",
+    "example": "在飞书发“跑一遍这批 RNA-seq”，它起 Docker 跑流程，回传可视化卡片",
+    "compare": "把 K-Dense 技能包下沉到聊天入口，方便随时发起分析",
+    "fit": 8,
+    "overlap": "和 K-Dense 技能部分重叠，它多了聊天入口和看板",
+    "verdict": "观望：喜欢移动/聊天驱动可试，CLI 已够的用不上"
   },
   "youssefHosni/Data-Science-Handbook": {
     "first_seen": "2026-09-08",
     "stars_at_first_seen": 574,
     "matched_query": "science skills",
-    "score": 4,
-    "one_liner": "数据科学学习资源列表",
+    "score": 3,
+    "one_liner": "数据科学/ML 学习资源链接合集",
     "stars_history": [
       [
         "2026-09-08",
@@ -16451,17 +16952,20 @@
       ]
     ],
     "category": "资源合集",
-    "use_for": "查找教程和资料",
-    "usage": "浏览链接学习",
-    "example": "搜索数据分析教程",
-    "compare": "无重复"
+    "use_for": "查学习资料、入门课、博客链接",
+    "usage": "当 awesome 列表浏览，点链接学",
+    "example": "想补时序模型，去列表里找对应教程链接",
+    "compare": "纯链接合集，无 skill 逻辑；比 agent skill 库低一个抽象层",
+    "fit": 4,
+    "overlap": "无重复",
+    "verdict": "不装：链接列表，非 agent 技能，价值有限"
   },
   "InternScience/Awesome-Scientific-Skills": {
     "first_seen": "2026-09-08",
     "stars_at_first_seen": 544,
     "matched_query": "scientific skills",
-    "score": 8,
-    "one_liner": "科学技能精选列表",
+    "score": 6,
+    "one_liner": "科研 agent skill 的精选合集 + 两个配套工具",
     "stars_history": [
       [
         "2026-09-08",
@@ -16493,17 +16997,20 @@
       ]
     ],
     "category": "资源合集",
-    "use_for": "发现技能并克隆扩展",
-    "usage": "浏览分类查找技能",
-    "example": "找到做GO富集的技能安装",
-    "compare": "与科学技能库重叠，但分类清晰"
+    "use_for": "找各类科研 skill，或看 Skiller/skill-metric 工具",
+    "usage": "浏览列表挑 skill 装，或用工具生成/评估 skill",
+    "example": "想做个自定义 skill，用 Skiller 把对话日志转成 skill 包",
+    "compare": "比纯 awesome 列表多工具（skill 生成+评测），更工程化",
+    "fit": 6,
+    "overlap": "和 VoltAgent/awesome-agent-skills 类别重叠，它偏科研",
+    "verdict": "观望：当索引用挺好，功能不强求"
   },
   "AAASS554/codex-academic-paper-skills": {
     "first_seen": "2026-09-08",
     "stars_at_first_seen": 531,
     "matched_query": "paper skills",
     "score": 6,
-    "one_liner": "本科论文写作技能包",
+    "one_liner": "本科软工毕业论文技能：规划+降重+降 AIGC",
     "stars_history": [
       [
         "2026-09-08",
@@ -16534,18 +17041,21 @@
         533
       ]
     ],
-    "category": "Claude Code skill",
-    "use_for": "软件工程论文的降重和改写",
-    "usage": "在Codex中安装使用",
-    "example": "根据查重报告改写段落",
-    "compare": "与学术研究技能重复，聚焦本科"
+    "category": "Claude Code skill / Codex 版",
+    "use_for": "本科论文改稿、查重、AIGC 检测、DOCX 收尾",
+    "usage": "拷到 ~/.codex/skills 里用 strategist+composer 双 skill",
+    "example": "给查重报告，composer 按“keep/rewrite/delete”矩阵逐段改写",
+    "compare": "比 lishix520 版多了中文降重/AIGC 应对，本科场景专用",
+    "fit": 6,
+    "overlap": "和 lishix520/academic-paper-skills 派生关系，它多了降重场景",
+    "verdict": "观望：只适合本科论文场景，科研投稿用不上"
   },
   "Boom5426/Nature-Paper-Skills": {
     "first_seen": "2026-09-08",
     "stars_at_first_seen": 486,
     "matched_query": "paper skills",
-    "score": 9,
-    "one_liner": "Nature风格论文写作技能",
+    "score": 7,
+    "one_liner": "27 个针对 Nature 系投稿的技能，主张驱动",
     "stars_history": [
       [
         "2026-09-08",
@@ -16577,17 +17087,20 @@
       ]
     ],
     "category": "Claude Code skill",
-    "use_for": "面向Nature的稿件写作与修订",
-    "usage": "在Claude Code或Codex中安装",
-    "example": "按Nature规范生成图表和审稿回复",
-    "compare": "比通用写作更专业、强约束"
+    "use_for": "Nature 系稿件起草、图注审核、引用核验、返修",
+    "usage": "装到 Codex/Claude Code，按 skill-map 走流程",
+    "example": "用 figure-planner 为每张图先定论点，再让 nature-figure 出图",
+    "compare": "比通用写作技能更“期刊优先”，强调证据边界和图注统计审计",
+    "fit": 8,
+    "overlap": "和 academic-skills、qinyan 部分重叠，它多了 Nature 硬约束",
+    "verdict": "装：投 Nature 系时它是最对味的"
   },
   "hkcanan/katmer-code": {
     "first_seen": "2026-09-08",
     "stars_at_first_seen": 473,
     "matched_query": "academic research skills",
-    "score": 6,
-    "one_liner": "Obsidian多AI聊天侧栏",
+    "score": 5,
+    "one_liner": "Obsidian 里的多模型 AI 侧边栏，带学术技能",
     "stars_history": [
       [
         "2026-09-08",
@@ -16618,18 +17131,21 @@
         475
       ]
     ],
-    "category": "工具",
-    "use_for": "在笔记软件中调用多个AI",
-    "usage": "作为Obsidian插件安装",
-    "example": "在侧栏与Claude和Gemini讨论",
-    "compare": "与学术技能无关，但可结合"
+    "category": "工具 / Obsidian 插件",
+    "use_for": "在 Obsidian 里和 Claude/Gemini/Codex 对话、改稿",
+    "usage": "装为 Obsidian 插件，开 tab 选 provider，用斜杠命令学科技能",
+    "example": "笔记里选中段落，让它用 Claude 改写成投稿语气，diff 直接内联显示",
+    "compare": "和纯 CLI 技能不同，它把多模型聊天嵌进笔记软件，方便对比模型",
+    "fit": 5,
+    "overlap": "和 Claude Code skill 功能部分重叠，它是 GUI 版入口",
+    "verdict": "观望：重度用 Obsidian 再考虑，否则 CLI 够"
   },
   "chrisblattman/claudeblattman": {
     "first_seen": "2026-09-08",
     "stars_at_first_seen": 454,
     "matched_query": "academic skills",
-    "score": 7,
-    "one_liner": "面向学者的AI工作流指南",
+    "score": 6,
+    "one_liner": "一位教授的 AI 工作流指南+技能，面向非码农",
     "stars_history": [
       [
         "2026-09-08",
@@ -16660,18 +17176,21 @@
         454
       ]
     ],
-    "category": "资源合集",
-    "use_for": "建立学者个人AI工作流",
-    "usage": "阅读指南并下载技能",
-    "example": "学习如何配置Claude Code",
-    "compare": "教育性质，提供入门指南"
+    "category": "Claude Code skill 合集 / 教程",
+    "use_for": "搭 Claude Code 环境、学写 skill、建自改进 workflow",
+    "usage": "装 starter-kit 插件，跟着 guide 一步步搭工作流",
+    "example": "按教程装好 starter-kit 后，用它的技能模板做笔记/邮件/项目整理",
+    "compare": "比技能库更像教程+入门工具，适合从零起步的学者",
+    "fit": 7,
+    "overlap": "和学术技能库部分重叠，它多了教学内容",
+    "verdict": "观望：已有 CLI 基础就不太需要，初学者友好"
   },
   "K-Dense-AI/claude-skills-mcp": {
     "first_seen": "2026-09-08",
     "stars_at_first_seen": 402,
     "matched_query": "scientific agent skills",
-    "score": 5,
-    "one_liner": "MCP服务器用于检索技能",
+    "score": 4,
+    "one_liner": "把科学 skill 检索做成 MCP 服务，已停止维护",
     "stars_history": [
       [
         "2026-09-08",
@@ -16702,11 +17221,14 @@
         404
       ]
     ],
-    "category": "工具",
-    "use_for": "通过MCP搜索科学技能",
-    "usage": "作为MCP服务器接入",
-    "example": "在Cursor中搜索技能",
-    "compare": "旧工具，已废弃"
+    "category": "工具 / MCP 服务",
+    "use_for": "给不支持原生 skill 的 agent 补技能检索能力",
+    "usage": "pip 装 MCP server 挂到支持 MCP 的客户端里",
+    "example": "在某个不支持 skill 的 CLI 里，靠它做向量检索拿到科学技能",
+    "compare": "官方已停维护，主因是主流 agent 已原生支持 skill；不需要再桥接",
+    "fit": 4,
+    "overlap": "和 K-Dense 技能包重复，它只是桥接层且已过时",
+    "verdict": "不装：已停维护，原生支持覆盖"
   },
   "jaechang-hits/SciAgent-Skills": {
     "first_seen": "2026-09-08",
@@ -16788,8 +17310,8 @@
     "first_seen": "2026-09-08",
     "stars_at_first_seen": 314,
     "matched_query": "lab skills",
-    "score": 8,
-    "one_liner": "实验室实战沉淀的通用 agent 技能包",
+    "score": 6,
+    "one_liner": "实验室实践里沉淀下来的若干 skill（架构研究、报告等）",
     "stars_history": [
       [
         "2026-09-08",
@@ -16821,10 +17343,13 @@
       ]
     ],
     "category": "Claude Code skill 合集",
-    "use_for": "抄它的技能写法，改造出科研流程类技能",
-    "usage": "npx skills add 装到 Claude Code 里直接用",
-    "example": "在 Claude Code 输入 /deep-architecture-research，它会按技能指引帮你拆解一个技术方案",
-    "compare": "和 Imbad0202/academic-research-skills 重叠但更偏工程协作，可借结构自研科研技能"
+    "use_for": "做架构调研、写“理解优先”的报告、团队协作流程",
+    "usage": "npx skills add 装，按 skill 名单独用或批量装",
+    "example": "用 understanding-first-report 技能，把一堆源码/资料变成一份“先讲清楚再讲怎么做”的报告",
+    "compare": "比大规模技能库小但更“工程实践”，含架构研究和写作类技能",
+    "fit": 6,
+    "overlap": "和 Awesome-Scientific-Skills 部分重叠，它偏工程实践而非科研工具",
+    "verdict": "观望：通用工程类，科研直接可用性一般"
   },
   "wentorai/research-plugins": {
     "first_seen": "2026-09-08",
@@ -16869,7 +17394,7 @@
     "stars_at_first_seen": 257,
     "matched_query": "paper skills",
     "score": 9,
-    "one_liner": "从选题到编译 PDF 的 LaTeX 论文写作技能包",
+    "one_liner": "写 LaTeX 学术论文的 skill 合集，从选题到出 PDF",
     "stars_history": [
       [
         "2026-09-08",
@@ -16900,11 +17425,14 @@
         259
       ]
     ],
-    "category": "Claude Code skill 合集",
-    "use_for": "写方法学论文，管 BibTeX、多智能体协作改稿",
-    "usage": "装到 Codex/Claude 里，跑 gated 工作流一步步出稿",
-    "example": "在 Claude Code 说「写一篇单细胞综述」，它按技能链扩文献、核引用、编译出 PDF",
-    "compare": "和 lishix520/academic-paper-skills 比更完整闭环，自带引用校验和编译验证"
+    "category": "Claude Code skill / 论文写作技能包",
+    "use_for": "写 ML/AI 论文时的初稿、改稿、查引用、编译 PDF 全流程",
+    "usage": "装进 .codex/skills 或 Claude Code，按 gated 流程一步步跑",
+    "example": "在 Claude Code 里说「按 latex-paper-skills 帮我写方法章节」，它按流水线生成 tex 并编译出 PDF",
+    "compare": "和 Imbad0202/academic-research-skills 比更聚焦 LaTeX/ML 论文且带编译验证与多智能体分工",
+    "fit": 9,
+    "overlap": "和 academic-research-skills 部分重叠，它多了 LaTeX 编译与引用校验",
+    "verdict": "装：论文写作正好用得上"
   },
   "lensback940701/Evidence-Bound-Press-Conference-Revision-Skill": {
     "first_seen": "2026-09-08",
@@ -17177,7 +17705,7 @@
     "stars_at_first_seen": 125,
     "matched_query": "paper skills",
     "score": 7,
-    "one_liner": "管理学论文的技能工作台，含 SPSS/Stata",
+    "one_liner": "管理学论文的整套 Codex/Claude 工作流 skill",
     "stars_history": [
       [
         "2026-09-08",
@@ -17208,18 +17736,21 @@
         125
       ]
     ],
-    "category": "Claude Code skill 合集",
-    "use_for": "借鉴它的流程化思路，但统计工具不匹配生信",
-    "usage": "装到 Codex/Claude 跑选题到审稿自查的全链条",
-    "example": "管理学者输入研究问题，它串起文献整理、数据清洗和期刊图表",
-    "compare": "同为学科科研技能，但面向管理学，和 sci-agent-skills 的生信方向互补"
+    "category": "Claude Code skill / 学科科研技能包",
+    "use_for": "管理/社科研究者的选题、文献、SPSS/Stata 分析、写作自查",
+    "usage": "装 skill 后按阶段调用，串本地 Python/Stata/SPSS",
+    "example": "管理学研究者说「跑 MGMT-Paper-Skills 的数据清洗」，它生成 SPSS 脚本与结果表",
+    "compare": "填补管理学专业空白；但和你单细胞/生物信息栈完全不对口",
+    "fit": 3,
+    "overlap": "和 academic-research-skills 部分重叠，它多了 SPSS/Stata 支持",
+    "verdict": "不装：学科不对口"
   },
   "probabl-ai/skills": {
     "first_seen": "2026-09-08",
     "stars_at_first_seen": 121,
     "matched_query": "science skills",
-    "score": 7,
-    "one_liner": "带方法论约束的数据科学实验技能包",
+    "score": 8,
+    "one_liner": "让 AI 按正确方法论做 ML 实验的 skill",
     "stars_history": [
       [
         "2026-09-08",
@@ -17250,11 +17781,14 @@
         123
       ]
     ],
-    "category": "Claude Code skill 合集",
-    "use_for": "规整 sklearn/skore 的 ML 流程，管实验记录",
-    "usage": "在 Claude Code 里说「建个 baseline 流程」，它按最佳实践搭管道",
-    "example": "给一份 data/README，让 agent 自动产出可审计的 sklearn baseline",
-    "compare": "和 google-deepmind/science-skills 类科学技能比，它偏通用 ML 工程方法论"
+    "category": "Claude Code skill / 数据科学技能包",
+    "use_for": "搭建可审计的 ML pipeline、记录实验结果、规范项目结构",
+    "usage": "装 skill 后给 agent 一句话让它按最佳实践建 pipeline",
+    "example": "在 Claude Code 里说「用 data/README 建个 baseline pipeline」，它按 sklearn 规范搭好并记录实验",
+    "compare": "比通用科研 skill 更懂 ML 工程化与方法论，实验可审计是亮点",
+    "fit": 7,
+    "overlap": "和 scientific-agent-skills 部分重叠，它多了 Skore 实验追踪",
+    "verdict": "装：做算法实验正缺这个"
   },
   "cookjohn/wos-skills": {
     "first_seen": "2026-09-08",
@@ -17337,7 +17871,7 @@
     "stars_at_first_seen": 91,
     "matched_query": "data analysis skills",
     "score": 3,
-    "one_liner": "生态学数据科学自学教程集，R/Python 混合",
+    "one_liner": "生态学 NEON 观测数据的自学习教程集",
     "stars_history": [
       [
         "2026-09-08",
@@ -17368,11 +17902,14 @@
         91
       ]
     ],
-    "category": "教程资源",
-    "use_for": "补数据素养、找课题练手数据集",
-    "usage": "照着 tutorials/ 里的 notebook 一题一题练",
-    "example": "找空间栅格数据练手时，翻它的 Rmd 教程跟着做一遍",
-    "compare": "和 openbiox 的 100 天生信比更偏生态学观测数据，不重叠"
+    "category": "资源合集 / 教程",
+    "use_for": "学 R/Python 生态数据处理与数据素养基础",
+    "usage": "按 web 教程跟着跑 markdown/notebook",
+    "example": "生态学学生打开 NEON 教程，跑 notebook 学会读取并可视化观测数据",
+    "compare": "不是 agent 技能，和你的单细胞/生信栈关系弱",
+    "fit": 4,
+    "overlap": "无重复",
+    "verdict": "不装：领域和形式都不对"
   },
   "drpedapati/sciclaw": {
     "first_seen": "2026-09-08",
@@ -17417,7 +17954,7 @@
     "stars_at_first_seen": 87,
     "matched_query": "data analysis skills",
     "score": 3,
-    "one_liner": "pandas 练手项目点子合集，带示例数据",
+    "one_liner": "一堆练手 pandas 数据分析项目点子",
     "stars_history": [
       [
         "2026-09-08",
@@ -17448,18 +17985,21 @@
         88
       ]
     ],
-    "category": "教程资源",
-    "use_for": "练 pandas 手感、找数据分析练手题",
-    "usage": "在 Binder 上打开 notebook 直接跑",
-    "example": "想练 groupby 时打开 Etsy 商品 notebook，跟着分析哪个品类卖最好",
-    "compare": "纯 pandas 练手，和单细胞 anndata 工作流没关系，填练手题空白"
+    "category": "资源合集 / 教程项目",
+    "use_for": "练 pandas 手感，做几个小数据集分析",
+    "usage": "克隆后跑 notebook 自己动手改",
+    "example": "新手打开 Etsy notebook，按提示分析哪些产品最好卖",
+    "compare": "纯练手材料，不是 agent 能力扩展",
+    "fit": 4,
+    "overlap": "无重复",
+    "verdict": "不装：你不缺 pandas 练习"
   },
   "openbiox/bioinformatics-100-days": {
     "first_seen": "2026-09-08",
     "stars_at_first_seen": 85,
     "matched_query": "bioinformatics skills",
-    "score": 4,
-    "one_liner": "100 天补生信技能的课程资源清单",
+    "score": 3,
+    "one_liner": "100 天生信技能学习清单与资料索引",
     "stars_history": [
       [
         "2026-09-08",
@@ -17490,11 +18030,14 @@
         85
       ]
     ],
-    "category": "教程资源",
-    "use_for": "查生信学习路线、补缺口资料索引",
-    "usage": "按天翻它列的 Bioconductor 工作坊和 awesome 列表",
-    "example": "想学空间转录组时，顺它清单找到 awesome-single-cell 里的资料",
-    "compare": "和 NEON 教程比更偏纯粹生信工具链，sci-agent-skills 有技能它只有清单"
+    "category": "资源合集 / 学习路线",
+    "use_for": "系统过一遍生信基础概念与工具选型",
+    "usage": "按天打卡，跟着列出的材料学",
+    "example": "想补生信的开发者照着清单，每天读一节 Bioconductor 教程",
+    "compare": "学习资源，不是可直接调用的 agent 技能",
+    "fit": 5,
+    "overlap": "无重复",
+    "verdict": "不装：你已在这行里"
   },
   "muhammadanas0716/Data-Science-Projects---EDA": {
     "first_seen": "2026-09-08",
@@ -17880,8 +18423,8 @@
     "first_seen": "2026-09-09",
     "stars_at_first_seen": 380,
     "matched_query": "claude code skill created:>2026-07-11",
-    "score": 7,
-    "one_liner": "用AI智能体克隆整个网站的皮肤和代码。",
+    "score": 6,
+    "one_liner": "用一队 AI agent 克隆网站 UI 和架构文档",
     "stars_history": [
       [
         "2026-09-09",
@@ -17909,17 +18452,20 @@
       ]
     ],
     "category": "Claude Code skill",
-    "use_for": "下载文献、备份网页数据，还原成离线文件。",
-    "usage": "输入网址，它会爬取页面、提取资源并生成镜像。",
-    "example": "研究者输入期刊页面URL，获得完整离线副本，方便日后查阅。",
-    "compare": "与boyang-hu/website-rebuild-skill类似，但更侧重完整站点的下载和资产提取。"
+    "use_for": "扒公开数据库页面或工具站，做离线镜像和结构还原",
+    "usage": "在 Claude Code 里给 URL，它派多 agent 抓取并写架构说明",
+    "example": "给个生信工具官网 URL，它出镜像站和架构 doc",
+    "compare": "和 website-rebuild-skill 部分重叠，它多了架构文档逆向",
+    "fit": 4,
+    "overlap": "和 website-rebuild-skill 部分重叠，它多了架构文档逆向",
+    "verdict": "不装：README 里塞了可疑下载脚本"
   },
   "deanslee/FigureOneLab": {
     "first_seen": "2026-09-09",
     "stars_at_first_seen": 276,
     "matched_query": "biology skills",
-    "score": 8,
-    "one_liner": "通过复现论文图表练习计算生物技能。",
+    "score": 3,
+    "one_liner": "复现现代生物学论文 Figure 1 来练计算生物学",
     "stars_history": [
       [
         "2026-09-09",
@@ -17946,18 +18492,21 @@
         276
       ]
     ],
-    "category": "资源合集",
-    "use_for": "学习单细胞、免疫、神经等领域的分析方法，提升实操能力。",
-    "usage": "基于论文图1,用公开数据重做分析并对比结果。",
-    "example": "用户选取Kinker2020论文，用其数据复现图1，掌握肿瘤细胞系程序的识别。",
-    "compare": "填补了用真实论文图表训练生信技能的空白。"
+    "category": "资源合集 / 科研训练",
+    "use_for": "拿真实多组学数据练 scRNA、CRISPR、脑发育分析全流程",
+    "usage": "按 curated 题目、数据、方法清单，自己动手跑一遍",
+    "example": "拿 Kinker 2020 的数据，重做它的 Figure 1 单细胞分析",
+    "compare": "追踪列表里科学技能库偏工具，它直接给论文数据+方法做训练",
+    "fit": 10,
+    "overlap": "无重复",
+    "verdict": "装：练手+找选题的真材料"
   },
   "sandbaseai/sandbase-skills": {
     "first_seen": "2026-09-09",
     "stars_at_first_seen": 145,
     "matched_query": "claude code skill created:>2026-07-11",
-    "score": 8,
-    "one_liner": "88个可安装的agent技能，涵盖研究、社交和营销等。",
+    "score": 7,
+    "one_liner": "88 个可装的 agent skills，含研究、社交情报等",
     "stars_history": [
       [
         "2026-09-09",
@@ -17984,18 +18533,21 @@
         176
       ]
     ],
-    "category": "资源合集",
-    "use_for": "研究文献检索、数据整理、写作辅助等。",
-    "usage": "通过skills.sh安装，在Claude Code等代理中调用。",
-    "example": "用户安装multi-source-search技能，输入主题，它从多源搜索并交叉验证。",
-    "compare": "与academic-research-skills部分重叠，但它更通用且兼容多平台。"
+    "category": "Claude Code skill 合集",
+    "use_for": "做多源检索、交叉验证研究、文献调研这类科研前端工作",
+    "usage": "兼容 Codex/Claude Code/Cursor，装完在对话里调用",
+    "example": "说'用 multi-source-search 查这个基因的最新进展'，它汇总多源结果",
+    "compare": "和 academic-research-skills 部分重叠，它偏通用研究不专攻论文",
+    "fit": 7,
+    "overlap": "和 academic-research-skills 部分重叠，它更偏多源检索",
+    "verdict": "观望：研究类 skill 部分可能有用"
   },
   "OtoDock/oto-dock": {
     "first_seen": "2026-09-09",
     "stars_at_first_seen": 95,
     "matched_query": "hn: Show HN: Self-hosted company OS, Claude Code and Codex agent",
-    "score": 7,
-    "one_liner": "自托管的个人AI代理平台，集成Claude和Codex。",
+    "score": 6,
+    "one_liner": "自托管的'AI agent 公司 OS'，跑你自己的 Claude/Codex 订阅",
     "stars_history": [
       [
         "2026-09-09",
@@ -18025,18 +18577,21 @@
     "source": "hn",
     "hn_points": 35,
     "hn_url": "https://news.ycombinator.com/item?id=49630606",
-    "category": "多智能体框架",
-    "use_for": "统一管理和编排多个代理，用于数据处理或流程自动化。",
-    "usage": "按文档自托管，配置API密钥后通过界面与代理协作。",
-    "example": "研究者部署后，指派代理生成分析报告初稿。",
-    "compare": "与open-multi-agent类似，但更强调自托管和BYO订阅。"
+    "category": "工具 / 自托管平台",
+    "use_for": "多人共用一套 agent 平台，管理 key、会话、权限",
+    "usage": "自部署服务，团队在同一个 agent 平台上分工协作",
+    "example": "实验室自建一套 agent 平台，几个人共用订阅跑分析任务",
+    "compare": "追踪列表里没有自托管多租户 agent 平台，它填了这块",
+    "fit": 3,
+    "overlap": "无重复",
+    "verdict": "不装：个人科研场景太重，几乎用不上"
   },
   "FvdHMBAI/guardrail": {
     "first_seen": "2026-09-09",
     "stars_at_first_seen": 0,
     "matched_query": "hn: Show HN: GuardRail, shell guards that stop Claude Code befor",
-    "score": 6,
-    "one_liner": "为AI编码代理预执行安全防护的工具。",
+    "score": 7,
+    "one_liner": "在 agent 执行前拦下危险命令，13 条规则可审计",
     "stars_history": [
       [
         "2026-09-09",
@@ -18066,18 +18621,21 @@
     "source": "hn",
     "hn_points": 5,
     "hn_url": "https://news.ycombinator.com/item?id=49625722",
-    "category": "工具",
-    "use_for": "防止生信流程中AI执行危险命令，保护数据。",
-    "usage": "初始化后，自动拦截git push、删除等危险操作并记录日志。",
-    "example": "配置后，AI尝试删数据时会被阻止并告警。",
-    "compare": "在安全增强上填补了空白，其他技能未涉及。"
+    "category": "安全工具 / Claude Code hook",
+    "use_for": "防止 agent 误删数据、误 push、误删表，保护实验数据",
+    "usage": "npx 初始化，把 hook 挂进 Claude Code，危险操作直接拦",
+    "example": "agent 想 rm -rf 保护路径，GuardRail 在跑之前拦住并记日志",
+    "compare": "追踪列表里没有 agent 安全门禁，它填了执行前拦截这块",
+    "fit": 5,
+    "overlap": "无重复",
+    "verdict": "观望：star 为 0，机制值得借鉴"
   },
   "Vincentwei1021/anything2explainer": {
     "first_seen": "2026-09-10",
     "stars_at_first_seen": 691,
     "matched_query": "claude code skill created:>2026-07-12",
-    "score": 7,
-    "one_liner": "输入一个主题，输出带配音的讲解视频",
+    "score": 9,
+    "one_liner": "输入主题，出带配音字幕的动画讲解视频",
     "stars_history": [
       [
         "2026-09-10",
@@ -18100,18 +18658,21 @@
         1317
       ]
     ],
-    "category": "Claude Code skill",
-    "use_for": "把论文、方法、组会内容做成讲解短视频或汇报动画",
-    "usage": "在 Claude Code 里给个主题，agent 自动写脚本、配图、配音、渲染",
-    "example": "输入「单细胞注释流程」，它产出 3 分钟中英讲解视频，可直接组会用",
-    "compare": "和已在追踪的 video-shotcraft 同作者，一个做讲解片一个做产品片，互补可用"
+    "category": "Claude Code skill / 视频制作",
+    "use_for": "把算法原理或生信流程做成中英双语讲解视频",
+    "usage": "在 Claude Code 里给个主题，它用 Remotion 逐帧画出视频",
+    "example": "说'讲解 scVI 原理'，它出 5 分钟带 kokoro 配音的动画视频",
+    "compare": "和 video-shotcraft 部分重叠，它专攻讲解视频不碰产品片",
+    "fit": 8,
+    "overlap": "和 video-shotcraft 部分重叠，它专做讲解动画视频",
+    "verdict": "装：讲清算法直接能做视频"
   },
   "jcpsimmons/gbdl": {
     "first_seen": "2026-09-10",
     "stars_at_first_seen": 3,
     "matched_query": "hn: Show HN: GBDL – one Markdown+YAML file to save a multi-agent",
-    "score": 6,
-    "one_liner": "用一个 Markdown 文件存整个多智能体助手配置",
+    "score": 5,
+    "one_liner": "用一个 Markdown+YAML 文件保存多智能体助手配置",
     "stars_history": [
       [
         "2026-09-10",
@@ -18137,18 +18698,21 @@
     "source": "hn",
     "hn_points": 5,
     "hn_url": "https://news.ycombinator.com/item?id=49628911",
-    "category": "规范/格式提案",
-    "use_for": "把搭好的 agent 配置存 git、换机器一键还原",
-    "usage": "写好的 .gbdl.md 交给兼容加载器，按顺序重建 bot 和 agent",
-    "example": "把「生信分析多智能体」存成 gbdl.md，换电脑直接还原整套设置",
-    "compare": "已在追踪里没有同类的配置快照格式，填补了「agent 设置可移植」空白"
+    "category": "格式提案 / 其他",
+    "use_for": "把 agent 团队配置进 git，换机器直接还原同一套班子",
+    "usage": "写 .gbdl.md 文件，用兼容 loader 按顺序重装 agent",
+    "example": "把'数据+建模+写稿'三个 agent 写成 gbdl.md，换电脑一键重建",
+    "compare": "追踪列表里没有 agent 配置序列化格式，它填了这个空白",
+    "fit": 3,
+    "overlap": "无重复",
+    "verdict": "观望：v0.1 草稿，生态几乎没有"
   },
   "viettranx/3dviz-pro-max": {
     "first_seen": "2026-09-11",
     "stars_at_first_seen": 173,
     "matched_query": "claude code skill created:>2026-07-13",
     "score": 6,
-    "one_liner": "把想法变成 Three.js/Blender 三维场景的技能包",
+    "one_liner": "把想法变成 Three.js/Blender 的 3D 可视化场景",
     "stars_history": [
       [
         "2026-09-11",
@@ -18168,17 +18732,20 @@
       ]
     ],
     "category": "Claude Code skill",
-    "use_for": "做三维可视化 demo、机制动画、科学示意图",
-    "usage": "在 Claude Code 里描述想要的场景，它调配方库生成可跑代码",
-    "example": "在 Claude Code 输入 /3dviz，让它做一段细胞分裂的三维动画，输出可运行的 Three.js 网页",
-    "compare": "同类三维/视频技能里，video-shotcraft 偏产品视频，它偏交互式三维场景，填补机理动画空白"
+    "use_for": "给论文/组会/知识库做能转的 3D 示意图或动画演示",
+    "usage": "装成插件，在 Claude Code 里描述场景，它出可跑 Three.js 场景",
+    "example": "说'做一张细胞互作的 3D 场景'，它出可浏览的 Three.js 页面",
+    "compare": "追踪列表里没有 3D 可视化技能，它填补了三维展示空白",
+    "fit": 4,
+    "overlap": "无重复",
+    "verdict": "观望：生信用 3D 场景少，偶尔有亮点"
   },
   "88lin/computer-repair-skill": {
     "first_seen": "2026-09-12",
     "stars_at_first_seen": 149,
     "matched_query": "claude code skill created:>2026-07-14",
-    "score": 6,
-    "one_liner": "让 AI 修电脑的 64 个按需加载维修手册",
+    "score": 4,
+    "one_liner": "让 agent 当电脑维修工，64 个故障处理 playbook",
     "stars_history": [
       [
         "2026-09-12",
@@ -18194,17 +18761,20 @@
       ]
     ],
     "category": "Claude Code skill",
-    "use_for": "整治实验室工作站卡顿、磁盘爆满、软件迁移等杂活",
-    "usage": "装上后直接用大白话描述电脑毛病，Agent 先取证再动手",
-    "example": "在 Claude Code 里说「C 盘满了」，它列出占用大户、给清理方案，确认后执行",
-    "compare": "已在追踪的技能库都是科研/学术向，这是少见的系统运维向 skill，填的是机器维护这个空白"
+    "use_for": "C 盘爆满、卡顿、流氓软件、数据恢复、网路问题",
+    "usage": "用自然语言描述电脑问题，agent 选合适修复流程",
+    "example": "说'C 盘满了'，它先取证再给计划，确认后才清理",
+    "compare": "追踪列表里没有系统运维类技能，它填补了电脑维护空白",
+    "fit": 2,
+    "overlap": "无重复",
+    "verdict": "不装：跑流程的机器偶尔用得上，非科研相关"
   },
   "bighardperson/computer-science-skills-collection": {
     "first_seen": "2026-09-12",
     "stars_at_first_seen": 50,
     "matched_query": "science skills",
     "score": 7,
-    "one_liner": "610 个计算机方向 Skills 打包，含科研论文和数据分析",
+    "one_liner": "610 个 Claude Code/OpenClaw skills 大合集",
     "stars_history": [
       [
         "2026-09-12",
@@ -18220,10 +18790,13 @@
       ]
     ],
     "category": "资源合集",
-    "use_for": "扒现成的 prompt 模板，改造成自己的生信/写论文流程",
-    "usage": "下载 release 或 clone 后跑脚本装进 skills 目录，按需挑着用",
-    "example": "从里面挑「科研论文」类 skill 拷到 ~/.agents/skills，再改成适配单细胞分析的版本",
-    "compare": "和 awesome-agent-skills 定位相同，量大但良莠不齐，适合当二手素材库淘金"
+    "use_for": "当技能提示词库和路线图，从科研到办公到安全审计都有",
+    "usage": "下载 release 或 clone，跑 install 脚本装到本机 skills 目录",
+    "example": "想搞科研论文 skill，在这一堆里挑，再拷进自己的 skills",
+    "compare": "和 awesome-agent-skills 那类精选目录类似，它偏本土野生、质量参差",
+    "fit": 6,
+    "overlap": "和 awesome-agent-skills 高度重叠，量多但筛选弱",
+    "verdict": "观望：量大但杂，得挑"
   },
   "brohrer/academic_advisory": {
     "first_seen": "2026-09-13",
@@ -18247,8 +18820,8 @@
     "first_seen": "2026-09-13",
     "stars_at_first_seen": 117,
     "matched_query": "census: claude code skill",
-    "score": 6,
-    "one_liner": "从硬件点子到能下单打样的 PCB 全流程技能",
+    "score": 5,
+    "one_liner": "把硬件点子做成能下单的 PCB 的技能，走 EasyEDA",
     "stars_history": [
       [
         "2026-09-13",
@@ -18261,17 +18834,20 @@
     ],
     "source": "census",
     "category": "Claude Code skill",
-    "use_for": "画电路板、BOM、布线、下单，和生信完全不搭",
-    "usage": "在 Claude Code 里描述硬件需求，它驱动 EasyEDA 出板子",
-    "example": "在 Claude Code 输入硬件需求，它画原理图、选元件、布线并停在下单页",
-    "compare": "填补硬件设计这类空白，追踪列表里没有任何 PCB/EDA 技能"
+    "use_for": "画原理图、选料、布局走线、下单到付款前一步",
+    "usage": "在 Claude Code 里描述硬件需求，它驱动 EasyEDA Pro 一步步出板",
+    "example": "说'做个 ESP32 温湿度板'，它出原理图、BOM、走线并停在付款页",
+    "compare": "追踪列表里没有硬件 EDA 类技能，它填补了硬件制造空白",
+    "fit": 2,
+    "overlap": "无重复",
+    "verdict": "不装：跟生信实验台不沾边"
   },
   "Devesh-Shirsath/spotkit": {
     "first_seen": "2026-09-13",
     "stars_at_first_seen": 64,
     "matched_query": "census: claude code skill",
-    "score": 5,
-    "one_liner": "把功能描述变成同风格的抽象 SVG 插图",
+    "score": 6,
+    "one_liner": "把功能描述变成统一设计风格的抽象 SVG 插图",
     "stars_history": [
       [
         "2026-09-13",
@@ -18284,17 +18860,20 @@
     ],
     "source": "census",
     "category": "Claude Code skill",
-    "use_for": "给论文、组会 PPT、网站配一套统一风格的产品风插图",
-    "usage": "在 Claude Code 里说要做哪张插图，它生成可编辑 SVG",
-    "example": "在 Claude Code 输入「做一张空间转录组分析流程图插图」，得到同风格 SVG",
-    "compare": "追踪列表里的配图/视频技能偏演示和视频，这个专做抽象产品插图"
+    "use_for": "给论文图、组会 PPT、知识库页面配风格一致的示意图",
+    "usage": "在 Claude Code 里说'给 XX 功能画插图'，它输出可编辑 SVG",
+    "example": "说'画一张细胞注释流程插图'，它出深色浅色两版 SVG",
+    "compare": "和 nothing-design-skill 部分重叠，它专攻插画不碰整体 UI",
+    "fit": 4,
+    "overlap": "和 nothing-design-skill 部分重叠，它专做抽象插画",
+    "verdict": "观望：插图偶尔能用，非刚需"
   },
   "Maurdekye/orgtree": {
     "first_seen": "2026-09-13",
     "stars_at_first_seen": 64,
     "matched_query": "census: agent orchestration",
     "score": 9,
-    "one_liner": "把多个 coding agent 组织成可视化层级团队来跑",
+    "one_liner": "把多个 coding agent 组织成可视化的公司层级架构",
     "stars_history": [
       [
         "2026-09-13",
@@ -18307,17 +18886,20 @@
     ],
     "source": "census",
     "category": "多智能体框架",
-    "use_for": "搭一套多 agent 分工体系，跑生信流程、写脚本、查文献各司其职",
-    "usage": "桌面上给每个 agent 派活，实时看对话和产出，支持跨模型",
-    "example": "在 Orgtree 里派一个 agent 写 scanpy 脚本、一个查文献、一个整理结果，图上看到进度",
-    "compare": "比 open-multi-agent 多了可视化组织图和跨 provider 分工，更像真的团队管理"
+    "use_for": "跑一队 agent 做分析流程，谁干什么、进度、报错都能看见",
+    "usage": "桌面应用里搭团队、分派任务、看实时对话和工具调用",
+    "example": "建个'数据清洗 agent + 建模 agent + 写论文 agent'团队，让它们互相传文件",
+    "compare": "比 open-multi-agent 多了可视化组织图和跨 provider 编排",
+    "fit": 6,
+    "overlap": "和 open-multi-agent 部分重叠，它多了可视化层级和跨 provider",
+    "verdict": "观望：概念好，但科学任务编排还没验证"
   },
   "tudoumashu/ai-memory-skillpack": {
     "first_seen": "2026-09-13",
     "stars_at_first_seen": 62,
     "matched_query": "census: claude code skill",
     "score": 8,
-    "one_liner": "给 agent 一个体积受限、不会膨胀的项目记忆系统",
+    "one_liner": "给 Codex/Claude Code 装个有上限的项目记忆层",
     "stars_history": [
       [
         "2026-09-13",
@@ -18329,18 +18911,21 @@
       ]
     ],
     "source": "census",
-    "category": "Claude Code skill",
-    "use_for": "让 agent 记住课题背景、数据路径、踩过的坑，跨会话不丢",
-    "usage": "克隆后让 Codex 读 INSTALL.md 自己装好，可回滚",
-    "example": "告诉 Codex 读 INSTALL.md 装好记忆系统，下次开新会话它还记得项目结构",
-    "compare": "追踪列表里没有专门的持久化项目记忆技能，它补上这块空白"
+    "category": "Claude Code skill / 记忆系统",
+    "use_for": "让 agent 记住项目脉络：一句简介、一张地图、一堆坑，而不是流水账",
+    "usage": "让 Codex 读 INSTALL.md 自己装，装完每个 session 都带着项目记忆",
+    "example": "在项目里说'装记忆系统'，之后问'上次这个 bug 怎么解'它能翻出来",
+    "compare": "比 second-brain-os 更工程化，是 bounded/fail-closed 而非知识库",
+    "fit": 7,
+    "overlap": "和 second-brain-os 部分重叠，它多了容量上限和校验",
+    "verdict": "装：生信流程跨 session 太需要了"
   },
   "undefined-ui/second-brain-os": {
     "first_seen": "2026-09-13",
     "stars_at_first_seen": 59,
     "matched_query": "census: claude code skill",
     "score": 8,
-    "one_liner": "用 agent 自动维护的 Obsidian 第二大脑知识库",
+    "one_liner": "用 Obsidian+Claude Code 自动维护的 AI 第二大脑",
     "stars_history": [
       [
         "2026-09-13",
@@ -18352,18 +18937,21 @@
       ]
     ],
     "source": "census",
-    "category": "资源合集",
-    "use_for": "把你读的文献、看的资料自动变成互链的 wiki 页面并可提问",
-    "usage": "克隆模板和技能到 Obsidian 库，agent 帮你归档和串联",
-    "example": "把一篇生信论文丢进去，agent 自动生成 wiki 页并连到已有的单细胞笔记",
-    "compare": "和 ai-memory-skillpack 比更偏个人知识库和文献，贴合思路整理需求"
+    "category": "Claude Code skill / 知识库",
+    "use_for": "把读的文献、看的教程、存的链接自动变成互链的 wiki 页",
+    "usage": "clone 模板 vault，装 skills 和 agents，之后存东西它自动归档连结",
+    "example": "丢一篇单细胞论文进收件箱，它生成带链接的 wiki 页和摘要",
+    "compare": "比 ai-memory-skillpack 更贴个人知识库，覆盖面更广但没那么严",
+    "fit": 9,
+    "overlap": "和 ai-memory-skillpack 部分重叠，它多了 Obsidian wiki 自动化",
+    "verdict": "装：个人知识库直接能用"
   },
   "khuynh22/agent-dev-team": {
     "first_seen": "2026-09-13",
     "stars_at_first_seen": 7,
     "matched_query": "hn: Show HN: Give Claude Code / Cursor a real eng team (tiers, r",
-    "score": 7,
-    "one_liner": "分四档资历、带升级机制的一整套工程 agent 团队",
+    "score": 8,
+    "one_liner": "21 个分层工程 agent + 26 个可移植工作流技能",
     "stars_history": [
       [
         "2026-09-13",
@@ -18377,47 +18965,56 @@
     "source": "hn",
     "hn_points": 5,
     "hn_url": "https://news.ycombinator.com/item?id=49677601",
-    "category": "subagent",
-    "use_for": "给编码 agent 分好资历层级，小事别乱做决定、大事能升级",
-    "usage": "装到 Claude Code 等工具，按 tier 分派任务和交接",
-    "example": "让 intern 档 agent 改个参数，遇到要改数据结构自动升级给 senior",
-    "compare": "比 awesome-claude-code-subagents 多了资历天花板和结构化交接协议"
+    "category": "subagent / 工作流技能",
+    "use_for": "给代码任务分级派活，避免一个助手什么决定都敢做",
+    "usage": "装进 Claude Code/Codex，任务按 tier 匹配 role agent 并结构升级",
+    "example": "说'改个 bug'，它派 T0 intern 做；'改 schema'则升级给高级角色",
+    "compare": "和 awesome-claude-code-subagents 类似，它多了分 tier 与升级协议",
+    "fit": 5,
+    "overlap": "和 awesome-claude-code-subagents 部分重叠，它多了分级升级机制",
+    "verdict": "观望：star 太少，机制可借鉴"
   },
   "genspark-ai/genoffice": {
     "first_seen": "2026-09-14",
     "stars_at_first_seen": 6764,
     "matched_query": "claude code skill created:>2026-07-16",
-    "score": 7,
-    "one_liner": "开源 AI 办公套件，含 CLI 和 skill 让 AI 直接改 docx/xlsx/pptx",
+    "score": 8,
+    "one_liner": "开源 AI 办公套件，AI 直接读写 docx/xlsx/pptx/PDF",
     "stars_history": [
       [
         "2026-09-14",
         6764
       ]
     ],
-    "category": "工具 / agent skill",
-    "use_for": "自动生成 PPT、report、整理表格数据到 Excel，少手动搬砖",
-    "usage": "在 Claude Code/Codex 里调用 skill，让它本地读写真实 Office 文件",
-    "example": "输入「把实验结果做成 10 页 PPT」，它生成 .pptx 你再用 PowerPoint 打开微调",
-    "compare": "已在追踪列表里同名同项目；比通用 Office skill 多的是一整套本地编辑器"
+    "category": "Claude Code skill / AI 办公套件",
+    "use_for": "让 Claude Code 直接改论文 Word 稿、生成汇报 PPT、导出 xlsx 结果表",
+    "usage": "装 genoffice CLI 和 skill，在 Claude Code 里说'把这段结果写进 report.docx'它就改真文件",
+    "example": "在 Claude Code 输入'把差异基因表写进 slides.pptx 第 3 页'，它生成真能打开的 pptx",
+    "compare": "和 PPT-Design-Skill 部分重叠，它多了 Sheets/PDF 全格式本地读写、CLI+skill 双入口",
+    "fit": 8,
+    "overlap": "和 PPT-Design-Skill 部分重叠，它多了 docx/xlsx/PDF 全套本地编辑",
+    "verdict": "装：写 report 和做 PPT 的刚需"
   },
   "TZstatsADS/ADS_Teaching": {
     "first_seen": "2026-09-14",
     "stars_at_first_seen": 192,
     "matched_query": "science skills",
     "score": 2,
-    "one_liner": "哥大应用数据科学课的教学仓库，R 笔记本 + Shiny 项目",
+    "one_liner": "哥大应用数据科学课程课件和作业模板",
     "stars_history": [
       [
         "2026-09-14",
         192
       ]
     ],
-    "category": "资源合集 / 教学",
-    "use_for": "学数据分析教学方法论，几乎和单细胞/生信无关",
-    "usage": "翻课件和 starter code 抄结构，学生做作业用",
-    "example": "打开 Project1 R 笔记本，做一份探索性数据分析当练习",
-    "compare": "和你追踪的科研技能库完全不一类，它是教学材料不填空白"
+    "category": "资源合集 / 课程材料",
+    "use_for": "学 R notebook、Shiny 应用、数据分析流程的教学案例",
+    "usage": "当教学参考翻，看别人怎么组织 EDA 和项目演示",
+    "example": "想搭个生信分析教学 notebook，抄它的 Project 结构",
+    "compare": "纯教学仓库，和追踪列表里所有技能类项目都不搭界",
+    "fit": 3,
+    "overlap": "无重复",
+    "verdict": "不装：跟你的科研日常没关系"
   },
   "danyuchn/iso-24495-skill": {
     "first_seen": "2026-09-14",
@@ -18445,10 +19042,13 @@
         52
       ]
     ],
-    "category": "多智能体框架 / 教程源码",
-    "use_for": "搞懂 agent loop、工具、上下文压缩、subagent 怎么造，自己攒生信 agent",
-    "usage": "按 17 章读代码跑每章 demo，理解 harness 各机制",
-    "example": "在 Claude Code 里让 AI 照着第 s05 章改代码，给自己的生信 agent 加子任务拆解",
-    "compare": "比 shareAI-lab 那版更贴 LangChain 生态，适合你已用 transformers 的栈上手"
+    "category": "教程 / 多智能体框架",
+    "use_for": "理解 agent loop、工具协议、上下文压缩、子智能体、记忆恢复机制",
+    "usage": "按章跑代码，一章一个机制，边读边改自己的 agent 原型",
+    "example": "在 Claude Code 里让它照 s05 章写个带权限的工具循环，直接能跑",
+    "compare": "比 awesome-claude-code-subagents 更底层，是源码级拆解不是配置合集",
+    "fit": 6,
+    "overlap": "和 awesome-claude-code-subagents 部分重叠，它多了可运行源码拆解",
+    "verdict": "装：搞 agent 编排必读源码"
   }
 }

@@ -106,6 +106,9 @@ HN_MIN_POINTS = 5
 HN_MAX_PER_DAY = 10
 HN_SINCE_DAYS = 2  # 略大于 1 天，配合 seen 去重提高召回
 
+# 域外雷达：不限领域的兜底通道（每日）
+EXPLORE_MAX = 5
+
 # 周日普查：上周新建 repo 的全量扫描（GraphQL search，每关键词封顶 100）
 CENSUS_DAY = 6  # Sunday
 CENSUS_QUERIES: list[tuple[str, int]] = [
@@ -386,6 +389,36 @@ def census_candidates(seen: dict[str, Any], existing: dict[str, Repo]) -> list[R
     return repos
 
 
+def explore_candidates(seen: dict[str, Any], existing: dict[str, Repo]) -> list[Repo]:
+    """域外雷达：不限领域的新建热门 repo（纯限定词宽查询）。
+
+    主线查询是「镜头」，必然有领域盲区；这条通道是廉价的兜底——
+    只收新建且 ≥200 星的，每日最多 EXPLORE_MAX 个，不参与 LLM 打分，
+    在报告/卡片里以紧凑行单独成节。
+    """
+    week_ago = (dt.date.today() - dt.timedelta(days=7)).isoformat()
+    q = f"created:>{week_ago} stars:>=200"
+    print(f"[INFO] explore: {q!r}", file=sys.stderr)
+    repos: list[Repo] = []
+    for r in gh_search(q, limit=20):
+        fn = r["fullName"]
+        if fn in seen or fn in existing or any(x.full_name == fn for x in repos):
+            continue
+        repos.append(Repo(
+            full_name=fn,
+            description=r["description"] or "",
+            stars=r["stargazersCount"],
+            url=r["url"],
+            updated_at=r["updatedAt"],
+            matched_query="explore: 全域新建热门",
+            matched_weight=1,
+            source="explore",
+        ))
+        if len(repos) >= EXPLORE_MAX:
+            break
+    return repos
+
+
 def llm_chat(prompt: str, max_tokens: int = 4000, json_mode: bool = True) -> str:
     """Raw chat completion via the OpenAI-compatible endpoint. '' if unconfigured/failed."""
     if not LLM_API_KEY:
@@ -531,6 +564,10 @@ def apply_score(entry: dict[str, Any], s: Score) -> None:
     entry["usage"] = s.get("usage")
     entry["example"] = s.get("example")
     entry["compare"] = s.get("compare")
+    # 科研决策三件套（parse 了就必须落地，否则 fit 排序/卡片/徽章全是空转）
+    entry["fit"] = s.get("fit")
+    entry["overlap"] = s.get("overlap")
+    entry["verdict"] = s.get("verdict")
 
 
 def backfill_scores(
@@ -547,8 +584,8 @@ def backfill_scores(
     tracked = tracked_summary(seen)
     targets: list[Repo] = []
     for fn, e in sorted(seen.items(), key=lambda kv: kv[1].get("first_seen", ""), reverse=True):
-        if not force and e.get("score"):
-            continue
+        if not force and e.get("score") and e.get("fit") is not None:
+            continue  # 完整分析（含 fit）才算已覆盖；有 score 没 fit 的算欠账
         if e.get("similar_to"):
             continue  # 克隆不值得花 token
         if e.get("first_seen", "") < cutoff:
@@ -723,7 +760,12 @@ def render_daily(
             new_repos.sort(key=lambda r: r.stars, reverse=True)
             lines += ["Sorted by stars (no LLM scoring; set LLM_API_KEY to enable).", ""]
 
+    explore_lines = []
     for r in new_repos:
+        # 域外雷达：一行带过，不展开不分析
+        if r.source == "explore":
+            explore_lines.append(f"- [{r.full_name}]({r.url}) · ★{r.stars} — {r.description}")
+            continue
         # 同类跟进的只留一行，不展开（省篇幅，也省得重复讲同一个概念）
         similar_to = (similars or {}).get(r.full_name)
         if similar_to:
@@ -758,6 +800,9 @@ def render_daily(
             f"- <{r.url}>",
             "",
         ]
+
+    if explore_lines:
+        lines += ["## 域外雷达（不限领域的新建热门，未分析）", ""] + explore_lines + [""]
 
     if movers:
         lines += [
@@ -836,6 +881,10 @@ def main() -> int:
         for r in census_candidates(seen, candidates):
             candidates[r.full_name] = r
 
+    # 域外雷达（每日）：不限领域的新建热门，防领域盲区；低优先级
+    for r in explore_candidates(seen, candidates):
+        candidates[r.full_name] = r
+
     new_repos = sorted(candidates.values(), key=lambda r: r.stars, reverse=True)
     print(f"[INFO] {len(new_repos)} new repos after dedup", file=sys.stderr)
 
@@ -866,7 +915,12 @@ def main() -> int:
         print(f"[INFO] {n_similar} repos flagged as similar-to-existing (skip scoring)", file=sys.stderr)
 
     # Score the top N new repos (with the tracked list as compare context)
-    to_score = [r for r in new_repos if "similar_to" not in seen[r.full_name]]
+    # 域外雷达的 repo 不打分：低优先级通道，不花 LLM 预算
+    to_score = [
+        r for r in new_repos
+        if "similar_to" not in seen[r.full_name]
+        and seen[r.full_name].get("source") != "explore"
+    ]
     scores: dict[str, Score] = {}
     if to_score:
         print(f"[INFO] scoring {min(len(to_score), args.max_scored)} repos", file=sys.stderr)

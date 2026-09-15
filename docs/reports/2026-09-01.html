@@ -164,12 +164,18 @@ td:nth-child(1) { overflow-wrap: anywhere; }
 .report code { background: var(--line-soft); border-radius: 4px; padding: 1px 5px; font-size: 12.5px; }
 .report a { color: var(--series); }
 .back { display: inline-block; margin: 0 0 14px; color: var(--ink-3); font-size: 13px; }
+
+/* 每页顶部的一句话导读 */
+.lede { border-left: 3px solid var(--series); background: var(--surface);
+        border-radius: 0 10px 10px 0; padding: 10px 16px; margin: 0 0 24px;
+        color: var(--ink-2); font-size: 14px; }
+.lede b { color: var(--ink); }
 </style>
 </head>
 <body>
 <header class="head">
   <h1>Agent Discovery</h1>
-  <p class="meta"><span class="fresh">数据更新于 2026-09-15 04:57 UTC</span> · 每晚 22:00 UTC 自动更新</p>
+  <p class="meta"><span class="fresh">数据更新于 2026-09-15 07:19 UTC</span> · 每晚 22:00 UTC 自动更新</p>
 </header>
 <nav class="nav">
   <a href="index.html">主页</a>
@@ -178,6 +184,7 @@ td:nth-child(1) { overflow-wrap: anywhere; }
   <a href="daily.html">每日新发现</a>
   <a href="repos.html">全部追踪</a>
 </nav>
+
 <section><a class="back" href="../daily.html">← 每日新发现</a>
 <div class="report"><h1>Agent Discovery · 2026-09-01</h1>
 <p>Found <strong>1 new repos</strong> across 14 queries + HN.</p>

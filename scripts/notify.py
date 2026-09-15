@@ -126,7 +126,10 @@ def build_card(seen: dict[str, dict[str, Any]]) -> dict[str, Any]:
     )
 
     if new_today:
-        novel = [(fn, e) for fn, e in new_today if not e.get("similar_to")]
+        # 域外雷达单独成节：不参与展开和分析
+        explore = [(fn, e) for fn, e in new_today if e.get("source") == "explore"]
+        novel = [(fn, e) for fn, e in new_today
+                 if not e.get("similar_to") and e.get("source") != "explore"]
         clones = [(fn, e) for fn, e in new_today if e.get("similar_to")]
         blocks = [repo_block(i, fn, e) for i, (fn, e) in enumerate(novel[:MAX_NEW_IN_MSG], 1)]
         more = f"\n\n…以及另外 {len(novel) - MAX_NEW_IN_MSG} 个" if len(novel) > MAX_NEW_IN_MSG else ""
@@ -138,6 +141,12 @@ def build_card(seen: dict[str, dict[str, Any]]) -> dict[str, Any]:
             ]
             extra = f"、等 {len(clones) - 5} 个" if len(clones) > 5 else ""
             new_md += "\n\n**同类跟进（不展开）**：" + "、".join(clone_lines) + extra
+        if explore:
+            ex_lines = [
+                f"[{fn}](https://github.com/{fn}) ★{(e.get('stars_at_first_seen') or 0):,}"
+                for fn, e in explore
+            ]
+            new_md += "\n\n**域外雷达**（不限领域的新建热门，仅记录）：" + "、".join(ex_lines)
         new_md = humanize_text(new_md)
     else:
         new_md = "**今天没有新 repo 通过过滤**"
@@ -218,6 +227,14 @@ def build_card(seen: dict[str, dict[str, Any]]) -> dict[str, Any]:
 
     summary = trend_summary(new_today, movers)
     if summary:
+        # 顺手存一份给 viz 主页用（render 是纯函数，不在渲染期调 LLM）
+        try:
+            (ROOT / "state" / "latest_summary.json").write_text(
+                json.dumps({"date": today, "text": summary}, ensure_ascii=False),
+                encoding="utf-8",
+            )
+        except OSError:
+            pass
         elements += [
             {"tag": "hr"},
             {"tag": "div", "text": {"tag": "lark_md", "content": f"**趋势小结**\n{summary}"}},
