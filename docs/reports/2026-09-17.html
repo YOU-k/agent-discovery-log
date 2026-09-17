@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Agent Discovery · 日报 2026-09-11</title>
+<title>Agent Discovery · 日报 2026-09-17</title>
 <style>
 /* 调色板取自 dataviz 参考实例，两模式都跑过 validate_palette：
    light #2a78d6/#eb6834 on #fcfcfb、dark #3987e5/#d95926 on #1a1a19，
@@ -186,36 +186,44 @@ td:nth-child(1) { overflow-wrap: anywhere; }
 </nav>
 
 <section><a class="back" href="../daily.html">← 每日新发现</a>
-<div class="report"><h1>Agent Discovery · 2026-09-11</h1>
-<p>Found <strong>1 new repos</strong> across 14 queries + HN.</p>
+<div class="report"><h1>Agent Discovery · 2026-09-17</h1>
+<p>Found <strong>6 new repos</strong> across 14 queries + HN.</p>
 <p>Sorted by fit-to-my-stack, then relevance score.</p>
-<h2>[score 6/10] [fit 2/10] viettranx/3dviz-pro-max  ·  ★173</h2>
+<h2>[score 5/10] [fit 1/10] liarjsdev/liarjs-skills  ·  ★157</h2>
 <ul>
 <li><strong>类型</strong>: Claude Code skill</li>
-<li>Agent skill for creative 3D visualization: turn an idea into a Three.js/Blender scene worth exploring. Claude Code + Codex plugin, 223 recipes, 440 knowledge records, 22 proved kits, 37 runnable studies.</li>
-<li><strong>是什么</strong>: 把想法变成 Three.js/Blender 三维场景的技能包</li>
-<li><strong>能做什么</strong>: 做三维可视化 demo、机制动画、科学示意图</li>
-<li><strong>大家怎么用</strong>: 在 Claude Code 里描述想要的场景，它调配方库生成可跑代码</li>
-<li><strong>举个例子</strong>: 在 Claude Code 输入 /3dviz，让它做一段细胞分裂的三维动画，输出可运行的 Three.js 网页</li>
-<li><strong>和已有项目比</strong>: 同类三维/视频技能里，video-shotcraft 偏产品视频，它偏交互式三维场景，填补机理动画空白</li>
-<li><strong>重复情况</strong>: 和 video-shotcraft 部分重叠，它多了可交互三维场景与配方库</li>
-<li><strong>装不装</strong>: 观望：和生信主线关系小，做机制动画才有用</li>
-<li>Updated: 2026-09-11</li>
-<li>Source: <code>github</code> · Query hit: <code>claude code skill created:&gt;2026-07-13</code></li>
-<li><a href="https://github.com/viettranx/3dviz-pro-max">https://github.com/viettranx/3dviz-pro-max</a></li>
+<li>Agent Skills for browser fingerprint testing: run liarjs from Claude Code, Codex, Cursor or Copilot to score a browser against itself - 40 consistency checks over canvas, WebGL, WebGPU, audio, fonts and WebRTC, cross-checked against the TLS/HTTP layer. Playwright and Puppeteer harness QA, CI regression gates, headless detection triage.</li>
+<li><strong>是什么</strong>: 教 agent 跑浏览器指纹一致性检测的四个技能</li>
+<li><strong>能做什么</strong>: 检测爬虫浏览器指纹是否自相矛盾，防止被网站识别封禁</li>
+<li><strong>大家怎么用</strong>: 用 npx skills add 装好后，让 agent 跑指纹审计、CI 卡点或失败排查</li>
+<li><strong>举个例子</strong>: 在 Claude Code 里说「审计这个 Playwright 指纹」，它跑 40 项检测并列出不一致的 check id</li>
+<li><strong>和已有项目比</strong>: 和 lackeyjb/playwright-skill 部分重叠（都在管浏览器自动化），但它多了指纹/TLS 层一致性和 CI 回归门禁</li>
+<li><strong>重复情况</strong>: 和 playwright-skill 部分重叠，它多了指纹一致性与 CI 门禁</li>
+<li><strong>装不装</strong>: 不装：跟单细胞/生信/论文完全无关</li>
+<li>Updated: 2026-09-17</li>
+<li>Source: <code>github</code> · Query hit: <code>claude code skill created:&gt;2026-07-19</code></li>
+<li><a href="https://github.com/liarjsdev/liarjs-skills">https://github.com/liarjsdev/liarjs-skills</a></li>
+</ul>
+<h2>域外雷达（不限领域的新建热门，未分析）</h2>
+<ul>
+<li><a href="https://github.com/browser-use/jev-ultrafast">browser-use/jev-ultrafast</a> · ★1947 — </li>
+<li><a href="https://github.com/agentverse-os/AgentVerse-OS">agentverse-os/AgentVerse-OS</a> · ★743 — Personal cloud OS for a developer and their AI agents on a single server. One-command install on Ubuntu, then everything in the browser: a windowed desktop, isolated workspaces with VS Code, Claude Code and Codex, a store of 944 self-hosted apps, backups and updates. Access only via Tailscale, nothing exposed to the internet. Rust core, Svelte UI.</li>
+<li><a href="https://github.com/TheoLeeCJ/openjev">TheoLeeCJ/openjev</a> · ★736 — Can we run something like Jev on a 3090 at home?</li>
+<li><a href="https://github.com/youngyangyang04/llm-master">youngyangyang04/llm-master</a> · ★684 — 大模型（LLM）全栈学习路线与中文教程🔥：覆盖 Prompt Engineering、RAG、AI Agent、MCP、微调、模型部署、Transformer、AI 编程与大厂面试，从入门到生产实践。</li>
+<li><a href="https://github.com/nilbuild/page-mascot">nilbuild/page-mascot</a> · ★682 — A mascot that watches the cursor and blinks when you poke it</li>
 </ul>
 <h2>Trending since first seen</h2>
 <table><thead><tr><th>Repo</th><th>First seen</th><th>Stars then → now</th><th>Δ</th></tr></thead><tbody>
-<tr><td><a href="https://github.com/ayghri/i-have-adhd">ayghri/i-have-adhd</a></td><td>2026-07-19</td><td>3084 → 41696</td><td>+38612</td></tr>
-<tr><td><a href="https://github.com/JuliusBrussee/caveman">JuliusBrussee/caveman</a></td><td>2026-07-02</td><td>79188 → 105038</td><td>+25850</td></tr>
-<tr><td><a href="https://github.com/virgiliojr94/book-to-skill">virgiliojr94/book-to-skill</a></td><td>2026-07-02</td><td>7442 → 30079</td><td>+22637</td></tr>
-<tr><td><a href="https://github.com/blader/humanizer">blader/humanizer</a></td><td>2026-07-02</td><td>27141 → 46923</td><td>+19782</td></tr>
-<tr><td><a href="https://github.com/alirezarezvani/claude-skills">alirezarezvani/claude-skills</a></td><td>2026-07-02</td><td>19625 → 25856</td><td>+6231</td></tr>
-<tr><td><a href="https://github.com/op7418/Humanizer-zh">op7418/Humanizer-zh</a></td><td>2026-07-02</td><td>12156 → 17068</td><td>+4912</td></tr>
-<tr><td><a href="https://github.com/VoltAgent/awesome-claude-code-subagents">VoltAgent/awesome-claude-code-subagents</a></td><td>2026-07-02</td><td>22698 → 25014</td><td>+2316</td></tr>
-<tr><td><a href="https://github.com/Nanako0129/sepia">Nanako0129/sepia</a></td><td>2026-08-29</td><td>644 → 2553</td><td>+1909</td></tr>
-<tr><td><a href="https://github.com/nateherkai/scroll-craft">nateherkai/scroll-craft</a></td><td>2026-08-24</td><td>618 → 2339</td><td>+1721</td></tr>
-<tr><td><a href="https://github.com/elementalsouls/Claude-BugHunter">elementalsouls/Claude-BugHunter</a></td><td>2026-07-02</td><td>2828 → 4440</td><td>+1612</td></tr>
+<tr><td><a href="https://github.com/ayghri/i-have-adhd">ayghri/i-have-adhd</a></td><td>2026-07-19</td><td>3084 → 47449</td><td>+44365</td></tr>
+<tr><td><a href="https://github.com/JuliusBrussee/caveman">JuliusBrussee/caveman</a></td><td>2026-07-02</td><td>79188 → 106272</td><td>+27084</td></tr>
+<tr><td><a href="https://github.com/virgiliojr94/book-to-skill">virgiliojr94/book-to-skill</a></td><td>2026-07-02</td><td>7442 → 31028</td><td>+23586</td></tr>
+<tr><td><a href="https://github.com/blader/humanizer">blader/humanizer</a></td><td>2026-07-02</td><td>27141 → 49569</td><td>+22428</td></tr>
+<tr><td><a href="https://github.com/alirezarezvani/claude-skills">alirezarezvani/claude-skills</a></td><td>2026-07-02</td><td>19625 → 26081</td><td>+6456</td></tr>
+<tr><td><a href="https://github.com/op7418/Humanizer-zh">op7418/Humanizer-zh</a></td><td>2026-07-02</td><td>12156 → 17455</td><td>+5299</td></tr>
+<tr><td><a href="https://github.com/TauricResearch/TradingAgents">TauricResearch/TradingAgents</a></td><td>2026-09-08</td><td>103415 → 107317</td><td>+3902</td></tr>
+<tr><td><a href="https://github.com/VoltAgent/awesome-claude-code-subagents">VoltAgent/awesome-claude-code-subagents</a></td><td>2026-07-02</td><td>22698 → 25159</td><td>+2461</td></tr>
+<tr><td><a href="https://github.com/Vincentwei1021/video-shotcraft">Vincentwei1021/video-shotcraft</a></td><td>2026-08-28</td><td>6517 → 8871</td><td>+2354</td></tr>
+<tr><td><a href="https://github.com/Nanako0129/sepia">Nanako0129/sepia</a></td><td>2026-08-29</td><td>644 → 2669</td><td>+2025</td></tr>
 </tbody></table></div></section>
 
 </body>
