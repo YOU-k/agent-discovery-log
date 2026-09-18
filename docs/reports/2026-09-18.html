@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Agent Discovery · 日报 2026-07-07</title>
+<title>Agent Discovery · 日报 2026-09-18</title>
 <style>
 /* 调色板取自 dataviz 参考实例，两模式都跑过 validate_palette：
    light #2a78d6/#eb6834 on #fcfcfb、dark #3987e5/#d95926 on #1a1a19，
@@ -186,16 +186,75 @@ td:nth-child(1) { overflow-wrap: anywhere; }
 </nav>
 
 <section><a class="back" href="../daily.html">← 每日新发现</a>
-<div class="report"><h1>Agent Discovery · 2026-07-07</h1>
-<p>Found <strong>1 new repos</strong> across 8 queries.</p>
-<p>Sorted by stars (no LLM scoring; set ANTHROPIC_API_KEY to enable).</p>
-<h2>axtonliu/smart-illustrator  ·  ★516</h2>
+<div class="report"><h1>Agent Discovery · 2026-09-18</h1>
+<p>Found <strong>8 new repos</strong> across 14 queries + HN.</p>
+<p>Sorted by fit-to-my-stack, then relevance score.</p>
+<h2>[score 8/10] [fit 9/10] Adkid-Zephyr/oral-paper-skill  ·  ★114</h2>
 <ul>
-<li>AI-powered article illustrations with intelligent position detection and cover learning system. Claude Code Skill.</li>
-<li>Updated: 2026-07-07</li>
-<li>Query hit: <code>claude code skill</code></li>
-<li><a href="https://github.com/axtonliu/smart-illustrator">https://github.com/axtonliu/smart-illustrator</a></li>
-</ul></div></section>
+<li><strong>类型</strong>: Claude Code skill / prompt pack</li>
+<li>向顶会优秀论文学科研｜Oral Paper Skill — 从 883 篇 Oral 论文摘要中“蒸馏”共通做法，用于论文对照改进与学习复盘 · Skill + prompt pack (CN/EN). Learn from 883 Oral paper abstracts to improve your research and writing.</li>
+<li><strong>是什么</strong>: 从 883 篇顶会 Oral 摘要里总结套路，用来改自己论文的技能</li>
+<li><strong>能做什么</strong>: 投稿前对照优秀论文检查贡献表述、证据组织和写作结构</li>
+<li><strong>大家怎么用</strong>: 在 agent 里装成 skill，把稿子或 idea 丢进去，让它按范例论文给「原文做法→为何相关→你的现状→怎么改」的建议</li>
+<li><strong>举个例子</strong>: 把方法草稿丢给 skill，它指出缺少同等质量下的端到端成本对比，并给出改法</li>
+<li><strong>和已有项目比</strong>: 和 academic-research-skills 覆盖全流程不同，它专攻从顶会 Oral 反推写作套路，只做写作改进</li>
+<li><strong>重复情况</strong>: 和 academic-research-skills 部分重叠，它专精 Oral 论文写作套路</li>
+<li><strong>装不装</strong>: 装：直接服务论文写作，改稿能用</li>
+<li>Updated: 2026-09-18</li>
+<li>Source: <code>github</code> · Query hit: <code>paper skills</code></li>
+<li><a href="https://github.com/Adkid-Zephyr/oral-paper-skill">https://github.com/Adkid-Zephyr/oral-paper-skill</a></li>
+</ul>
+<h2>[score 9/10] [fit 8/10] ordinary-s/falsify-the-problem  ·  ★60</h2>
+<ul>
+<li><strong>类型</strong>: Claude Code skill / prompt 模式</li>
+<li>An open-source Agent Skill for problem framing and assumption testing across coding, debugging, architecture, scientific research, and product decisions.</li>
+<li><strong>是什么</strong>: 动手前先问「我们是不是在解决错的问题」的问题框架技能</li>
+<li><strong>能做什么</strong>: 拆解实验异常、算法思路梳理、审稿意见回应前先确认问题定义对不对</li>
+<li><strong>大家怎么用</strong>: 单个 Markdown 文件无需依赖，装好后在 agent 里对着一个问题调用，它会逼你先列出可证伪的假设和替代解释</li>
+<li><strong>举个例子</strong>: 实验没达预期时调用它，它先让你对比训练和评估的预处理是否一致，再谈要不要换模型</li>
+<li><strong>和已有项目比</strong>: 和学术/科研技能包聚焦产出不同，它只做问题定框，填补「先想清楚再动手」这块空白</li>
+<li><strong>重复情况</strong>: 无重复，已有项目都没做问题定框与假设证伪</li>
+<li><strong>装不装</strong>: 装：契合日常拆问题、定假设的习惯</li>
+<li>Updated: 2026-09-18</li>
+<li>Source: <code>github</code> · Query hit: <code>scientific agent skills created:&gt;2026-07-20</code></li>
+<li><a href="https://github.com/ordinary-s/falsify-the-problem">https://github.com/ordinary-s/falsify-the-problem</a></li>
+</ul>
+<h2>[score 6/10] [fit 2/10] bendrape1-byte/silk-design  ·  ★134</h2>
+<ul>
+<li><strong>类型</strong>: Claude Code skill</li>
+<li>A Claude Code skill for building web interfaces that move well. Motion, smooth scroll, and design tokens by default.</li>
+<li><strong>是什么</strong>: 让 Claude 生成的网页有动效、顺滑滚动和设计变量的技能</li>
+<li><strong>能做什么</strong>: 做个人主页、课题组成果展示页、会议海报网页版时让页面不那么「AI 默认脸」</li>
+<li><strong>大家怎么用</strong>: clone 到 ~/.claude/skills，然后让 agent 用 /silk-design 建站并补充站点用途和素材</li>
+<li><strong>举个例子</strong>: 在 Claude Code 输入「用 /silk-design 给我的单细胞工具做产品页」，它自动加上 Lenis 滚动和配色变量</li>
+<li><strong>和已有项目比</strong>: 和 nothing-design-skill 都是 UI 风格技能，它专攻动效与滚动手感，Nothing 那套是整体视觉风格</li>
+<li><strong>重复情况</strong>: 和 nothing-design-skill 部分重叠，它多了动效和滚动缓动细节</li>
+<li><strong>装不装</strong>: 不装：科研日常用不上，纯网页美化</li>
+<li>Updated: 2026-09-18</li>
+<li>Source: <code>github</code> · Query hit: <code>claude code skill created:&gt;2026-07-20</code></li>
+<li><a href="https://github.com/bendrape1-byte/silk-design">https://github.com/bendrape1-byte/silk-design</a></li>
+</ul>
+<h2>域外雷达（不限领域的新建热门，未分析）</h2>
+<ul>
+<li><a href="https://github.com/tamaratran/fast-jev-compaction">tamaratran/fast-jev-compaction</a> · ★3159 — Claude Code plugin that replaces the compaction summary with Jev decisions: every tool call and result is scored in one fast request, stale ones are dropped or truncated, everything kept stays verbatim.</li>
+<li><a href="https://github.com/TheoLeeCJ/SemIf">TheoLeeCJ/SemIf</a> · ★1576 — Semantic ifs from open models, on a 3090 at home. Independent; not affiliated with Jev or TypeSafe.</li>
+<li><a href="https://github.com/mcncarl/jianying-headless">mcncarl/jianying-headless</a> · ★1008 — Private source preview: native Jianying drafts, isolated editing/export, and standalone Agent Skill.</li>
+<li><a href="https://github.com/vinnylarouge/jevlike">vinnylarouge/jevlike</a> · ★881 — </li>
+<li><a href="https://github.com/jarrodwatts/jev-trader">jarrodwatts/jev-trader</a> · ★861 — One AI trade decision every Monad block. Jev on Kuru MON-USDC.</li>
+</ul>
+<h2>Trending since first seen</h2>
+<table><thead><tr><th>Repo</th><th>First seen</th><th>Stars then → now</th><th>Δ</th></tr></thead><tbody>
+<tr><td><a href="https://github.com/ayghri/i-have-adhd">ayghri/i-have-adhd</a></td><td>2026-07-19</td><td>3084 → 48013</td><td>+44929</td></tr>
+<tr><td><a href="https://github.com/JuliusBrussee/caveman">JuliusBrussee/caveman</a></td><td>2026-07-02</td><td>79188 → 106596</td><td>+27408</td></tr>
+<tr><td><a href="https://github.com/virgiliojr94/book-to-skill">virgiliojr94/book-to-skill</a></td><td>2026-07-02</td><td>7442 → 31120</td><td>+23678</td></tr>
+<tr><td><a href="https://github.com/blader/humanizer">blader/humanizer</a></td><td>2026-07-02</td><td>27141 → 49926</td><td>+22785</td></tr>
+<tr><td><a href="https://github.com/alirezarezvani/claude-skills">alirezarezvani/claude-skills</a></td><td>2026-07-02</td><td>19625 → 26126</td><td>+6501</td></tr>
+<tr><td><a href="https://github.com/op7418/Humanizer-zh">op7418/Humanizer-zh</a></td><td>2026-07-02</td><td>12156 → 17513</td><td>+5357</td></tr>
+<tr><td><a href="https://github.com/TauricResearch/TradingAgents">TauricResearch/TradingAgents</a></td><td>2026-09-08</td><td>103415 → 107468</td><td>+4053</td></tr>
+<tr><td><a href="https://github.com/browser-use/jev-ultrafast">browser-use/jev-ultrafast</a></td><td>2026-09-17</td><td>1947 → 5428</td><td>+3481</td></tr>
+<tr><td><a href="https://github.com/VoltAgent/awesome-claude-code-subagents">VoltAgent/awesome-claude-code-subagents</a></td><td>2026-07-02</td><td>22698 → 25190</td><td>+2492</td></tr>
+<tr><td><a href="https://github.com/Vincentwei1021/video-shotcraft">Vincentwei1021/video-shotcraft</a></td><td>2026-08-28</td><td>6517 → 8948</td><td>+2431</td></tr>
+</tbody></table></div></section>
 
 </body>
 </html>
