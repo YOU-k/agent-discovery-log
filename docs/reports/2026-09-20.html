@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent Discovery · 日报 2026-09-20</title>
+<style>
+/* 调色板取自 dataviz 参考实例，两模式都跑过 validate_palette：
+   light #2a78d6/#eb6834 on #fcfcfb、dark #3987e5/#d95926 on #1a1a19，
+   五项检查全 PASS（all-pairs CVD ΔE 24.7/26.8，normal 33.6/31.8，对比度 ≥3:1）。
+   蓝 = 数据序列，橙 = 「自动关注」状态，两者不混用。 */
+:root {
+  color-scheme: light;
+  --bg: #ffffff;
+  --surface: #fcfcfb;
+  --line: #e7e5e0;
+  --line-soft: #f2f1ed;
+  --ink: #0b0b0b;
+  --ink-2: #52514e;
+  --ink-3: #8a8880;
+  --series: #2a78d6;
+  --series-soft: #dce9f9;
+  --hot: #eb6834;
+  --hot-soft: #fbe4da;
+  --pos: #0a6b3d;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #131312; --surface: #1a1a19; --line: #302f2c; --line-soft: #232322;
+    --ink: #ffffff; --ink-2: #c3c2b7; --ink-3: #8a8880;
+    --series: #3987e5; --series-soft: #1e3a5f; --hot: #d95926; --hot-soft: #3a241b;
+    --pos: #4bbd85;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink);
+  font: 15px/1.6 ui-sans-serif, -apple-system, "Segoe UI", "Noto Sans SC", sans-serif;
+  margin: 0 auto; max-width: 1120px; padding: 48px 24px 96px;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; }
+a:hover { text-decoration: underline; text-underline-offset: 2px; }
+
+/* 页头 + 导航 */
+.head { margin-bottom: 24px; }
+h1 { font-size: 30px; letter-spacing: -0.02em; margin: 0 0 6px; font-weight: 600; }
+.meta { color: var(--ink-3); font-size: 13px; margin: 0; font-variant-numeric: tabular-nums; }
+.meta .fresh { color: var(--ink-2); }
+.nav { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 28px; }
+.nav a { border: 1px solid var(--line); border-radius: 999px; padding: 5px 15px;
+         font-size: 13px; color: var(--ink-2); }
+.nav a:hover { border-color: var(--ink-3); text-decoration: none; }
+.nav a.cur { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+/* 模块卡片 */
+section { background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+          padding: 24px 24px 26px; margin: 0 0 20px; }
+section > h2 { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+               color: var(--ink-3); margin: 0 0 2px; }
+section > .sub { color: var(--ink-3); font-size: 13px; margin: 0 0 18px; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+         gap: 14px; margin: 0 0 20px; }
+a.card { display: block; background: var(--surface); border: 1px solid var(--line);
+         border-radius: 14px; padding: 20px 22px; transition: border-color .15s ease; }
+a.card:hover { border-color: var(--ink-3); text-decoration: none; }
+.card h3 { margin: 0 0 4px; font-size: 16px; font-weight: 600; }
+.card .d { color: var(--ink-3); font-size: 13px; margin: 0 0 14px; }
+.card .preview { font-size: 13px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.card .preview b { color: var(--ink); }
+.card .go { color: var(--series); font-size: 13px; margin-top: 12px; display: block; }
+
+/* Stat tiles —— 单个数字不该画成图 */
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1px;
+         background: var(--line); border: 1px solid var(--line); border-radius: 14px;
+         overflow: hidden; margin: 0 0 28px; }
+.tile { background: var(--surface); padding: 20px 22px; }
+.tile .k { color: var(--ink-3); font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; }
+.tile .v { font-size: 30px; font-weight: 600; letter-spacing: -0.02em; margin-top: 6px;
+           font-variant-numeric: tabular-nums; }
+.tile .v small { font-size: 14px; font-weight: 500; color: var(--ink-3); margin-left: 4px; }
+
+/* 条形图：细 mark、4px 圆头、锚在基线 */
+.bar-row { display: grid; grid-template-columns: minmax(150px, 280px) 1fr 96px; gap: 14px;
+           align-items: center; padding: 5px 0; border-radius: 6px; }
+.bar-row:hover { background: var(--line-soft); }
+.bar-row .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13.5px; }
+.bar-track { background: var(--line-soft); border-radius: 4px; height: 10px; }
+.bar { background: var(--series); height: 10px; border-radius: 0 4px 4px 0; min-width: 3px; display: block; }
+.bar.hot { background: var(--hot); }
+.delta { color: var(--ink-2); font-variant-numeric: tabular-nums; text-align: right; font-size: 13px; }
+
+/* 每日发现：列图 */
+.cols { display: flex; align-items: flex-end; gap: 2px; height: 116px; }
+.col { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end;
+       align-items: stretch; min-width: 0; border-radius: 4px 4px 0 0; }
+.col:hover { background: var(--line-soft); }
+.col .v { background: var(--series); width: 100%; border-radius: 3px 3px 0 0; min-height: 2px; }
+.axis { display: flex; justify-content: space-between; color: var(--ink-3);
+        font-size: 11px; margin-top: 8px; font-variant-numeric: tabular-nums; }
+.day { border-top: 1px solid var(--line-soft); padding: 10px 2px; }
+.day .dt { color: var(--ink-2); font-size: 13.5px; font-variant-numeric: tabular-nums; }
+.day .dt a { color: var(--series); }
+.day .repos { color: var(--ink-3); font-size: 13px; margin-top: 2px; }
+.day .repos a { color: var(--ink-2); margin-right: 4px; }
+
+/* 表格 */
+.wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+th, td { border-bottom: 1px solid var(--line-soft); padding: 9px 10px; text-align: left;
+         vertical-align: middle; }
+thead th { color: var(--ink-3); font-weight: 600; white-space: nowrap; font-size: 11px;
+           letter-spacing: 0.06em; text-transform: uppercase;
+           border-bottom: 1px solid var(--line); position: sticky; top: 0; background: var(--surface); }
+tbody tr.r:hover { background: var(--line-soft); }
+td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+td.pos { color: var(--pos); }
+.spark { display: block; }
+.pill { display: inline-block; border: 1px solid var(--line); border-radius: 999px;
+        padding: 1px 9px; font-size: 11.5px; color: var(--ink-2); white-space: nowrap; }
+.pill.f { border-color: var(--series); color: var(--series); }
+.dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+       background: var(--hot); margin-right: 7px; vertical-align: 1px; }
+.one { color: var(--ink-2); font-size: 13px; }
+
+/* 可展开行：默认只留摘要列，详情收进点击展开的下一行 */
+tr.r { cursor: pointer; }
+tr.r:focus-visible { outline: 2px solid var(--series); outline-offset: -2px; }
+.car { display: inline-block; color: var(--ink-3); font-size: 11px;
+       transition: transform .15s ease; }
+tr.r.open .car { transform: rotate(90deg); color: var(--ink-2); }
+tr.detail > td { background: var(--line-soft); padding: 14px 18px 16px;
+                 border-bottom: 1px solid var(--line); cursor: default; }
+.dl { display: grid; grid-template-columns: 88px 1fr; gap: 5px 18px; margin: 0; }
+.dl dt { color: var(--ink-3); font-size: 12.5px; }
+.dl dd { margin: 0; color: var(--ink-2); font-size: 13.5px; }
+.toggle-all { float: right; border: 1px solid var(--line); background: transparent;
+              color: var(--ink-3); border-radius: 999px; padding: 2px 12px;
+              font-size: 12px; cursor: pointer; font-family: inherit; }
+.toggle-all:hover { color: var(--ink-2); border-color: var(--ink-3); }
+
+table { table-layout: fixed; }
+th:nth-child(1), td:nth-child(1) { width: 32%; }
+th:nth-child(2), td:nth-child(2) { width: 96px; }
+th:nth-child(3), td:nth-child(3) { width: 104px; }
+th:nth-child(4), td:nth-child(4) { width: 84px; }
+th:nth-child(5), td:nth-child(5) { width: 88px; }
+th:nth-child(6), td:nth-child(6) { width: 128px; }
+th:nth-child(7), td:nth-child(7) { width: 30px; }
+td:nth-child(1) { overflow-wrap: anywhere; }
+.legend { display: flex; gap: 18px; align-items: center; color: var(--ink-3);
+          font-size: 12px; margin-top: 14px; }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px;
+            margin-right: 6px; vertical-align: -1px; }
+
+/* 日报正文（reports/*.html） */
+.report h1 { font-size: 22px; margin: 0 0 10px; }
+.report h2 { font-size: 16px; margin: 26px 0 8px; font-weight: 600; }
+.report p { color: var(--ink-2); font-size: 14px; margin: 6px 0; }
+.report ul { margin: 6px 0 14px; padding-left: 22px; }
+.report li { margin: 3px 0; color: var(--ink-2); font-size: 14px; }
+.report table { table-layout: auto; font-size: 13px; }
+.report code { background: var(--line-soft); border-radius: 4px; padding: 1px 5px; font-size: 12.5px; }
+.report a { color: var(--series); }
+.back { display: inline-block; margin: 0 0 14px; color: var(--ink-3); font-size: 13px; }
+
+/* 每页顶部的一句话导读 */
+.lede { border-left: 3px solid var(--series); background: var(--surface);
+        border-radius: 0 10px 10px 0; padding: 10px 16px; margin: 0 0 24px;
+        color: var(--ink-2); font-size: 14px; }
+.lede b { color: var(--ink); }
+</style>
+</head>
+<body>
+<header class="head">
+  <h1>Agent Discovery</h1>
+  <p class="meta"><span class="fresh">数据更新于 2026-09-20 23:26 UTC</span> · 每晚 22:00 UTC 自动更新</p>
+</header>
+<nav class="nav">
+  <a href="index.html">主页</a>
+  <a href="velocity.html">日均涨速</a>
+  <a href="movers.html">累计涨幅</a>
+  <a href="daily.html">每日新发现</a>
+  <a href="repos.html">全部追踪</a>
+</nav>
+
+<section><a class="back" href="../daily.html">← 每日新发现</a>
+<div class="report"><h1>Agent Discovery · 2026-09-20</h1>
+<p>Found <strong>16 new repos</strong> across 14 queries + HN + census.</p>
+<p>Sorted by fit-to-my-stack, then relevance score.</p>
+<h2>[score 8/10] [fit 8/10] misbahsy/anti-ai-slop  ·  ★75</h2>
+<ul>
+<li><strong>类型</strong>: Claude Code skill</li>
+<li>An agent skill with multiple gates to check and to remove any AI slop. Use it with codex/claude code or any of your favorite AI tools.</li>
+<li><strong>是什么</strong>: 一道多关卡流水线，专门揪出并改掉文字里的「AI 味」，改完还要过四道检查</li>
+<li><strong>能做什么</strong>: 论文、报告、基金本子、博客里去除 AI 腔，让文字更像人写的</li>
+<li><strong>大家怎么用</strong>: 把草稿交给它，它改一遍然后自动过隐形字符、lint、二次 agent 复核等关卡</li>
+<li><strong>举个例子</strong>: 把 AI 起草的论文 discussion 丢进去，它删掉「值得注意的是」这类套话再报改动</li>
+<li><strong>和已有项目比</strong>: 和 blader/humanizer、op7418/Humanizer-zh 比，它带多道自动检查关，不只是改一遍</li>
+<li><strong>重复情况</strong>: 和 blader/humanizer 部分重叠，它多了四道自动验收关卡</li>
+<li><strong>装不装</strong>: 装：写论文去 AI 味刚需</li>
+<li>Updated: 2026-09-20</li>
+<li>Source: <code>census</code> · Query hit: <code>census: claude code skill</code></li>
+<li><a href="https://github.com/misbahsy/anti-ai-slop">https://github.com/misbahsy/anti-ai-slop</a></li>
+</ul>
+<h2>[score 9/10] [fit 7/10] jasonku09/grill-with-ui  ·  ★94</h2>
+<ul>
+<li><strong>类型</strong>: Claude Code skill</li>
+<li>Claude Code skill: run a grilling design interview on a local browser page instead of the terminal</li>
+<li><strong>是什么</strong>: 把 agent 问你问题的环节搬到浏览器卡片上，能多线程答、随时改、一键打包发回</li>
+<li><strong>能做什么</strong>: 做实验设计或方案讨论时，把 agent 的一堆问题在网页上清爽地答完、留档成设计文档</li>
+<li><strong>大家怎么用</strong>: 开会话后 agent 在本地网页出一堆带选项和推荐的问题卡片，你挑完点 Send 它继续</li>
+<li><strong>举个例子</strong>: 让 Claude Code 帮你设计单细胞分析流程，它弹网页问十几个决策点，你选完整理成设计文档</li>
+<li><strong>和已有项目比</strong>: 追踪列表的学术/科研技能包多是「给答案」，它补的是「结构化问问题」这一环</li>
+<li><strong>重复情况</strong>: 无重复</li>
+<li><strong>装不装</strong>: 装：整理思路和方案设计正好用</li>
+<li>Updated: 2026-09-20</li>
+<li>Source: <code>census</code> · Query hit: <code>census: claude code skill</code></li>
+<li><a href="https://github.com/jasonku09/grill-with-ui">https://github.com/jasonku09/grill-with-ui</a></li>
+</ul>
+<h2>[score 9/10] [fit 7/10] ccai40359-wq/seanswarm  ·  ★53</h2>
+<ul>
+<li><strong>类型</strong>: 多智能体框架</li>
+<li>Multi-agent workflow skills for mainstream coding agents (Claude Code / Codex / Cursor): evidence-governed research fan-out, dual-channel document reading, dev delivery with independent review and visual acceptance.</li>
+<li><strong>是什么</strong>: 一套技能+角色模板，把单 agent 变成有人监督的小团队：调研分发、双通道读文档、独立评审</li>
+<li><strong>能做什么</strong>: 搭「先调研再动手再被独立评审」的流程，比如文献调研分发、方案开发交付验收</li>
+<li><strong>大家怎么用</strong>: 装进 Claude Code/Codex/Cursor，按场景调对应的调研/读文档/开发技能，角色模板分工</li>
+<li><strong>举个例子</strong>: 让 Claude Code 用 seanswarm 调研某个课题：多个 lane 分头找证据，最后交叉比对出带出处结论</li>
+<li><strong>和已有项目比</strong>: 和 Kocoro-lab/Shannon、open-multi-agent 比，它没有运行时，纯靠技能描述组织流程，更轻</li>
+<li><strong>重复情况</strong>: 和 Kocoro-lab/Shannon 部分重叠，它无运行时纯技能描述，轻量得多</li>
+<li><strong>装不装</strong>: 装：文献调研和交付评审正合适</li>
+<li>Updated: 2026-09-18</li>
+<li>Source: <code>census</code> · Query hit: <code>census: claude code skill</code></li>
+<li><a href="https://github.com/ccai40359-wq/seanswarm">https://github.com/ccai40359-wq/seanswarm</a></li>
+</ul>
+<h2>[score 7/10] [fit 7/10] kishormorol/cli-faq-shortcuts  ·  ★68</h2>
+<ul>
+<li><strong>类型</strong>: Claude Code skill</li>
+<li>An Agent Skill that turns the asks you keep typing into short commands, mined from your own Claude Code and Codex history. Works in Claude Code, Codex and Cursor.</li>
+<li><strong>是什么</strong>: 翻你自己的聊天历史，找出你天天重复敲的长指令，把它变成短命令</li>
+<li><strong>能做什么</strong>: 把「帮我把这个 h5ad 做质控再画 UMAP」这种常敲的请求缩成一两个字母</li>
+<li><strong>大家怎么用</strong>: 问它「我老是重复问啥」，它读历史列出高频请求，你挑几个它就写成快捷命令</li>
+<li><strong>举个例子</strong>: 在 Claude Code 里输入 /faq-shortcuts，它列出你最常重复的生信请求并生成 /qc 之类快捷键</li>
+<li><strong>和已有项目比</strong>: 追踪列表里没有做「从自己历史挖快捷键」的，它填补了个人工作流自动化这块空白</li>
+<li><strong>重复情况</strong>: 无重复</li>
+<li><strong>装不装</strong>: 装：生信请求天天重复，省手</li>
+<li>Updated: 2026-09-20</li>
+<li>Source: <code>census</code> · Query hit: <code>census: claude code skill</code></li>
+<li><a href="https://github.com/kishormorol/cli-faq-shortcuts">https://github.com/kishormorol/cli-faq-shortcuts</a></li>
+</ul>
+<h2>[score 9/10] [fit 6/10] kerpopule/hermes-jev-skills  ·  ★248</h2>
+<ul>
+<li><strong>类型</strong>: Claude Code skill</li>
+<li>Jev-powered model routing, memory, compaction, skill selection, computer and browser use for Hermes agents (also Claude Code and Codex)</li>
+<li><strong>是什么</strong>: 给 Hermes/Claude Code/Codex 加一个便宜快速的「决策模型」，专职挑模型、挑技能、压上下文</li>
+<li><strong>能做什么</strong>: 省钱省额度：让便宜模型决定该用哪个大模型、加载哪几个技能、哪些上下文该保留</li>
+<li><strong>大家怎么用</strong>: 装好后跑 jev dashboard，开关 Jev 路由，看每次决策用了哪个模型、置信度多少</li>
+<li><strong>举个例子</strong>: 在 Claude Code 里开着它跑一天，小决策走 Jev，只有真写代码/写论文才烧大模型</li>
+<li><strong>和已有项目比</strong>: 和 tamaratran/fast-jev-compaction 同源但更全，它把模型路由+技能选择+记忆压缩打包成套</li>
+<li><strong>重复情况</strong>: 和 tamaratran/fast-jev-compaction 重复，它多了模型路由和技能选择</li>
+<li><strong>装不装</strong>: 观望：要 TypeSafe key，先看免费额度</li>
+<li>Updated: 2026-09-20</li>
+<li>Source: <code>github</code> · Query hit: <code>claude code skill created:&gt;2026-07-22</code></li>
+<li><a href="https://github.com/kerpopule/hermes-jev-skills">https://github.com/kerpopule/hermes-jev-skills</a></li>
+</ul>
+<h2>[score 7/10] [fit 6/10] ARahim3/cachebeat  ·  ★53</h2>
+<ul>
+<li><strong>类型</strong>: Claude Code skill</li>
+<li>A tiny Claude Code skill that keeps your prompt cache warm during idle sessions, so your next message reads from cache instead of paying full price.</li>
+<li><strong>是什么</strong>: 会话闲着的时候偷偷发个心跳，把 prompt 缓存续上，免得下次回来重算整段对话烧额度</li>
+<li><strong>能做什么</strong>: 跑长时间训练等 checkpoint 时挂着 Claude Code，回来问一句不被按全价重算</li>
+<li><strong>大家怎么用</strong>: 装成技能挂着，会话空闲超时就自动发心跳保缓存，下次说话命中缓存</li>
+<li><strong>举个例子</strong>: 你挂着一个跑了整夜的训练会话，第二天回来接着问，它从缓存读不全额重算</li>
+<li><strong>和已有项目比</strong>: 追踪列表里没有管缓存计费的，它单独解决「长会话闲下来就掉缓存」这个痛点</li>
+<li><strong>重复情况</strong>: 无重复</li>
+<li><strong>装不装</strong>: 装：挂着跑训练时特别省额度</li>
+<li>Updated: 2026-09-20</li>
+<li>Source: <code>census</code> · Query hit: <code>census: claude code skill</code></li>
+<li><a href="https://github.com/ARahim3/cachebeat">https://github.com/ARahim3/cachebeat</a></li>
+</ul>
+<h2>[score 6/10] [fit 6/10] GPUtw-ai/GPUtw-Skill  ·  ★52</h2>
+<ul>
+<li><strong>类型</strong>: Claude Code skill</li>
+<li>GPUtw.ai official AI knowledge package — teach Claude Code, Codex CLI, Cursor, Copilot and Gemini CLI to use the GPUtw GPU cloud REST API</li>
+<li><strong>是什么</strong>: 把台湾一家 GPU 云厂商的 REST API 文档塞给 agent，让它用大白话开机器、传模型、看状态</li>
+<li><strong>能做什么</strong>: 临时缺卡要跑训练或推理时，直接让 agent 帮你租 GPU、传模型、跑起来</li>
+<li><strong>大家怎么用</strong>: 装好技能提到「在台湾租 GPU」，agent 按决策树读对文档生成正确调用代码</li>
+<li><strong>举个例子</strong>: 说「租张卡把 /vault 里的模型跑起来」，它在 Claude Code 里生成创建实例和轮询状态的代码</li>
+<li><strong>和已有项目比</strong>: 追踪列表里没有管 GPU 云租赁的，它填补了「让 agent 直接租卡跑活」这块空白</li>
+<li><strong>重复情况</strong>: 无重复</li>
+<li><strong>装不装</strong>: 观望：不在台湾用不上，但思路可借</li>
+<li>Updated: 2026-09-17</li>
+<li>Source: <code>census</code> · Query hit: <code>census: claude code skill</code></li>
+<li><a href="https://github.com/GPUtw-ai/GPUtw-Skill">https://github.com/GPUtw-ai/GPUtw-Skill</a></li>
+</ul>
+<h2>[score 8/10] [fit 5/10] Dicklesworthstone/skillranker  ·  ★96</h2>
+<ul>
+<li><strong>类型</strong>: 工具</li>
+<li>Rust CLI powered by Jev from TypeSafe.ai that ranks agent skills for the next step using live session context. Includes Claude Code hooks, structured JSON, abstention, and local feedback. Requires a TypeSafe API key.</li>
+<li><strong>是什么</strong>: 一个 Rust 命令行，用 Jev 按当前会话上下文给候选技能打分排序，接口是 JSON</li>
+<li><strong>能做什么</strong>: 技能装太多了不知道用哪个时，让它按你现在干的事自动挑出最该用的几个</li>
+<li><strong>大家怎么用</strong>: 接到 Claude Code 的 hook 上，每轮自动跑 sr rank，按 JSON 结果决定加载哪个技能</li>
+<li><strong>举个例子</strong>: 你技能目录里躺着几百个技能，敲 sr rank，它直接告诉你这一步该用哪个</li>
+<li><strong>和已有项目比</strong>: 和 kerpopule/hermes-jev-skills 同用 Jev，但它专注「技能排序」这一件事，更轻更独立</li>
+<li><strong>重复情况</strong>: 和 kerpopule/hermes-jev-skills 部分重叠，它专做技能排序不含模型路由</li>
+<li><strong>装不装</strong>: 观望：技能多了才有用，且要 API key</li>
+<li>Updated: 2026-09-20</li>
+<li>Source: <code>census</code> · Query hit: <code>census: claude code skill</code></li>
+<li><a href="https://github.com/Dicklesworthstone/skillranker">https://github.com/Dicklesworthstone/skillranker</a></li>
+</ul>
+<h2>[score 7/10] [fit 4/10] machina-exm/film-studio-skills  ·  ★137</h2>
+<ul>
+<li><strong>类型</strong>: Claude Code skill</li>
+<li>7 installable agent skills that run the pipeline behind $2M AI video productions — script to locked, generation-ready shot prompts. Claude Code · Codex · Hermes · OpenCode</li>
+<li><strong>是什么</strong>: 7 个技能把一句 idea 变成分镜级视频提示词，专治角色/画面跨镜头不一致</li>
+<li><strong>能做什么</strong>: 做论文汇报视频、会议宣传片、组会动画的分镜和提示词工程</li>
+<li><strong>大家怎么用</strong>: 把技能装进 Claude Code，丢一个脚本或一段梗概，它按锁定参考+资产护照的流程出提示词</li>
+<li><strong>举个例子</strong>: 写一段课题介绍，让它在 Claude Code 里生成一组风格一致的分镜提示词，再去视频模型生成</li>
+<li><strong>和已有项目比</strong>: 和 Vincentwei1021/video-shotcraft、zenstory-ai/drama-skills 比，它强在角色一致性锁和资产护照</li>
+<li><strong>重复情况</strong>: 和 Vincentwei1021/video-shotcraft、zenstory-ai/drama-skills 部分重叠，它多了跨镜头一致性锁</li>
+<li><strong>装不装</strong>: 观望：做汇报视频能借流程，非刚需</li>
+<li>Updated: 2026-09-20</li>
+<li>Source: <code>github</code> · Query hit: <code>claude code skill created:&gt;2026-07-22</code></li>
+<li><a href="https://github.com/machina-exm/film-studio-skills">https://github.com/machina-exm/film-studio-skills</a></li>
+</ul>
+<h2>[score 9/10] [fit 3/10] AetherLabsAI/RSIAgent  ·  ★367</h2>
+<ul>
+<li><strong>类型</strong>: 多智能体框架</li>
+<li>A training-free multi-agent framework for recursive self-improvement in new environments through broad-then-deep autonomous exploration and reusable memory.</li>
+<li><strong>是什么</strong>: 一个免训练的多智能体框架，让 agent 在新环境里自己探索并积累可复用记忆</li>
+<li><strong>能做什么</strong>: 研究多智能体自主探索、递归自我改进的机制，可借鉴到自己的算法 agent 设计</li>
+<li><strong>大家怎么用</strong>: 研究者 clone 下来跑 demo，喂一个陌生任务环境，看 agent 怎么先广后深地试错并写记忆</li>
+<li><strong>举个例子</strong>: 在 Claude Code 里让 RSIAgent 去摸一个从没见过的生信工具链，它自己试命令、记笔记、下次直接用</li>
+<li><strong>和已有项目比</strong>: 和 AutoAgent、swarms 比，它主打免训练+可复用记忆的递归自我改进，偏学术探索而非开箱流程</li>
+<li><strong>重复情况</strong>: 和 HKUDS/AutoAgent、kyegomez/swarms 部分重叠，它多了免训练自我改进的记忆机制</li>
+<li><strong>装不装</strong>: 观望：思路值得抄，但跟单细胞日常不搭</li>
+<li>Updated: 2026-09-20</li>
+<li>Source: <code>census</code> · Query hit: <code>census: multi-agent framework</code></li>
+<li><a href="https://github.com/AetherLabsAI/RSIAgent">https://github.com/AetherLabsAI/RSIAgent</a></li>
+</ul>
+<h2>[score 6/10] [fit 3/10] Oldcircle/geo-sleuth  ·  ★196</h2>
+<ul>
+<li><strong>类型</strong>: Claude Code skill</li>
+<li>An agent skill that finds where a photo was taken — OpenStreetMap geometry, elevation skylines, satellite imagery and street view — and shows its work. Works with Claude Code, Codex, Cursor, Gemini CLI, OpenCode and GitHub Copilot.</li>
+<li><strong>是什么</strong>: 看一张照片就推断它在哪拍的，用地图和高程线做交叉验证并晒出推理过程</li>
+<li><strong>能做什么</strong>: 野外采样照片反查地点、核对文献里的采样点位、查图片是不是摆拍</li>
+<li><strong>大家怎么用</strong>: 把照片丢给 agent，它调 OpenStreetMap、卫星图、街景一步步缩小范围给结论</li>
+<li><strong>举个例子</strong>: 野外拍的样地照片丢进 Claude Code，它比对地形和植被推断出大致经纬度范围</li>
+<li><strong>和已有项目比</strong>: 追踪列表里没有做地理定位的，它填补了「看图定位」这类空白</li>
+<li><strong>重复情况</strong>: 无重复</li>
+<li><strong>装不装</strong>: 观望：偶尔查采样地有用，但不常碰</li>
+<li>Updated: 2026-09-20</li>
+<li>Source: <code>github</code> · Query hit: <code>claude code skill created:&gt;2026-07-22</code></li>
+<li><a href="https://github.com/Oldcircle/geo-sleuth">https://github.com/Oldcircle/geo-sleuth</a></li>
+</ul>
+<h2>域外雷达（不限领域的新建热门，未分析）</h2>
+<ul>
+<li><a href="https://github.com/mizorewww/laya-mlx">mizorewww/laya-mlx</a> · ★1610 — Native MLX runtime for Laya typed decision models — 7–14 ms short decisions on M3 Max. No text generation, PyTorch, or cloud API.</li>
+<li><a href="https://github.com/bespokelabsai/nimble">bespokelabsai/nimble</a> · ★1080 — Local typed decisions, contrastive data curation, and model evaluation.</li>
+<li><a href="https://github.com/jaredpalmer/kev">jaredpalmer/kev</a> · ★1001 — tiny Jev-like family of decision models built on top of Qwen3 you can train and run on your own</li>
+<li><a href="https://github.com/theoephraim/awesome-cloudflare-selfhosted">theoephraim/awesome-cloudflare-selfhosted</a> · ★740 — 🍊☁️ Open-source* apps that replace a SaaS product, running in your own Cloudflare account</li>
+<li><a href="https://github.com/jackwener/wx-cli-again">jackwener/wx-cli-again</a> · ★698 — WeChat local data CLI (query/decrypt/export) — fresh start from wx-cli</li>
+</ul>
+<h2>Trending since first seen</h2>
+<table><thead><tr><th>Repo</th><th>First seen</th><th>Stars then → now</th><th>Δ</th></tr></thead><tbody>
+<tr><td><a href="https://github.com/ayghri/i-have-adhd">ayghri/i-have-adhd</a></td><td>2026-07-19</td><td>3084 → 49211</td><td>+46127</td></tr>
+<tr><td><a href="https://github.com/JuliusBrussee/caveman">JuliusBrussee/caveman</a></td><td>2026-07-02</td><td>79188 → 106969</td><td>+27781</td></tr>
+<tr><td><a href="https://github.com/virgiliojr94/book-to-skill">virgiliojr94/book-to-skill</a></td><td>2026-07-02</td><td>7442 → 31627</td><td>+24185</td></tr>
+<tr><td><a href="https://github.com/blader/humanizer">blader/humanizer</a></td><td>2026-07-02</td><td>27141 → 50610</td><td>+23469</td></tr>
+<tr><td><a href="https://github.com/browser-use/jev-ultrafast">browser-use/jev-ultrafast</a></td><td>2026-09-17</td><td>1947 → 11749</td><td>+9802</td></tr>
+<tr><td><a href="https://github.com/alirezarezvani/claude-skills">alirezarezvani/claude-skills</a></td><td>2026-07-02</td><td>19625 → 26185</td><td>+6560</td></tr>
+<tr><td><a href="https://github.com/op7418/Humanizer-zh">op7418/Humanizer-zh</a></td><td>2026-07-02</td><td>12156 → 17616</td><td>+5460</td></tr>
+<tr><td><a href="https://github.com/TauricResearch/TradingAgents">TauricResearch/TradingAgents</a></td><td>2026-09-08</td><td>103415 → 107791</td><td>+4376</td></tr>
+<tr><td><a href="https://github.com/NandhaKishorM/laya">NandhaKishorM/laya</a></td><td>2026-09-19</td><td>1227 → 3936</td><td>+2709</td></tr>
+<tr><td><a href="https://github.com/Vincentwei1021/video-shotcraft">Vincentwei1021/video-shotcraft</a></td><td>2026-08-28</td><td>6517 → 9103</td><td>+2586</td></tr>
+</tbody></table></div></section>
+
+</body>
+</html>
