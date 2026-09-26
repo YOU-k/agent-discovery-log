@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Agent Discovery · 日报 2026-09-22</title>
+<title>Agent Discovery · 日报 2026-09-26</title>
 <style>
 /* 调色板取自 dataviz 参考实例，两模式都跑过 validate_palette：
    light #2a78d6/#eb6834 on #fcfcfb、dark #3987e5/#d95926 on #1a1a19，
@@ -186,29 +186,60 @@ td:nth-child(1) { overflow-wrap: anywhere; }
 </nav>
 
 <section><a class="back" href="../daily.html">← 每日新发现</a>
-<div class="report"><h1>Agent Discovery · 2026-09-22</h1>
-<p>Found <strong>5 new repos</strong> across 14 queries + HN.</p>
-<p>Sorted by stars (no LLM scoring; set LLM_API_KEY to enable).</p>
+<div class="report"><h1>Agent Discovery · 2026-09-26</h1>
+<p>Found <strong>7 new repos</strong> across 14 queries + HN.</p>
+<p>Sorted by fit-to-my-stack, then relevance score.</p>
+<h2>[score 8/10] [fit 6/10] Avinash-jetwani/jevmem  ·  ★70</h2>
+<ul>
+<li><strong>类型</strong>: Claude Code 记忆插件</li>
+<li>Automatic project memory for Claude Code. Also works with Cursor and Codex.</li>
+<li><strong>是什么</strong>: 自动把 Claude Code 对话里的决定和坑记成项目记忆文件</li>
+<li><strong>能做什么</strong>: 记下算法选型、参数约定、踩过的坑，下次会话自动带上</li>
+<li><strong>大家怎么用</strong>: 按项目开启插件，它自动往 JEVMEM.md 写条目并在下次注入上下文</li>
+<li><strong>举个例子</strong>: 你说「用 scanpy 而非 seurat 做主力」，它记成 decision，下次会话自动带上</li>
+<li><strong>和已有项目比</strong>: bevibing/tutor-skills 做知识库但偏学习，它专做代码项目决策记忆，更贴开发流程</li>
+<li><strong>重复情况</strong>: 和 bevibing/tutor-skills 部分重叠，它多了自动决策/约束记录与 supersede</li>
+<li><strong>装不装</strong>: 装：科研代码决策多，记忆很有用</li>
+<li>Updated: 2026-09-25</li>
+<li>Source: <code>hn</code> · Query hit: <code>hn: Jevmem – automatic project memory for Claude Code, built on </code></li>
+<li>HN: <a href="https://news.ycombinator.com/item?id=49846391">60 points</a></li>
+<li><a href="https://github.com/Avinash-jetwani/jevmem">https://github.com/Avinash-jetwani/jevmem</a></li>
+</ul>
+<h2>[score 6/10] [fit 2/10] scenario-labs/skills  ·  ★417</h2>
+<ul>
+<li><strong>类型</strong>: Claude Code skill 合集</li>
+<li>Agent Skills for Scenario: image, video, audio, texture, 3D and custom-model workflows over the Scenario MCP. For games, entertainment and any creative vertical. Install: <code>npx skills add scenario-labs/skills --skill &quot;*&quot;</code></li>
+<li><strong>是什么</strong>: 让 agent 生成图像/视频/3D/音效素材的技能包</li>
+<li><strong>能做什么</strong>: 给论文配图做概念插画、做组会 PPT 的装饰素材</li>
+<li><strong>大家怎么用</strong>: 装好后在 Claude Code 里调 MCP 生成图片视频等创意素材</li>
+<li><strong>举个例子</strong>: 在 Claude Code 里说「生成一张单细胞测序概念图」，它调 Scenario 出图</li>
+<li><strong>和已有项目比</strong>: 和 K-Dense/DeepMind 科研技能完全不同路，它只做创意素材生成，科研基本用不上</li>
+<li><strong>重复情况</strong>: 无重复，现有清单里没有创意素材生成类</li>
+<li><strong>装不装</strong>: 不装：做图做视频，跟生信科研不搭</li>
+<li>Updated: 2026-09-26</li>
+<li>Source: <code>github</code> · Query hit: <code>lab skills</code></li>
+<li><a href="https://github.com/scenario-labs/skills">https://github.com/scenario-labs/skills</a></li>
+</ul>
 <h2>域外雷达（不限领域的新建热门，未分析）</h2>
 <ul>
-<li><a href="https://github.com/jev-chat/jev-chat-jarvis">jev-chat/jev-chat-jarvis</a> · ★3715 — 装在手机上的对话副驾：在微信 / QQ / X / 飞书里读懂对方、给出候选回复、一键填入输入框，发不发由你。非侵入，只读屏幕，不 hook 不改包。</li>
-<li><a href="https://github.com/newliver666/apk-reverse">newliver666/apk-reverse</a> · ★980 — Suitable for Android APK reverse engineering analysis</li>
-<li><a href="https://github.com/unreallabsai/unreal-agent">unreallabsai/unreal-agent</a> · ★879 — Async-first agent harness</li>
-<li><a href="https://github.com/hydra-db/open-glean">hydra-db/open-glean</a> · ★842 — An open-source AI platform for knowledge work. Connect your apps, find answers, and get work done.</li>
-<li><a href="https://github.com/awlevin/typesafe-computer-use">awlevin/typesafe-computer-use</a> · ★825 — Computer use for about $0.0002 a step: OCR the screen, classify the next action with TypeSafe, click. macOS.</li>
+<li><a href="https://github.com/tobi/disktree">tobi/disktree</a> · ★901 — A treemap for finding and removing what fills your disk, for Omarchy. Rust + GPUI.</li>
+<li><a href="https://github.com/JohnHeibel/PDoomVideo">JohnHeibel/PDoomVideo</a> · ★883 — Source code for the Claude Opus 5.5 music video for I&#x27;m Upping My P(doom)</li>
+<li><a href="https://github.com/kryvora-network/kryvora-node">kryvora-network/kryvora-node</a> · ★818 — Reference client daemon and verification worker for Kryvora Network nodes.</li>
+<li><a href="https://github.com/yetone/magpie">yetone/magpie</a> · ★799 — Every agent&#x27;s model. One place. Codex on DeepSeek, Claude Code on Kimi, from the menu bar.</li>
+<li><a href="https://github.com/freestylefly/WeChatBridge">freestylefly/WeChatBridge</a> · ★714 — 微信聊天记录一键转发到 AI Agent 与 Obsidian 的原生 macOS 工具</li>
 </ul>
 <h2>Trending since first seen</h2>
 <table><thead><tr><th>Repo</th><th>First seen</th><th>Stars then → now</th><th>Δ</th></tr></thead><tbody>
-<tr><td><a href="https://github.com/ayghri/i-have-adhd">ayghri/i-have-adhd</a></td><td>2026-07-19</td><td>3084 → 50308</td><td>+47224</td></tr>
-<tr><td><a href="https://github.com/JuliusBrussee/caveman">JuliusBrussee/caveman</a></td><td>2026-07-02</td><td>79188 → 107382</td><td>+28194</td></tr>
-<tr><td><a href="https://github.com/virgiliojr94/book-to-skill">virgiliojr94/book-to-skill</a></td><td>2026-07-02</td><td>7442 → 31997</td><td>+24555</td></tr>
-<tr><td><a href="https://github.com/blader/humanizer">blader/humanizer</a></td><td>2026-07-02</td><td>27141 → 51408</td><td>+24267</td></tr>
-<tr><td><a href="https://github.com/browser-use/jev-ultrafast">browser-use/jev-ultrafast</a></td><td>2026-09-17</td><td>1947 → 18031</td><td>+16084</td></tr>
-<tr><td><a href="https://github.com/NandhaKishorM/laya">NandhaKishorM/laya</a></td><td>2026-09-19</td><td>1227 → 16433</td><td>+15206</td></tr>
-<tr><td><a href="https://github.com/alirezarezvani/claude-skills">alirezarezvani/claude-skills</a></td><td>2026-07-02</td><td>19625 → 26261</td><td>+6636</td></tr>
-<tr><td><a href="https://github.com/op7418/Humanizer-zh">op7418/Humanizer-zh</a></td><td>2026-07-02</td><td>12156 → 17752</td><td>+5596</td></tr>
-<tr><td><a href="https://github.com/TauricResearch/TradingAgents">TauricResearch/TradingAgents</a></td><td>2026-09-08</td><td>103415 → 108133</td><td>+4718</td></tr>
-<tr><td><a href="https://github.com/mizorewww/laya-mlx">mizorewww/laya-mlx</a></td><td>2026-09-20</td><td>1610 → 5421</td><td>+3811</td></tr>
+<tr><td><a href="https://github.com/ayghri/i-have-adhd">ayghri/i-have-adhd</a></td><td>2026-07-19</td><td>3084 → 51207</td><td>+48123</td></tr>
+<tr><td><a href="https://github.com/JuliusBrussee/caveman">JuliusBrussee/caveman</a></td><td>2026-07-02</td><td>79188 → 107854</td><td>+28666</td></tr>
+<tr><td><a href="https://github.com/virgiliojr94/book-to-skill">virgiliojr94/book-to-skill</a></td><td>2026-07-02</td><td>7442 → 32413</td><td>+24971</td></tr>
+<tr><td><a href="https://github.com/blader/humanizer">blader/humanizer</a></td><td>2026-07-02</td><td>27141 → 52018</td><td>+24877</td></tr>
+<tr><td><a href="https://github.com/NandhaKishorM/laya">NandhaKishorM/laya</a></td><td>2026-09-19</td><td>1227 → 24634</td><td>+23407</td></tr>
+<tr><td><a href="https://github.com/browser-use/jev-ultrafast">browser-use/jev-ultrafast</a></td><td>2026-09-17</td><td>1947 → 20244</td><td>+18297</td></tr>
+<tr><td><a href="https://github.com/alirezarezvani/claude-skills">alirezarezvani/claude-skills</a></td><td>2026-07-02</td><td>19625 → 26469</td><td>+6844</td></tr>
+<tr><td><a href="https://github.com/op7418/Humanizer-zh">op7418/Humanizer-zh</a></td><td>2026-07-02</td><td>12156 → 18473</td><td>+6317</td></tr>
+<tr><td><a href="https://github.com/jaredpalmer/kev">jaredpalmer/kev</a></td><td>2026-09-20</td><td>1001 → 7019</td><td>+6018</td></tr>
+<tr><td><a href="https://github.com/TauricResearch/TradingAgents">TauricResearch/TradingAgents</a></td><td>2026-09-08</td><td>103415 → 108631</td><td>+5216</td></tr>
 </tbody></table></div></section>
 
 </body>
