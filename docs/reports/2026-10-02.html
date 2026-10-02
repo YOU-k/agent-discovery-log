@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Agent Discovery · 日报 2026-07-14</title>
+<title>Agent Discovery · 日报 2026-10-02</title>
 <style>
 /* 与 radar 站（/data/yy_data/radar/docs）同一套设计系统，逐项对齐：
    GitHub Primer 风 —— #f6f8fa 底、白卡 + #d0d7de 边、12px 圆角、轻微投影、
@@ -182,16 +182,78 @@ td:nth-child(1) { overflow-wrap: anywhere; }
 <main>
 
 <section><a class="back" href="../daily.html">← 每日新发现</a>
-<div class="report"><h1>Agent Discovery · 2026-07-14</h1>
-<p>Found <strong>1 new repos</strong> across 8 queries.</p>
-<p>Sorted by stars (no LLM scoring; set ANTHROPIC_API_KEY to enable).</p>
-<h2>freshtechbro/claudedesignskills  ·  ★540</h2>
+<div class="report"><h1>Agent Discovery · 2026-10-02</h1>
+<p>Found <strong>9 new repos</strong> across 14 queries + HN.</p>
+<p>Sorted by fit-to-my-stack, then relevance score.</p>
+<h2>[score 9/10] [fit 6/10] Jakeschincariol/arena-skill  ·  ★156</h2>
 <ul>
-<li>A comprehensive collection of Claude Code skills for modern web development, specializing in 3D graphics, animation, and interactive web experiences.</li>
-<li>Updated: 2026-07-14</li>
-<li>Query hit: <code>claude code skill</code></li>
-<li><a href="https://github.com/freshtechbro/claudedesignskills">https://github.com/freshtechbro/claudedesignskills</a></li>
-</ul></div></section>
+<li><strong>类型</strong>: Claude Code skill</li>
+<li>When Claude keeps giving you bad answers, make 100 versions of it fight to the death. Same task, 100 different strategies, a bracket, one answer left. Free Claude Code skill.</li>
+<li><strong>是什么</strong>: 让 100 个子代理用不同策略解决同一任务并决出最佳。</li>
+<li><strong>能做什么</strong>: 解决复杂算法问题、难解的代码 bug 或方案选型，得到多轮比拼后的最佳答案。</li>
+<li><strong>大家怎么用</strong>: 输入 /arena，它会生成 100 个不同策略的子代理互相对抗，最终返回存活下来的最优方案。</li>
+<li><strong>举个例子</strong>: 输入 /arena 写一段 pytorch 的注意力机制代码，它会用 100 种方式写并对抗淘汰，返回最优代码。</li>
+<li><strong>和已有项目比</strong>: 相比 crucible 的双模型对抗，它用 100 个不同策略大规模对抗，覆盖面更广，避免单一思路局限。</li>
+<li><strong>重复情况</strong>: 和 claudex-loop 部分重叠，它多了多轮多策略淘汰赛机制。</li>
+<li><strong>装不装</strong>: 观望：费钱耗时，适合难解问题。</li>
+<li>Updated: 2026-10-02</li>
+<li>Source: <code>github</code> · Query hit: <code>claude code skill created:&gt;2026-08-03</code></li>
+<li><a href="https://github.com/Jakeschincariol/arena-skill">https://github.com/Jakeschincariol/arena-skill</a></li>
+</ul>
+<h2>[score 8/10] [fit 6/10] gongdear/cline-pilot  ·  ★94</h2>
+<ul>
+<li><strong>类型</strong>: subagent</li>
+<li>An Agent Skill: drive Cline CLI coding tasks as the user&#x27;s proxy.</li>
+<li><strong>是什么</strong>: 让 Cline 代替你跑后台任务并监控进度汇报的技能。</li>
+<li><strong>能做什么</strong>: 派发耗时的后台任务（如下载生物数据、跑生信流程），监控进度并在关键节点请示。</li>
+<li><strong>大家怎么用</strong>: 把任务和约束发给它，它启动 Cline 在后台跑，通过文件和测试报告监控，遇到决策点回来问你。</li>
+<li><strong>举个例子</strong>: 让它下载数据并跑预处理流程，它在后台跑，遇到要删旧文件时回来问你，确认后继续并报告进度。</li>
+<li><strong>和已有项目比</strong>: 相比 Shannon 的多智能体编排，它更专注单任务的后台监控和用户习惯学习，是更轻量的看护者。</li>
+<li><strong>重复情况</strong>: 和 Shannon 部分重叠，它多了对用户偏好的学习和固定的汇报格式。</li>
+<li><strong>装不装</strong>: 观望：依赖 Cline CLI，需看顺手。</li>
+<li>Updated: 2026-10-02</li>
+<li>Source: <code>github</code> · Query hit: <code>agent orchestration cli created:&gt;2026-08-03</code></li>
+<li><a href="https://github.com/gongdear/cline-pilot">https://github.com/gongdear/cline-pilot</a></li>
+</ul>
+<h2>[score 7/10] [fit 4/10] justxor/claude-code-pro-course  ·  ★140</h2>
+<ul>
+<li><strong>类型</strong>: 资源合集</li>
+<li>Claude Code PRO — полный курс и гайд на русском: CLAUDE.md, settings, skills, subagents, hooks, MCP, плагины, CI. 8 лабораторных, библиотека промптов и готовый starter-kit. Здесь бесплатные курсы  по chatgpt - </li>
+<li><strong>是什么</strong>: 俄语的 Claude Code 进阶全套课程，含实验和模板。</li>
+<li><strong>能做什么</strong>: 系统学习 Claude Code 的配置、技能开发、子代理和自动化流程。</li>
+<li><strong>大家怎么用</strong>: 下载仓库，跟着 README 的路线图和 8 个实验室练习逐步学习配置和自动化。</li>
+<li><strong>举个例子</strong>: 按照课程的实验室指导，在本地配置好 CLAUDE.md 和自动化测试钩子，让写代码更规范。</li>
+<li><strong>和已有项目比</strong>: 相比散落的技能目录，它是一套从零到精通的系统性课程，但俄语限制了大范围使用。</li>
+<li><strong>重复情况</strong>: 和 libukai/awesome-agent-skills 部分重叠，它多了系统的实验和配置模板。</li>
+<li><strong>装不装</strong>: 不装：全俄语教程，阅读有门槛。</li>
+<li>Updated: 2026-10-01</li>
+<li>Source: <code>github</code> · Query hit: <code>claude code subagent created:&gt;2026-08-03</code></li>
+<li><a href="https://github.com/justxor/claude-code-pro-course">https://github.com/justxor/claude-code-pro-course</a></li>
+</ul>
+<ul>
+<li>howseen-ai/claude-motion-design · ★180 — 同类跟进 of <a href="https://github.com/cth9191/motion-design">cth9191/motion-design</a></li>
+</ul>
+<h2>域外雷达（不限领域的新建热门，未分析）</h2>
+<ul>
+<li><a href="https://github.com/nanaism/yomiyasu">nanaism/yomiyasu</a> · ★966 — AI生成の日本語を自然な日本語へ推敲するAgent Skill / Agent Skill for Refining AI-Generated Japanese into Natural Japanese</li>
+<li><a href="https://github.com/edenfunf/reelmimic">edenfunf/reelmimic</a> · ★687 — Show it a video you love. Get a new video in the same style. An AI crew (Claude Code or Codex) plans, builds and reviews it with you.</li>
+<li><a href="https://github.com/openai/mcp-extensions">openai/mcp-extensions</a> · ★619 — Build plugins that feel like native, first-class features of ChatGPT.</li>
+<li><a href="https://github.com/chasmlol/2010-rust-rewrite-mashup">chasmlol/2010-rust-rewrite-mashup</a> · ★526 — MW2, Skate 3 and Minecraft in one Rust game: IW4L&#x27;s MW2 rewrite with Skate 3 mode and a real Minecraft world map</li>
+<li><a href="https://github.com/Edwardxlai/easyread">Edwardxlai/easyread</a> · ★487 — </li>
+</ul>
+<h2>Trending since first seen</h2>
+<table><thead><tr><th>Repo</th><th>First seen</th><th>Stars then → now</th><th>Δ</th></tr></thead><tbody>
+<tr><td><a href="https://github.com/ayghri/i-have-adhd">ayghri/i-have-adhd</a></td><td>2026-07-19</td><td>3084 → 52720</td><td>+49636</td></tr>
+<tr><td><a href="https://github.com/JuliusBrussee/caveman">JuliusBrussee/caveman</a></td><td>2026-07-02</td><td>79188 → 108744</td><td>+29556</td></tr>
+<tr><td><a href="https://github.com/NandhaKishorM/laya">NandhaKishorM/laya</a></td><td>2026-09-19</td><td>1227 → 29862</td><td>+28635</td></tr>
+<tr><td><a href="https://github.com/blader/humanizer">blader/humanizer</a></td><td>2026-07-02</td><td>27141 → 53393</td><td>+26252</td></tr>
+<tr><td><a href="https://github.com/virgiliojr94/book-to-skill">virgiliojr94/book-to-skill</a></td><td>2026-07-02</td><td>7442 → 33255</td><td>+25813</td></tr>
+<tr><td><a href="https://github.com/browser-use/jev-ultrafast">browser-use/jev-ultrafast</a></td><td>2026-09-17</td><td>1947 → 21699</td><td>+19752</td></tr>
+<tr><td><a href="https://github.com/alirezarezvani/claude-skills">alirezarezvani/claude-skills</a></td><td>2026-07-02</td><td>19625 → 27187</td><td>+7562</td></tr>
+<tr><td><a href="https://github.com/jaredpalmer/kev">jaredpalmer/kev</a></td><td>2026-09-20</td><td>1001 → 8198</td><td>+7197</td></tr>
+<tr><td><a href="https://github.com/op7418/Humanizer-zh">op7418/Humanizer-zh</a></td><td>2026-07-02</td><td>12156 → 18816</td><td>+6660</td></tr>
+<tr><td><a href="https://github.com/TauricResearch/TradingAgents">TauricResearch/TradingAgents</a></td><td>2026-09-08</td><td>103415 → 109466</td><td>+6051</td></tr>
+</tbody></table></div></section>
 
 </main>
 </body>
