@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent Discovery · 日报 2026-10-11</title>
+<style>
+/* 与 radar 站（/data/yy_data/radar/docs）同一套设计系统，逐项对齐：
+   GitHub Primer 风 —— #f6f8fa 底、白卡 + #d0d7de 边、12px 圆角、轻微投影、
+   sticky 顶栏 + 胶囊 tab、移动优先 720px、仅浅色。
+   蓝 #1f6feb = 数据序列，绿 #1a7f37 = 「自动关注」，不混用。 */
+:root {
+  color-scheme: light;
+  --bg: #f6f8fa;
+  --surface: #ffffff;
+  --line: #d0d7de;
+  --line-soft: #eaeef2;
+  --ink: #1f2328;
+  --ink-2: #57606a;
+  --ink-3: #8c959f;
+  --series: #1f6feb;
+  --series-soft: #ddf4ff;
+  --hot: #1a7f37;
+  --hot-soft: #dafbe1;
+  --pos: #1a7f37;
+  --purple: #8250df;
+  --link: #0969da;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 16px/1.7 -apple-system, "PingFang SC", "Noto Sans SC", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+main { max-width: 720px; margin: 0 auto; padding: 0 12px 80px; }
+a { color: var(--link); text-decoration: none; }
+a:active { opacity: .7; }
+a:hover { text-decoration: underline; text-underline-offset: 2px; }
+
+/* sticky 顶栏 + 胶囊 tab（与 radar 一致） */
+.top { position: sticky; top: 0; z-index: 9; background: rgba(246,248,250,.94);
+       backdrop-filter: blur(8px); border-bottom: 1px solid var(--line);
+       padding: 12px 0 10px; margin-bottom: 16px; }
+.top-inner { max-width: 720px; margin: 0 auto; padding: 0 12px; }
+.top h1 { font-size: 17px; margin: 0 0 2px; }
+.meta { color: var(--ink-2); font-size: 12px; margin: 0 0 10px;
+        font-variant-numeric: tabular-nums; }
+.meta .fresh { color: var(--ink); }
+.nav { display: flex; gap: 8px; flex-wrap: wrap; margin: 0; }
+.nav a { flex: 1 1 auto; min-width: 96px; text-align: center; padding: 7px 10px;
+         border: 1px solid var(--line); border-radius: 20px; background: var(--surface);
+         color: var(--ink-2); font-size: 14px; font-weight: 600; }
+.nav a:hover { border-color: var(--ink-3); text-decoration: none; }
+.nav a.cur { background: var(--series); border-color: var(--series); color: #fff; }
+
+/* 模块分节 = 白卡 */
+section { background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+          padding: 4px 16px 16px; margin: 0 0 10px; box-shadow: 0 1px 2px rgba(31,35,40,.04); }
+section > h2 { font-size: 15px; color: var(--hot); margin: 12px 0 2px; }
+section > .sub { color: var(--ink-2); font-size: 13px; margin: 0 0 14px; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+         gap: 10px; margin: 0 0 10px; }
+a.card { display: block; background: var(--surface); border: 1px solid var(--line);
+         border-radius: 12px; padding: 11px 13px; box-shadow: 0 1px 2px rgba(31,35,40,.04); }
+a.card:hover { border-color: var(--ink-3); text-decoration: none; }
+.card h3 { margin: 0 0 4px; font-size: 15px; font-weight: 600; color: var(--ink); }
+.card .d { color: var(--ink-2); font-size: 13px; margin: 0 0 10px; }
+.card .preview { font-size: 13px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.card .preview b { color: var(--ink); }
+.card .go { color: var(--link); font-size: 13px; margin-top: 8px; display: block; }
+
+/* Stat tiles —— 单个数字不该画成图 */
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1px;
+         background: var(--line); border: 1px solid var(--line); border-radius: 12px;
+         overflow: hidden; margin: 0 0 12px; box-shadow: 0 1px 2px rgba(31,35,40,.04); }
+.tile { background: var(--surface); padding: 12px 14px; }
+.tile .k { color: var(--ink-2); font-size: 12px; }
+.tile .v { font-size: 24px; font-weight: 600; margin-top: 2px; font-variant-numeric: tabular-nums; }
+.tile .v small { font-size: 13px; font-weight: 400; color: var(--ink-3); margin-left: 4px; }
+
+/* 条形图 */
+.bar-row { display: grid; grid-template-columns: minmax(150px, 280px) 1fr 96px; gap: 14px;
+           align-items: center; padding: 5px 4px; border-radius: 6px; }
+.bar-row:hover { background: var(--line-soft); }
+.bar-row .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13.5px;
+               color: var(--ink); }
+.bar-track { background: var(--line-soft); border-radius: 4px; height: 8px; }
+.bar { background: var(--series); height: 8px; border-radius: 0 4px 4px 0; min-width: 2px; display: block; }
+.bar.hot { background: var(--hot); }
+.delta { color: var(--ink-2); font-variant-numeric: tabular-nums; text-align: right; font-size: 13px; }
+
+/* 每日发现：列图 */
+.cols { display: flex; align-items: flex-end; gap: 2px; height: 116px; }
+.col { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end;
+       align-items: stretch; min-width: 0; border-radius: 3px 3px 0 0; }
+.col:hover { background: var(--line-soft); }
+.col .v { background: var(--series); width: 100%; border-radius: 3px 3px 0 0; min-height: 2px; }
+.axis { display: flex; justify-content: space-between; color: var(--ink-3);
+        font-size: 11px; margin-top: 8px; font-variant-numeric: tabular-nums; }
+.day { border-top: 1px solid var(--line-soft); padding: 10px 2px; }
+.day .dt { color: var(--ink-2); font-size: 13.5px; font-variant-numeric: tabular-nums; }
+.day .repos { color: var(--ink-3); font-size: 13px; margin-top: 2px; }
+.day .repos a { color: var(--ink-2); margin-right: 4px; }
+
+/* 表格（radar 式全边框、表头灰底） */
+.wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 12.5px; }
+th, td { border: 1px solid var(--line); padding: 5px 8px; text-align: left;
+         vertical-align: middle; }
+thead th { background: var(--bg); color: var(--ink-2); font-weight: 600; white-space: nowrap;
+           font-size: 12px; position: sticky; top: 0; }
+tbody tr.r:hover { background: var(--line-soft); }
+td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+td.pos { color: var(--pos); }
+.spark { display: block; }
+.pill { display: inline-block; border-radius: 6px; background: var(--line-soft);
+        padding: 1px 7px; font-size: 12px; font-weight: 700; color: var(--ink-2);
+        white-space: nowrap; }
+.pill.f { background: var(--series-soft); color: var(--link); }
+.dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+       background: var(--hot); margin-right: 7px; vertical-align: 1px; }
+.one { color: var(--ink-2); font-size: 13px; }
+
+/* 可展开行：默认只留摘要列，详情收进点击展开的下一行 */
+tr.r { cursor: pointer; }
+tr.r:focus-visible { outline: 2px solid var(--series); outline-offset: -2px; }
+.car { display: inline-block; color: var(--ink-3); font-size: 11px;
+       transition: transform .15s ease; }
+tr.r.open .car { transform: rotate(90deg); color: var(--ink-2); }
+tr.detail > td { background: var(--bg); padding: 12px 14px; cursor: default; }
+.dl { display: grid; grid-template-columns: 88px 1fr; gap: 5px 18px; margin: 0; }
+.dl dt { color: var(--ink-3); font-size: 12.5px; }
+.dl dd { margin: 0; color: var(--ink-2); font-size: 13.5px; }
+.toggle-all { float: right; border: 1px solid var(--line); background: var(--surface);
+              color: var(--ink-2); border-radius: 20px; padding: 2px 12px;
+              font-size: 12px; cursor: pointer; font-family: inherit; }
+.toggle-all:hover { border-color: var(--ink-3); }
+
+table { table-layout: fixed; }
+th:nth-child(1), td:nth-child(1) { width: 32%; }
+th:nth-child(2), td:nth-child(2) { width: 96px; }
+th:nth-child(3), td:nth-child(3) { width: 104px; }
+th:nth-child(4), td:nth-child(4) { width: 84px; }
+th:nth-child(5), td:nth-child(5) { width: 88px; }
+th:nth-child(6), td:nth-child(6) { width: 128px; }
+th:nth-child(7), td:nth-child(7) { width: 30px; }
+td:nth-child(1) { overflow-wrap: anywhere; }
+.legend { display: flex; gap: 18px; align-items: center; color: var(--ink-3);
+          font-size: 12px; margin-top: 14px; }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px;
+            margin-right: 6px; vertical-align: -1px; }
+
+/* 日报正文（reports/*.html） */
+.report h1 { font-size: 20px; margin: 8px 0 8px; }
+.report h2 { font-size: 15px; color: var(--hot); margin: 18px 0 6px; }
+.report p { color: #4b5563; font-size: 14.5px; margin: 6px 0; }
+.report ul { margin: 6px 0 14px; padding-left: 22px; }
+.report li { margin: 3px 0; color: #4b5563; font-size: 14.5px; }
+.report table { table-layout: auto; font-size: 12.5px; display: block; overflow-x: auto; }
+.report code { background: var(--line-soft); border-radius: 4px; padding: 1px 5px; font-size: 12.5px; }
+.back { display: inline-block; margin: 6px 0 10px; font-size: 13px; }
+
+/* 每页顶部的一句话导读 */
+.lede { background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+        padding: 11px 13px; margin: 0 0 12px; color: #4b5563; font-size: 14px;
+        box-shadow: 0 1px 2px rgba(31,35,40,.04); }
+.lede b { color: var(--ink); }
+</style>
+</head>
+<body>
+<div class="top"><div class="top-inner">
+  <h1>Agent Discovery</h1>
+  <p class="meta"><span class="fresh">数据更新于 2026-10-11 00:25 UTC</span> · 每晚 22:00 UTC 自动更新</p>
+  <nav class="nav">
+  <a href="index.html">主页</a>
+  <a href="velocity.html">日均涨速</a>
+  <a href="movers.html">累计涨幅</a>
+  <a href="daily.html">每日新发现</a>
+  <a href="repos.html">全部追踪</a>
+  </nav>
+</div></div>
+<main>
+
+<section><a class="back" href="../daily.html">← 每日新发现</a>
+<div class="report"><h1>Agent Discovery · 2026-10-11</h1>
+<p>Found <strong>16 new repos</strong> across 14 queries + HN + census.</p>
+<p>Sorted by fit-to-my-stack, then relevance score.</p>
+<h2>[score 8/10] [fit 4/10] haiderfarooq3/khan-explainer  ·  ★59</h2>
+<ul>
+<li><strong>类型</strong>: Claude Code skill</li>
+<li>Claude Code skill: Khan Academy style explainer videos. A pen draws while a voice explains. Free, local, no API keys.</li>
+<li><strong>是什么</strong>: Claude 技能，制作可汗学院风格的边画边配音讲解视频。</li>
+<li><strong>能做什么</strong>: 制作边画图边配音的讲解视频，可用于解释复杂算法或概念。</li>
+<li><strong>大家怎么用</strong>: 描述视频内容，Claude 写场景脚本，本地渲染出黑底白笔的 MP4 视频。</li>
+<li><strong>举个例子</strong>: 在 Claude Code 里输入解释单细胞降维 PCA 的原理，它生成一段边画边说的教学视频。</li>
+<li><strong>和已有项目比</strong>: 填补了手写教学视频生成的空白，适合做原理科普，比纯视频剪辑更注重逻辑讲解。</li>
+<li><strong>重复情况</strong>: 和 gridcraft 等内容创作技能部分重叠，专注黑板手写解说</li>
+<li><strong>装不装</strong>: 观望：可做概念讲解视频，非核心需求</li>
+<li>Updated: 2026-10-11</li>
+<li>Source: <code>census</code> · Query hit: <code>census: claude code skill</code></li>
+<li><a href="https://github.com/haiderfarooq3/khan-explainer">https://github.com/haiderfarooq3/khan-explainer</a></li>
+</ul>
+<h2>[score 8/10] [fit 3/10] liyupi/ai-promo-video-maker  ·  ★104</h2>
+<ul>
+<li><strong>类型</strong>: Claude Code skill</li>
+<li>一句话让 AI 帮你做产品宣传片！把产品名或网址告诉 Cursor、Claude Code、Codex 等 AI 编程工具，它会自己调研产品、画出多种风格样图让你挑选、截取 4K 真实页面、按音乐节拍卡点剪辑、生成 AI 旁白并逐句转写校验、自动审图，最后交付一支 4K 商业宣传视频和可在线播放的网页版。App、网站、SaaS、开源项目、课程、AI 模型都能做，你只需确认需求、试听配乐。不用学剪辑软件，也不用花钱找外包。基于 Remotion + ElevenLabs，可直接克隆使用，也能一键安装为 Agent Skill。</li>
+<li><strong>是什么</strong>: Claude 技能，一句话自动生成 4K 产品宣传片。</li>
+<li><strong>能做什么</strong>: 自动生成产品宣传视频，包含配音和卡点剪辑。</li>
+<li><strong>大家怎么用</strong>: 用一句话描述产品，AI 自动调研、截图、配乐配音，输出 4K 视频。</li>
+<li><strong>举个例子</strong>: 在 Claude Code 里输入我的生信工具仓库，它截取 README 并生成一段宣传视频。</li>
+<li><strong>和已有项目比</strong>: 比视频剪辑技能更自动化，带配音，但偏向商业化产品而非纯学术报告。</li>
+<li><strong>重复情况</strong>: 和 video-shotcraft 部分重叠，它多了配音和产品截图</li>
+<li><strong>装不装</strong>: 观望：做产品宣传片，偶尔做展示可用</li>
+<li>Updated: 2026-10-10</li>
+<li>Source: <code>census</code> · Query hit: <code>census: claude code skill</code></li>
+<li><a href="https://github.com/liyupi/ai-promo-video-maker">https://github.com/liyupi/ai-promo-video-maker</a></li>
+</ul>
+<h2>[score 8/10] [fit 2/10] wheresryan22/anatomy  ·  ★265</h2>
+<ul>
+<li><strong>类型</strong>: Claude Code skill</li>
+<li>A Claude Code skill that turns a technical idea into a detailed, interactive isometric figure of a real machine. It makes SVG with optional WebGL shaders and 3D, for docs, articles and landing pages.</li>
+<li><strong>是什么</strong>: Claude 技能，把技术概念画成交互式等距图解和 3D 模型。</li>
+<li><strong>能做什么</strong>: 画交互式的系统架构图或概念图解。</li>
+<li><strong>大家怎么用</strong>: 通过给 Claude 描述技术想法，让它生成 SVG/WebGL 格式的图解。</li>
+<li><strong>举个例子</strong>: 在 Claude Code 里输入想法（如单细胞降维流程），它会生成一个 3D 交互流程图。</li>
+<li><strong>和已有项目比</strong>: 现有科研技能包没做交互式图解的，但这更适合做前端产品而非科研绘图。</li>
+<li><strong>重复情况</strong>: 无重复</li>
+<li><strong>装不装</strong>: 不装：偏前端机器图解，生信无用</li>
+<li>Updated: 2026-10-11</li>
+<li>Source: <code>github</code> · Query hit: <code>claude code skill created:&gt;2026-08-12</code></li>
+<li><a href="https://github.com/wheresryan22/anatomy">https://github.com/wheresryan22/anatomy</a></li>
+</ul>
+<h2>[score 8/10] [fit 1/10] fatihaydost/brand-identity-skill  ·  ★127</h2>
+<ul>
+<li><strong>类型</strong>: Claude Code skill</li>
+<li>A Claude Code skill that designs a brand identity as one system: logo, typography and colour palette built together from one brief, measured, compared as identity cards, and delivered as a brand guidelines kit.</li>
+<li><strong>是什么</strong>: Claude 技能，根据简介生成全套品牌设计（含Logo和配色）。</li>
+<li><strong>能做什么</strong>: 生成品牌标识、Logo、排版和配色系统。</li>
+<li><strong>大家怎么用</strong>: 输入简短品牌理念，它生成多套标识卡片对比并输出品牌指南。</li>
+<li><strong>举个例子</strong>: 在 Claude Code 里输入我的生信算法开源项目，它会设计几个 Logo 和配色方案。</li>
+<li><strong>和已有项目比</strong>: 跟科研无关，和现有追踪的科研或学术技能包毫无交集。</li>
+<li><strong>重复情况</strong>: 无重复</li>
+<li><strong>装不装</strong>: 不装：纯品牌设计，与科研无关</li>
+<li>Updated: 2026-10-11</li>
+<li>Source: <code>census</code> · Query hit: <code>census: claude code skill</code></li>
+<li><a href="https://github.com/fatihaydost/brand-identity-skill">https://github.com/fatihaydost/brand-identity-skill</a></li>
+</ul>
+<h2>[score 8/10] [fit 1/10] EGSECDA/vocaloid-style-mv-pipeline  ·  ★92</h2>
+<ul>
+<li><strong>类型</strong>: Claude Code skill</li>
+<li>Production pipeline and Claude Code skill for Vocaloid-style hand-drawn (手書き) lyric music videos: deterministic Canvas2D/WebGL2 animation engine, JIZURA lyric motion, AI illustration, Blender toon 3D, headless rendering to 16:9 and 9:16.</li>
+<li><strong>是什么</strong>: Claude 技能，用代码引擎制作初音风格手书歌词 MV。</li>
+<li><strong>能做什么</strong>: 制作手绘风格的歌词音乐视频和动态图形。</li>
+<li><strong>大家怎么用</strong>: 输入歌曲和歌词，前端引擎逐帧渲染，输出横竖屏 MV。</li>
+<li><strong>举个例子</strong>: 在 Claude Code 里输入一首歌和歌词，它会生成初音风格的动画 MV 视频。</li>
+<li><strong>和已有项目比</strong>: 偏向特定音乐风格的动画制作，与学术写作和生信流程毫不相干。</li>
+<li><strong>重复情况</strong>: 和 ai-promo-video-maker 部分重叠，都是视频生成</li>
+<li><strong>装不装</strong>: 不装：纯二次元 MV 制作，无关科研</li>
+<li>Updated: 2026-10-10</li>
+<li>Source: <code>census</code> · Query hit: <code>census: claude code skill</code></li>
+<li><a href="https://github.com/EGSECDA/vocaloid-style-mv-pipeline">https://github.com/EGSECDA/vocaloid-style-mv-pipeline</a></li>
+</ul>
+<h2>[score 8/10] [fit 1/10] xianyu110/ecommerce-image-skills  ·  ★68</h2>
+<ul>
+<li><strong>类型</strong>: Claude Code skill</li>
+<li>12 电商出图 Agent Skills for Claude Code / Codex / Cursor · GPT Image 2.5 (Flare/Sunburst) · Amazon 白底主图, A+, 场景图, 模特图, 小红书封面, 淘宝详情页</li>
+<li><strong>是什么</strong>: 用于电商商品图生成的 12 个技能包。</li>
+<li><strong>能做什么</strong>: 批量生成亚马逊、小红书等电商平台的商品宣传图。</li>
+<li><strong>大家怎么用</strong>: 输入商品图片，调用对应技能，生成各类电商场景图或模特图。</li>
+<li><strong>举个例子</strong>: 在 Claude Code 里输入一张物品图，它会生成该物品的白底主图和场景图。</li>
+<li><strong>和已有项目比</strong>: 针对电商营销，和科研生信及论文写作毫无关联，完全不可比。</li>
+<li><strong>重复情况</strong>: 无重复</li>
+<li><strong>装不装</strong>: 不装：电商出图技能，科研无用</li>
+<li>Updated: 2026-10-10</li>
+<li>Source: <code>census</code> · Query hit: <code>census: claude code skill</code></li>
+<li><a href="https://github.com/xianyu110/ecommerce-image-skills">https://github.com/xianyu110/ecommerce-image-skills</a></li>
+</ul>
+<h2>[score 8/10] [fit 1/10] xianyu110/ecommerce-video-skills  ·  ★61</h2>
+<ul>
+<li><strong>类型</strong>: Claude Code skill</li>
+<li>12 个电商短视频 Agent Skills：3秒钩子、卖点分镜、图生视频提示词、edge-tts 配音、字幕花字、ffmpeg 自动成片、抖音/TikTok Shop/视频号导出、直播切片、多语言配音、封面A/B · Claude Code / Codex / Cursor</li>
+<li><strong>是什么</strong>: 13 个电商短视频技能包，从分镜到自动成片。</li>
+<li><strong>能做什么</strong>: 将一张商品图自动制作成带配音和字幕的 9:16 带货短视频。</li>
+<li><strong>大家怎么用</strong>: 输入商品图，技能自动生成钩子、分镜、配音并用 ffmpeg 成片。</li>
+<li><strong>举个例子</strong>: 在 Claude Code 里输入一张试剂照片，它会生成一段 15 秒的短视频推销该试剂。</li>
+<li><strong>和已有项目比</strong>: 垂直于电商带货视频，而科研更需要的是图表或报告展示，方向不一致。</li>
+<li><strong>重复情况</strong>: 和 ai-promo-video-maker 部分重叠，偏向短视频带货</li>
+<li><strong>装不装</strong>: 不装：电商短视频带货，科研无用</li>
+<li>Updated: 2026-10-10</li>
+<li>Source: <code>census</code> · Query hit: <code>census: claude code skill</code></li>
+<li><a href="https://github.com/xianyu110/ecommerce-video-skills">https://github.com/xianyu110/ecommerce-video-skills</a></li>
+</ul>
+<h2>[score 7/10] [fit 1/10] robbin/android-adb-control  ·  ★76</h2>
+<ul>
+<li><strong>类型</strong>: Agent skill</li>
+<li>An Agent Skill for Android phone control via ADB: observe, act, and verify. For Pi, Codex, Claude Code, and OpenCode.</li>
+<li><strong>是什么</strong>: 让 AI Agent 通过 ADB 操控安卓手机的技能。</li>
+<li><strong>能做什么</strong>: 让 Agent 自动操控安卓手机执行点击、滑动、输入等操作。</li>
+<li><strong>大家怎么用</strong>: 在 Agent 宿主中加载技能，通过 ADB 指令操控手机界面。</li>
+<li><strong>举个例子</strong>: 在 Claude Code 里输入打开某 App 截图，它会通过 ADB 操控手机执行并返回截图。</li>
+<li><strong>和已有项目比</strong>: 填补了移动端自动化的空白，但科研工作主要在电脑端，无直接应用场景。</li>
+<li><strong>重复情况</strong>: 无重复</li>
+<li><strong>装不装</strong>: 不装：安卓手机控制，科研用不到</li>
+<li>Updated: 2026-10-10</li>
+<li>Source: <code>census</code> · Query hit: <code>census: claude code skill</code></li>
+<li><a href="https://github.com/robbin/android-adb-control">https://github.com/robbin/android-adb-control</a></li>
+</ul>
+<ul>
+<li>charlie947/motion-graphics-skills · ★176 — 同类跟进 of <a href="https://github.com/Barty-Bart/motion-graphics">Barty-Bart/motion-graphics</a></li>
+</ul>
+<ul>
+<li>JohnnyVizz/claude-kit · ★126 — 同类跟进 of <a href="https://github.com/speakeasy-api/kit">speakeasy-api/kit</a></li>
+</ul>
+<ul>
+<li>Miftahul-Islam-Efaz/Motion-graphics-skill · ★88 — 同类跟进 of <a href="https://github.com/Barty-Bart/motion-graphics">Barty-Bart/motion-graphics</a></li>
+</ul>
+<h2>域外雷达（不限领域的新建热门，未分析）</h2>
+<ul>
+<li><a href="https://github.com/t4t5/omdrop-owl">t4t5/omdrop-owl</a> · ★1412 — airdrop for non-apple devices</li>
+<li><a href="https://github.com/storytold/deckcraft">storytold/deckcraft</a> · ★1409 — Presentations and slide shows: an open-source, clean-room reimplementation of Microsoft PowerPoint in pure Rust. Part of the ArtCraft Crafting Apps.</li>
+<li><a href="https://github.com/storytold/soundcraft">storytold/soundcraft</a> · ★1318 — An open-source, clean-room reimplementation of Avid Pro Tools in pure Rust</li>
+<li><a href="https://github.com/HelixDB/helix-foundry">HelixDB/helix-foundry</a> · ★993 — Your company&#x27;s data, connected into one ontology, on your own computer. A local-first data workspace built on HelixDB and DuckDB.</li>
+<li><a href="https://github.com/pingdotgg/ts-rust">pingdotgg/ts-rust</a> · ★976 — An experimental Rust port of the TypeScript 7 compiler (tsc)</li>
+</ul>
+<h2>Trending since first seen</h2>
+<table><thead><tr><th>Repo</th><th>First seen</th><th>Stars then → now</th><th>Δ</th></tr></thead><tbody>
+<tr><td><a href="https://github.com/ayghri/i-have-adhd">ayghri/i-have-adhd</a></td><td>2026-07-19</td><td>3084 → 56305</td><td>+53221</td></tr>
+<tr><td><a href="https://github.com/storytold/photocraft">storytold/photocraft</a></td><td>2026-10-05</td><td>733 → 42062</td><td>+41329</td></tr>
+<tr><td><a href="https://github.com/JuliusBrussee/caveman">JuliusBrussee/caveman</a></td><td>2026-07-02</td><td>79188 → 110928</td><td>+31740</td></tr>
+<tr><td><a href="https://github.com/NandhaKishorM/laya">NandhaKishorM/laya</a></td><td>2026-09-19</td><td>1227 → 32159</td><td>+30932</td></tr>
+<tr><td><a href="https://github.com/feder-cr/dots">feder-cr/dots</a></td><td>2026-10-01</td><td>1933 → 31939</td><td>+30006</td></tr>
+<tr><td><a href="https://github.com/blader/humanizer">blader/humanizer</a></td><td>2026-07-02</td><td>27141 → 55450</td><td>+28309</td></tr>
+<tr><td><a href="https://github.com/virgiliojr94/book-to-skill">virgiliojr94/book-to-skill</a></td><td>2026-07-02</td><td>7442 → 34436</td><td>+26994</td></tr>
+<tr><td><a href="https://github.com/browser-use/jev-ultrafast">browser-use/jev-ultrafast</a></td><td>2026-09-17</td><td>1947 → 22560</td><td>+20613</td></tr>
+<tr><td><a href="https://github.com/Niko1221/Strata">Niko1221/Strata</a></td><td>2026-09-29</td><td>1086 → 20678</td><td>+19592</td></tr>
+<tr><td><a href="https://github.com/robbietilton/Compositor">robbietilton/Compositor</a></td><td>2026-09-19</td><td>2368 → 15458</td><td>+13090</td></tr>
+</tbody></table></div></section>
+
+</main>
+</body>
+</html>
