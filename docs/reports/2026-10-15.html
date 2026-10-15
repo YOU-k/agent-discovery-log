@@ -170,7 +170,7 @@ td:nth-child(1) { overflow-wrap: anywhere; }
 <body>
 <div class="top"><div class="top-inner">
   <h1>Agent Discovery</h1>
-  <p class="meta"><span class="fresh">数据更新于 2026-10-15 00:03 UTC</span> · 每晚 22:00 UTC 自动更新</p>
+  <p class="meta"><span class="fresh">数据更新于 2026-10-15 23:48 UTC</span> · 每晚 22:00 UTC 自动更新</p>
   <nav class="nav">
   <a href="index.html">主页</a>
   <a href="velocity.html">日均涨速</a>
@@ -183,96 +183,58 @@ td:nth-child(1) { overflow-wrap: anywhere; }
 
 <section><a class="back" href="../daily.html">← 每日新发现</a>
 <div class="report"><h1>Agent Discovery · 2026-10-15</h1>
-<p>Found <strong>10 new repos</strong> across 14 queries + HN.</p>
+<p>Found <strong>7 new repos</strong> across 14 queries + HN.</p>
 <p>Sorted by fit-to-my-stack, then relevance score.</p>
-<h2>[score 9/10] [fit 8/10] probabl-ai/skore-skills  ·  ★141</h2>
+<h2>[score 8/10] [fit 4/10] assafkip/claudemy  ·  ★233</h2>
 <ul>
-<li><strong>类型</strong>: Claude Code skill</li>
-<li>Tabular Data Science Skills for guardrailing AI Agents</li>
-<li><strong>是什么</strong>: 约束AI写表格机器学习代码的技能</li>
-<li><strong>能做什么</strong>: 规范 AI 写 scikit-learn 机器学习流程并记录评估结果。</li>
-<li><strong>大家怎么用</strong>: 安装后在 Claude Code 里让 AI 根据数据建模型，按标准流程走。</li>
-<li><strong>举个例子</strong>: 给 Claude 单细胞标签数据，它按标准 ML 流程建模型并记录指标。</li>
-<li><strong>和已有项目比</strong>: 比通用科研技能更专注数据科学方法论审查，防 AI 瞎写代码。</li>
-<li><strong>重复情况</strong>: 和 codex-claude-academic-skills 部分重叠，它更专ML</li>
-<li><strong>装不装</strong>: 装：能帮跑ML模型时防呆。</li>
-<li>Updated: 2026-10-14</li>
-<li>Source: <code>github</code> · Query hit: <code>science skills</code></li>
-<li><a href="https://github.com/probabl-ai/skore-skills">https://github.com/probabl-ai/skore-skills</a></li>
+<li><strong>类型</strong>: Claude Code skill / 学习工具</li>
+<li>Claudemy: an open-source alternative to Udemy and Coursera. Give Claude a topic, it researches the web and builds a course of 2-minute audio lessons with cited sources. A free Claude Code skill.</li>
+<li><strong>是什么</strong>: 让 AI 搜集网络资料生成音频小课的技能。</li>
+<li><strong>能做什么</strong>: 快速生成特定主题的简短音频课程，利用碎片时间学习新知识。</li>
+<li><strong>大家怎么用</strong>: 作为 Claude Code 技能安装，输入主题即可生成多节 2 分钟音频课。</li>
+<li><strong>举个例子</strong>: 在 Claude Code 里输入“teach me GNN”，它会搜集资料生成音频课程。</li>
+<li><strong>和已有项目比</strong>: 与 codebase-to-course 都做课程，但它学网络知识而非代码，适合补背景。</li>
+<li><strong>重复情况</strong>: 和 codebase-to-course 部分重叠，多了音频生成和网络检索。</li>
+<li><strong>装不装</strong>: 观望。偶尔学新概念可用，但不刚需。</li>
+<li>Updated: 2026-10-15</li>
+<li>Source: <code>github</code> · Query hit: <code>claude code skill created:&gt;2026-08-16</code></li>
+<li><a href="https://github.com/assafkip/claudemy">https://github.com/assafkip/claudemy</a></li>
 </ul>
-<h2>[score 9/10] [fit 7/10] RayenMlayeh/jevcrawl  ·  ★51</h2>
+<h2>[score 8/10] [fit 1/10] kajisho5/ffmpeg-skill  ·  ★1959</h2>
 <ul>
-<li><strong>类型</strong>: 工具</li>
-<li>MCP server and CLI that crawls websites for AI agents: finds the answer page 2x more often than Crawl4AI, 10x cheaper per answer than letting Claude crawl.</li>
-<li><strong>是什么</strong>: 为AI设计的精准低成本网页爬虫MCP</li>
-<li><strong>能做什么</strong>: 让大模型自动爬取网页并只返回能回答问题的文本片段。</li>
-<li><strong>大家怎么用</strong>: 作为 MCP 服务器接入 Claude，提问后它自动浏览网页找答案。</li>
-<li><strong>举个例子</strong>: 问“scanpy最新版怎么处理空间数据”，它爬官方文档找出段落返回。</li>
-<li><strong>和已有项目比</strong>: 填补了为 AI 找答案的精准爬虫空白，比普通搜索更省 token。</li>
+<li><strong>类型</strong>: Claude Code skill / 工具</li>
+<li>Local video editor for coding agents: 42 FFmpeg tools with a machine-readable contract and an MCP server, for Claude Code, Cursor and Codex. Cut, captions, reframe, loudness, platform exports. No cloud, no API keys.</li>
+<li><strong>是什么</strong>: 给 AI 助手用的本地视频剪辑工具包。</li>
+<li><strong>能做什么</strong>: 让 Claude 等 agent 直接调用 FFmpeg 剪辑、加字幕、导出视频。</li>
+<li><strong>大家怎么用</strong>: 作为 Claude Code 技能安装，在对话中要求剪辑视频即可。</li>
+<li><strong>举个例子</strong>: 在 Claude Code 里说“把视频剪成10秒并加字幕”，它会调用 FFmpeg 完成。</li>
+<li><strong>和已有项目比</strong>: 填补 agent 操控视频空白，但科研日常基本不需要剪辑视频。</li>
 <li><strong>重复情况</strong>: 无重复</li>
-<li><strong>装不装</strong>: 装：查文献网页好用又省钱。</li>
-<li>Updated: 2026-10-14</li>
-<li>Source: <code>hn</code> · Query hit: <code>hn: Show HN: Jevcrawl – A web crawler for AI agents with no LLM </code></li>
-<li>HN: <a href="https://news.ycombinator.com/item?id=50080450">20 points</a></li>
-<li><a href="https://github.com/RayenMlayeh/jevcrawl">https://github.com/RayenMlayeh/jevcrawl</a></li>
-</ul>
-<h2>[score 9/10] [fit 6/10] dagoSte/squadra  ·  ★186</h2>
-<ul>
-<li><strong>类型</strong>: 多智能体框架</li>
-<li>Coordinate Claude, Codex and Cursor windows with shared tasks, acknowledgements, prechecks, parallel tests, source-bound proofs and independent review. Built-in skills recall lessons, simplify code and forecast work. Track progress, decisions and evidence in a bilingual local dashboard, with MCP plugins. Browse skills and verified security audits.</li>
-<li><strong>是什么</strong>: 协调多个AI编程窗口协同和审查的工具</li>
-<li><strong>能做什么</strong>: 协调 Claude、Codex、Cursor 共享任务、审查代码和记录进度。</li>
-<li><strong>大家怎么用</strong>: 作为本地工具包运行，连接各编程工具窗口共享状态。</li>
-<li><strong>举个例子</strong>: 多窗口跑生信流程和算法，通过它同步任务并交叉审查测试。</li>
-<li><strong>和已有项目比</strong>: 比纯交叉审查多了本地仪表盘和进度追踪，适合复杂科研工程。</li>
-<li><strong>重复情况</strong>: 和 crucible 部分重叠，它多了仪表盘和MCP</li>
-<li><strong>装不装</strong>: 装：多窗口写生信脚本很省心。</li>
-<li>Updated: 2026-10-14</li>
+<li><strong>装不装</strong>: 不装。视频剪辑和科研栈毫无关系。</li>
+<li>Updated: 2026-10-15</li>
 <li>Source: <code>github</code> · Query hit: <code>claude code skill created:&gt;2026-08-16</code></li>
-<li><a href="https://github.com/dagoSte/squadra">https://github.com/dagoSte/squadra</a></li>
-</ul>
-<h2>[score 8/10] [fit 1/10] jonwheatley/pixel-path  ·  ★164</h2>
-<ul>
-<li><strong>类型</strong>: Claude Code skill</li>
-<li>Turn any two places into a pixel-art fly-through of the real road. A Claude Code skill.</li>
-<li><strong>是什么</strong>: 把真实路线变像素艺术飞行视频的技能</li>
-<li><strong>能做什么</strong>: 把真实路线变成像素风游戏关卡或视频背景。</li>
-<li><strong>大家怎么用</strong>: 在 Claude Code 输入起点和终点，自动拉取地图数据生成网页。</li>
-<li><strong>举个例子</strong>: 输入实验室到食堂，生成一段像素风路线飞行视频。</li>
-<li><strong>和已有项目比</strong>: 填补了地理路线像素化空白，但科研完全用不上。</li>
-<li><strong>重复情况</strong>: 无重复</li>
-<li><strong>装不装</strong>: 不装：纯娱乐跟科研没关系。</li>
-<li>Updated: 2026-10-14</li>
-<li>Source: <code>github</code> · Query hit: <code>claude code skill created:&gt;2026-08-16</code></li>
-<li><a href="https://github.com/jonwheatley/pixel-path">https://github.com/jonwheatley/pixel-path</a></li>
-</ul>
-<h2>AirsupHQ/machine-skill  ·  ★195</h2>
-<ul>
-<li>Describe any machine in one line. Claude builds a photoreal, physics based, interactive simulation of it in one HTML file, plus the film to post it. An open source Claude Code skill.</li>
-<li>Updated: 2026-10-14</li>
-<li>Source: <code>github</code> · Query hit: <code>claude code skill created:&gt;2026-08-16</code></li>
-<li><a href="https://github.com/AirsupHQ/machine-skill">https://github.com/AirsupHQ/machine-skill</a></li>
+<li><a href="https://github.com/kajisho5/ffmpeg-skill">https://github.com/kajisho5/ffmpeg-skill</a></li>
 </ul>
 <h2>域外雷达（不限领域的新建热门，未分析）</h2>
 <ul>
-<li><a href="https://github.com/shaongitbd/doory">shaongitbd/doory</a> · ★1196 — Open source canva alternative</li>
-<li><a href="https://github.com/opengeos/RustGIS">opengeos/RustGIS</a> · ★1052 — A fast, free and open-source GIS in pure Rust.</li>
-<li><a href="https://github.com/rociiu/talorys">rociiu/talorys</a> · ★999 — Your personal AI agent in your own Cloudflare account. Chat, memory, tasks, notes and scheduled reminders, deployed with one command: npx create-talorys@latest. Free-tier friendly, single-user, no telemetry.</li>
-<li><a href="https://github.com/zhuyansen/new-term-radar">zhuyansen/new-term-radar</a> · ★953 — Daily radar for new AI terms: names of new models, products and repos, caught on X, Hugging Face, GitHub and sitemaps before keyword tools list them.</li>
-<li><a href="https://github.com/marclou/mailcheap">marclou/mailcheap</a> · ★930 — The affordable newsletter for the agentic era. Open source: self-host it, or use mailcheap.ai.</li>
+<li><a href="https://github.com/storytold/figcraft">storytold/figcraft</a> · ★1401 — FigCraft: interface design and prototyping; an open-source, clean-room reimplementation of collaborative design workflows in pure Rust</li>
+<li><a href="https://github.com/HeyPuter/everything">HeyPuter/everything</a> · ★1297 — We&#x27;re rebuilding and open-sourcing the world’s software from scratch.</li>
+<li><a href="https://github.com/ahwootech/BRUTAL">ahwootech/BRUTAL</a> · ★1136 — A free, open source C# framework for making games, or your own game engine. Direct access to native APIs and Vulkan, with the low-level libraries around them. The foundation under Kitten Space Agency and RimWorld&#x27;s Waylith engine.</li>
+<li><a href="https://github.com/chenglou/handwired">chenglou/handwired</a> · ★1013 — Turn your regular JavaScript code into a neural net.</li>
+<li><a href="https://github.com/deeplethe/solid-glass">deeplethe/solid-glass</a> · ★962 — A design system for AI applications. Material, physical, tactile, technical.</li>
 </ul>
 <h2>Trending since first seen</h2>
 <table><thead><tr><th>Repo</th><th>First seen</th><th>Stars then → now</th><th>Δ</th></tr></thead><tbody>
-<tr><td><a href="https://github.com/storytold/photocraft">storytold/photocraft</a></td><td>2026-10-05</td><td>733 → 61051</td><td>+60318</td></tr>
-<tr><td><a href="https://github.com/ayghri/i-have-adhd">ayghri/i-have-adhd</a></td><td>2026-07-19</td><td>3084 → 57133</td><td>+54049</td></tr>
-<tr><td><a href="https://github.com/JuliusBrussee/caveman">JuliusBrussee/caveman</a></td><td>2026-07-02</td><td>79188 → 111899</td><td>+32711</td></tr>
-<tr><td><a href="https://github.com/NandhaKishorM/laya">NandhaKishorM/laya</a></td><td>2026-09-19</td><td>1227 → 32909</td><td>+31682</td></tr>
-<tr><td><a href="https://github.com/feder-cr/dots">feder-cr/dots</a></td><td>2026-10-01</td><td>1933 → 32051</td><td>+30118</td></tr>
-<tr><td><a href="https://github.com/blader/humanizer">blader/humanizer</a></td><td>2026-07-02</td><td>27141 → 56958</td><td>+29817</td></tr>
-<tr><td><a href="https://github.com/virgiliojr94/book-to-skill">virgiliojr94/book-to-skill</a></td><td>2026-07-02</td><td>7442 → 34862</td><td>+27420</td></tr>
-<tr><td><a href="https://github.com/Niko1221/Strata">Niko1221/Strata</a></td><td>2026-09-29</td><td>1086 → 24585</td><td>+23499</td></tr>
-<tr><td><a href="https://github.com/browser-use/jev-ultrafast">browser-use/jev-ultrafast</a></td><td>2026-09-17</td><td>1947 → 22917</td><td>+20970</td></tr>
-<tr><td><a href="https://github.com/robbietilton/Compositor">robbietilton/Compositor</a></td><td>2026-09-19</td><td>2368 → 16905</td><td>+14537</td></tr>
+<tr><td><a href="https://github.com/storytold/photocraft">storytold/photocraft</a></td><td>2026-10-05</td><td>733 → 63256</td><td>+62523</td></tr>
+<tr><td><a href="https://github.com/ayghri/i-have-adhd">ayghri/i-have-adhd</a></td><td>2026-07-19</td><td>3084 → 57296</td><td>+54212</td></tr>
+<tr><td><a href="https://github.com/JuliusBrussee/caveman">JuliusBrussee/caveman</a></td><td>2026-07-02</td><td>79188 → 112520</td><td>+33332</td></tr>
+<tr><td><a href="https://github.com/NandhaKishorM/laya">NandhaKishorM/laya</a></td><td>2026-09-19</td><td>1227 → 33046</td><td>+31819</td></tr>
+<tr><td><a href="https://github.com/feder-cr/dots">feder-cr/dots</a></td><td>2026-10-01</td><td>1933 → 32080</td><td>+30147</td></tr>
+<tr><td><a href="https://github.com/blader/humanizer">blader/humanizer</a></td><td>2026-07-02</td><td>27141 → 57280</td><td>+30139</td></tr>
+<tr><td><a href="https://github.com/virgiliojr94/book-to-skill">virgiliojr94/book-to-skill</a></td><td>2026-07-02</td><td>7442 → 34983</td><td>+27541</td></tr>
+<tr><td><a href="https://github.com/Niko1221/Strata">Niko1221/Strata</a></td><td>2026-09-29</td><td>1086 → 25437</td><td>+24351</td></tr>
+<tr><td><a href="https://github.com/browser-use/jev-ultrafast">browser-use/jev-ultrafast</a></td><td>2026-09-17</td><td>1947 → 23007</td><td>+21060</td></tr>
+<tr><td><a href="https://github.com/robbietilton/Compositor">robbietilton/Compositor</a></td><td>2026-09-19</td><td>2368 → 17057</td><td>+14689</td></tr>
 </tbody></table></div></section>
 
 </main>
