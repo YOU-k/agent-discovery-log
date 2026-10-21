@@ -437,6 +437,9 @@ def detail_html(r: dict[str, Any]) -> str:
         items.append(("来源", f'Hacker News（{r["hn_points"]} 分）· <a href="{esc(r["hn_url"])}">讨论链接</a>'))
     elif r["source"] == "census":
         items.append(("来源", "周日普查"))
+    elif r["source"] == "trending":
+        period = esc(r["query"].replace("trending: ", ""))
+        items.append(("来源", f"GitHub Trending {period}榜"))
     if r["similar_to"]:
         items.append(("同类跟进", f'与 <a href="https://github.com/{esc(r["similar_to"])}">{esc(r["similar_to"])}</a> 同类'))
     if r["query"]:

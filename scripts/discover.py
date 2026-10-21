@@ -108,6 +108,7 @@ HN_SINCE_DAYS = 2  # 略大于 1 天，配合 seen 去重提高召回
 
 # 域外雷达：不限领域的兜底通道（每日）
 EXPLORE_MAX = 5
+TRENDING_MAX = 8
 
 # 周日普查：上周新建 repo 的全量扫描（GraphQL search，每关键词封顶 100）
 CENSUS_DAY = 6  # Sunday
@@ -415,6 +416,56 @@ def explore_candidates(seen: dict[str, Any], existing: dict[str, Repo]) -> list[
             source="explore",
         ))
         if len(repos) >= EXPLORE_MAX:
+            break
+    return repos
+
+
+def trending_candidates(seen: dict[str, Any], existing: dict[str, Repo]) -> list[Repo]:
+    """GitHub Trending 通道（日榜+周榜）：不限领域、不限创建时间。
+
+    域外雷达只看得见「新建即热门」，会漏掉存量项目突然出圈
+    （如 REA morluto/rea：7 月创建、10 月单周 +18 万星）。
+    Trending 页按近期增速排序，正好补上这个盲区。
+    与域外雷达同待遇：一行记录不分析，但注册进 seen 做增速追踪。
+    """
+    repos: list[Repo] = []
+    for period in ("daily", "weekly"):
+        url = f"https://github.com/trending?since={period}"
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": "agent-discovery-log"})
+            page = urllib.request.urlopen(req, timeout=30).read().decode("utf-8", "ignore")
+        except Exception as e:  # 网络抖动不该杀掉整条流水线
+            print(f"[WARN] trending {period} fetch failed: {e}", file=sys.stderr)
+            continue
+        for art in re.findall(r'<article[^>]*class="[^"]*\bBox-row\b[^"]*".*?</article>', page, re.S):
+            m = re.search(r'<h2[^>]*>\s*<a href="/([^"]+)"', art)
+            if not m:
+                continue
+            fn = re.sub(r"\s", "", m.group(1))
+            d = re.search(r'<p class="col-9[^"]*"[^>]*>(.*?)</p>', art, re.S)
+            desc = re.sub(r"\s+", " ", d.group(1)).strip() if d else ""
+            # 总星数在 stargazers 链接里，但前面嵌着带数字的 SVG path，
+            # 必须先剥掉标签再取数字，否则会抓到 path 里的坐标
+            sm = re.search(r'href="/[^"]+/stargazers".*?</a>', art, re.S)
+            stars = 0
+            if sm:
+                nums = re.sub(r"[^\d,]", "", re.sub(r"<[^>]+>", "", sm.group(0)))
+                stars = int(nums.replace(",", "")) if nums else 0
+            if fn in seen or fn in existing or any(x.full_name == fn for x in repos):
+                continue
+            repos.append(Repo(
+                full_name=fn,
+                description=desc,
+                stars=stars,
+                url=f"https://github.com/{fn}",
+                updated_at=dt.datetime.now(dt.timezone.utc).isoformat(),
+                matched_query=f"trending: {period}",
+                matched_weight=1,
+                source="trending",
+            ))
+            if len(repos) >= TRENDING_MAX:
+                break
+        if len(repos) >= TRENDING_MAX:
             break
     return repos
 
@@ -743,7 +794,7 @@ def render_daily(
     lines = [
         f"# Agent Discovery · {today}",
         "",
-        f"Found **{len(new_repos)} new repos** across {len(QUERIES)} queries + HN" + (" + census." if dt.date.today().weekday() == CENSUS_DAY else "."),
+        f"Found **{len(new_repos)} new repos** across {len(QUERIES)} queries + HN + trending" + (" + census." if dt.date.today().weekday() == CENSUS_DAY else "."),
         "",
     ]
     if new_repos:
@@ -761,10 +812,14 @@ def render_daily(
             lines += ["Sorted by stars (no LLM scoring; set LLM_API_KEY to enable).", ""]
 
     explore_lines = []
+    trending_lines = []
     for r in new_repos:
-        # 域外雷达：一行带过，不展开不分析
+        # 域外雷达 / Trending：一行带过，不展开不分析
         if r.source == "explore":
             explore_lines.append(f"- [{r.full_name}]({r.url}) · ★{r.stars} — {r.description}")
+            continue
+        if r.source == "trending":
+            trending_lines.append(f"- [{r.full_name}]({r.url}) · ★{r.stars:,} — {r.description}")
             continue
         # 同类跟进的只留一行，不展开（省篇幅，也省得重复讲同一个概念）
         similar_to = (similars or {}).get(r.full_name)
@@ -803,6 +858,9 @@ def render_daily(
 
     if explore_lines:
         lines += ["## 域外雷达（不限领域的新建热门，未分析）", ""] + explore_lines + [""]
+
+    if trending_lines:
+        lines += ["## GitHub Trending（日榜/周榜出圈项目，未分析）", ""] + trending_lines + [""]
 
     if movers:
         lines += [
@@ -883,6 +941,10 @@ def main() -> int:
 
     # 域外雷达（每日）：不限领域的新建热门，防领域盲区；低优先级
     for r in explore_candidates(seen, candidates):
+        candidates[r.full_name] = r
+
+    # GitHub Trending（每日）：日榜+周榜，补「存量项目突然出圈」盲区
+    for r in trending_candidates(seen, candidates):
         candidates[r.full_name] = r
 
     new_repos = sorted(candidates.values(), key=lambda r: r.stars, reverse=True)

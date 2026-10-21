@@ -126,10 +126,11 @@ def build_card(seen: dict[str, dict[str, Any]]) -> dict[str, Any]:
     )
 
     if new_today:
-        # 域外雷达单独成节：不参与展开和分析
+        # 域外雷达 / Trending 单独成节：不参与展开和分析
         explore = [(fn, e) for fn, e in new_today if e.get("source") == "explore"]
+        trending = [(fn, e) for fn, e in new_today if e.get("source") == "trending"]
         novel = [(fn, e) for fn, e in new_today
-                 if not e.get("similar_to") and e.get("source") != "explore"]
+                 if not e.get("similar_to") and e.get("source") not in ("explore", "trending")]
         clones = [(fn, e) for fn, e in new_today if e.get("similar_to")]
         blocks = [repo_block(i, fn, e) for i, (fn, e) in enumerate(novel[:MAX_NEW_IN_MSG], 1)]
         more = f"\n\n…以及另外 {len(novel) - MAX_NEW_IN_MSG} 个" if len(novel) > MAX_NEW_IN_MSG else ""
@@ -147,6 +148,12 @@ def build_card(seen: dict[str, dict[str, Any]]) -> dict[str, Any]:
                 for fn, e in explore
             ]
             new_md += "\n\n**域外雷达**（不限领域的新建热门，仅记录）：" + "、".join(ex_lines)
+        if trending:
+            tr_lines = [
+                f"[{fn}](https://github.com/{fn}) ★{(e.get('stars_at_first_seen') or 0):,}"
+                for fn, e in trending
+            ]
+            new_md += "\n\n**GitHub Trending**（日榜/周榜出圈，仅记录）：" + "、".join(tr_lines)
         new_md = humanize_text(new_md)
     else:
         new_md = "**今天没有新 repo 通过过滤**"
