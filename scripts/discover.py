@@ -442,18 +442,19 @@ def trending_candidates(seen: dict[str, Any], existing: dict[str, Repo]) -> list
 
     def extract_names(page: str) -> list[str]:
         names: list[str] = []
-        # 策略 1：经典服务端渲染结构 <article class="Box-row">...<h2><a href="/o/r">
+        # 策略 1：服务端渲染结构 <article class="Box-row">...<h2><a ... href="/o/r">
+        # （<a> 上可能有 data-view-component 等属性在 href 前面，不能锚定 <a href=）
         for art in re.findall(r'<article[^>]*class="[^"]*\bBox-row\b[^"]*".*?</article>', page, re.S):
-            m = re.search(r'<h2[^>]*>\s*<a href="/([^"]+)"', art)
+            m = re.search(r'<h2[^>]*>.*?<a[^>]*href="/([^"]+)"', art, re.S)
             if m:
-                names.append(re.sub(r"\s", "", m.group(1)))
+                names.append(re.sub(r"\s", "", m.group(1)).strip("/"))
         if names:
             return names
-        # 策略 2：React 渲染/改版兜底——统计仓库链接出现频次，
-        # 每张卡片里 repo 链接至少出现 2 次（标题 + stargazers）
+        # 策略 2：改版兜底——同一 repo 在卡片里出现多次（标题/stargazers/forks
+        # 链接都指向它，且允许带 /stargazers 这类后缀），≥2 次的双段链接视为 repo
         counts: dict[str, int] = {}
         order: list[str] = []
-        for href in re.findall(r'href="/([A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+)"', page):
+        for href in re.findall(r'href="/([A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+)(?:/[^"]*)?"', page):
             owner = href.split("/")[0].lower()
             if owner in SKIP_OWNERS:
                 continue
