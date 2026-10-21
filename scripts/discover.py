@@ -427,7 +427,41 @@ def trending_candidates(seen: dict[str, Any], existing: dict[str, Repo]) -> list
     （如 REA morluto/rea：7 月创建、10 月单周 +18 万星）。
     Trending 页按近期增速排序，正好补上这个盲区。
     与域外雷达同待遇：一行记录不分析，但注册进 seen 做增速追踪。
+
+    实现：HTML 只负责按页面顺序提取 repo 名字（两种解析策略，
+    应付 GitHub 改版），星数/描述走 gh api  enrichment——
+    HTML 里的数字解析太脆（SVG path 里全是数字），不值得维护。
     """
+    # 卡片/页面里会出现、但不是 repo 的链接前缀
+    SKIP_OWNERS = {
+        "topics", "login", "signup", "features", "about", "pricing", "explore",
+        "trending", "settings", "marketplace", "sponsors", "collections", "search",
+        "new", "notifications", "orgs", "users", "enterprise", "security",
+        "copilot", "customer-stories", "readme", "events", "site", "contact",
+    }
+
+    def extract_names(page: str) -> list[str]:
+        names: list[str] = []
+        # 策略 1：经典服务端渲染结构 <article class="Box-row">...<h2><a href="/o/r">
+        for art in re.findall(r'<article[^>]*class="[^"]*\bBox-row\b[^"]*".*?</article>', page, re.S):
+            m = re.search(r'<h2[^>]*>\s*<a href="/([^"]+)"', art)
+            if m:
+                names.append(re.sub(r"\s", "", m.group(1)))
+        if names:
+            return names
+        # 策略 2：React 渲染/改版兜底——统计仓库链接出现频次，
+        # 每张卡片里 repo 链接至少出现 2 次（标题 + stargazers）
+        counts: dict[str, int] = {}
+        order: list[str] = []
+        for href in re.findall(r'href="/([A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+)"', page):
+            owner = href.split("/")[0].lower()
+            if owner in SKIP_OWNERS:
+                continue
+            if href not in counts:
+                order.append(href)
+            counts[href] = counts.get(href, 0) + 1
+        return [fn for fn in order if counts[fn] >= 2]
+
     repos: list[Repo] = []
     for period in ("daily", "weekly"):
         url = f"https://github.com/trending?since={period}"
@@ -437,28 +471,18 @@ def trending_candidates(seen: dict[str, Any], existing: dict[str, Repo]) -> list
         except Exception as e:  # 网络抖动不该杀掉整条流水线
             print(f"[WARN] trending {period} fetch failed: {e}", file=sys.stderr)
             continue
-        for art in re.findall(r'<article[^>]*class="[^"]*\bBox-row\b[^"]*".*?</article>', page, re.S):
-            m = re.search(r'<h2[^>]*>\s*<a href="/([^"]+)"', art)
-            if not m:
-                continue
-            fn = re.sub(r"\s", "", m.group(1))
-            d = re.search(r'<p class="col-9[^"]*"[^>]*>(.*?)</p>', art, re.S)
-            desc = re.sub(r"\s+", " ", d.group(1)).strip() if d else ""
-            # 总星数在 stargazers 链接里，但前面嵌着带数字的 SVG path，
-            # 必须先剥掉标签再取数字，否则会抓到 path 里的坐标
-            sm = re.search(r'href="/[^"]+/stargazers".*?</a>', art, re.S)
-            stars = 0
-            if sm:
-                nums = re.sub(r"[^\d,]", "", re.sub(r"<[^>]+>", "", sm.group(0)))
-                stars = int(nums.replace(",", "")) if nums else 0
+        names = extract_names(page)
+        print(f"[INFO] trending {period}: {len(page)} bytes, {len(names)} repo names", file=sys.stderr)
+        for fn in names:
             if fn in seen or fn in existing or any(x.full_name == fn for x in repos):
                 continue
+            meta = gh_repo_meta(fn) or {}
             repos.append(Repo(
                 full_name=fn,
-                description=desc,
-                stars=stars,
+                description=meta.get("description") or "",
+                stars=meta.get("stargazers_count") or 0,
                 url=f"https://github.com/{fn}",
-                updated_at=dt.datetime.now(dt.timezone.utc).isoformat(),
+                updated_at=meta.get("pushed_at") or dt.datetime.now(dt.timezone.utc).isoformat(),
                 matched_query=f"trending: {period}",
                 matched_weight=1,
                 source="trending",
