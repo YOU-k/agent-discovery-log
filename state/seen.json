@@ -76415,50 +76415,6 @@
     ],
     "source": "explore"
   },
-  "apps/github-actions": {
-    "first_seen": "2026-10-21",
-    "stars_at_first_seen": 0,
-    "matched_query": "trending: daily",
-    "score": 1,
-    "one_liner": "GitHub Actions 官方仓库，CI/CD 自动化的问题追踪和文档",
-    "stars_history": [
-      [
-        "2026-10-21",
-        0
-      ]
-    ],
-    "source": "trending",
-    "category": "工具",
-    "use_for": "查 GitHub Actions 的 bug、提 issue、看官方文档示例",
-    "usage": "主要当 issue tracker 用，遇到 Actions 报错就去这里搜有没有人遇到过",
-    "example": "在仓库 Issues 页搜索 workflow 报错关键词，看官方有没有已知 bug 或 workaround",
-    "compare": "不是 agent 技能也不是 AI 工具，纯粹是 GitHub 平台自身的运维基础设施，跟已追踪项目无交集",
-    "fit": 3,
-    "overlap": "无重复",
-    "verdict": "不装：就是官方 issue 跟踪器，不是可安装工具"
-  },
-  "apps/dependabot": {
-    "first_seen": "2026-10-21",
-    "stars_at_first_seen": 0,
-    "matched_query": "trending: weekly",
-    "score": 1,
-    "one_liner": "GitHub Dependabot 官方仓库，自动检测依赖更新",
-    "stars_history": [
-      [
-        "2026-10-21",
-        0
-      ]
-    ],
-    "source": "trending",
-    "category": "工具",
-    "use_for": "了解 Dependabot 工作机制、提 bug、看配置文档",
-    "usage": "GitHub 内置功能，在 repo 设置里开启就行，这个仓库主要是提 issue 和看源码",
-    "example": "在仓库设置里开启 Dependabot 后，它会自动发 PR 提示 scanpy 或 torch 版本过时",
-    "compare": "纯依赖管理工具，和已追踪的 agent 技能/科研框架完全不同赛道，没法类比",
-    "fit": 3,
-    "overlap": "无重复",
-    "verdict": "不装：GitHub 内置功能，无需额外安装"
-  },
   "DietrichGebert/ponytail": {
     "first_seen": "2026-10-21",
     "stars_at_first_seen": 170851,

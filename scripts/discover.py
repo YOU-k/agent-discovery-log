@@ -108,7 +108,7 @@ HN_SINCE_DAYS = 2  # 略大于 1 天，配合 seen 去重提高召回
 
 # 域外雷达：不限领域的兜底通道（每日）
 EXPLORE_MAX = 5
-TRENDING_MAX = 8
+TRENDING_MAX = 15
 
 # 周日普查：上周新建 repo 的全量扫描（GraphQL search，每关键词封顶 100）
 CENSUS_DAY = 6  # Sunday
@@ -464,7 +464,10 @@ def trending_candidates(seen: dict[str, Any], existing: dict[str, Repo]) -> list
         return [fn for fn in order if counts[fn] >= 2]
 
     repos: list[Repo] = []
-    for period in ("daily", "weekly"):
+    # 周榜优先：「出圈」信号主要在周榜，日榜噪声大。两榜名字合并去重后再截断，
+    # 否则日榜会先吃满 TRENDING_MAX，周榜的 REA 们进不来
+    names: list[str] = []
+    for period in ("weekly", "daily"):
         url = f"https://github.com/trending?since={period}"
         try:
             req = urllib.request.Request(url, headers={"User-Agent": "agent-discovery-log"})
@@ -472,34 +475,28 @@ def trending_candidates(seen: dict[str, Any], existing: dict[str, Repo]) -> list
         except Exception as e:  # 网络抖动不该杀掉整条流水线
             print(f"[WARN] trending {period} fetch failed: {e}", file=sys.stderr)
             continue
-        names = extract_names(page)
-        print(f"[INFO] trending {period}: {len(page)} bytes, {len(names)} repo names", file=sys.stderr)
-        # 诊断（临时）：页面形态取证，确认是服务端渲染还是 React/机器人校验页
-        i = page.find("/stargazers")
-        print(
-            f"[INFO] trending {period} forensics: boxrow={page.count('Box-row')} "
-            f"rel_href={len(re.findall(r'href=.?/', page))} "
-            f"abs_gh={page.count('https://github.com/')} "
-            f"embedded={'embeddedData' in page} "
-            f"head={page[:120]!r} star_ctx={page[max(0, i - 160):i + 40]!r}",
-            file=sys.stderr,
-        )
-        for fn in names:
-            if fn in seen or fn in existing or any(x.full_name == fn for x in repos):
-                continue
-            meta = gh_repo_meta(fn) or {}
-            repos.append(Repo(
-                full_name=fn,
-                description=meta.get("description") or "",
-                stars=meta.get("stargazers_count") or 0,
-                url=f"https://github.com/{fn}",
-                updated_at=meta.get("pushed_at") or dt.datetime.now(dt.timezone.utc).isoformat(),
-                matched_query=f"trending: {period}",
-                matched_weight=1,
-                source="trending",
-            ))
-            if len(repos) >= TRENDING_MAX:
-                break
+        period_names = extract_names(page)
+        print(f"[INFO] trending {period}: {len(page)} bytes, {len(period_names)} repo names", file=sys.stderr)
+        for fn in period_names:
+            if fn not in names:
+                names.append(fn)
+
+    for fn in names:
+        if fn in seen or fn in existing or any(x.full_name == fn for x in repos):
+            continue
+        meta = gh_repo_meta(fn)
+        if not meta:
+            continue  # /apps/github-actions 这类页面链接不是 repo，gh api 查无此库
+        repos.append(Repo(
+            full_name=fn,
+            description=meta.get("description") or "",
+            stars=meta.get("stargazers_count") or 0,
+            url=f"https://github.com/{fn}",
+            updated_at=meta.get("pushed_at") or dt.datetime.now(dt.timezone.utc).isoformat(),
+            matched_query="trending",
+            matched_weight=1,
+            source="trending",
+        ))
         if len(repos) >= TRENDING_MAX:
             break
     return repos
