@@ -473,6 +473,16 @@ def trending_candidates(seen: dict[str, Any], existing: dict[str, Repo]) -> list
             continue
         names = extract_names(page)
         print(f"[INFO] trending {period}: {len(page)} bytes, {len(names)} repo names", file=sys.stderr)
+        # 诊断（临时）：页面形态取证，确认是服务端渲染还是 React/机器人校验页
+        i = page.find("/stargazers")
+        print(
+            f"[INFO] trending {period} forensics: boxrow={page.count('Box-row')} "
+            f"rel_href={len(re.findall(r'href=.?/', page))} "
+            f"abs_gh={page.count('https://github.com/')} "
+            f"embedded={'embeddedData' in page} "
+            f"head={page[:120]!r} star_ctx={page[max(0, i - 160):i + 40]!r}",
+            file=sys.stderr,
+        )
         for fn in names:
             if fn in seen or fn in existing or any(x.full_name == fn for x in repos):
                 continue
