@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent Discovery · 日报 2026-10-22</title>
+<style>
+/* 与 radar 站（/data/yy_data/radar/docs）同一套设计系统，逐项对齐：
+   GitHub Primer 风 —— #f6f8fa 底、白卡 + #d0d7de 边、12px 圆角、轻微投影、
+   sticky 顶栏 + 胶囊 tab、移动优先 720px、仅浅色。
+   蓝 #1f6feb = 数据序列，绿 #1a7f37 = 「自动关注」，不混用。 */
+:root {
+  color-scheme: light;
+  --bg: #f6f8fa;
+  --surface: #ffffff;
+  --line: #d0d7de;
+  --line-soft: #eaeef2;
+  --ink: #1f2328;
+  --ink-2: #57606a;
+  --ink-3: #8c959f;
+  --series: #1f6feb;
+  --series-soft: #ddf4ff;
+  --hot: #1a7f37;
+  --hot-soft: #dafbe1;
+  --pos: #1a7f37;
+  --purple: #8250df;
+  --link: #0969da;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 16px/1.7 -apple-system, "PingFang SC", "Noto Sans SC", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+main { max-width: 720px; margin: 0 auto; padding: 0 12px 80px; }
+a { color: var(--link); text-decoration: none; }
+a:active { opacity: .7; }
+a:hover { text-decoration: underline; text-underline-offset: 2px; }
+
+/* sticky 顶栏 + 胶囊 tab（与 radar 一致） */
+.top { position: sticky; top: 0; z-index: 9; background: rgba(246,248,250,.94);
+       backdrop-filter: blur(8px); border-bottom: 1px solid var(--line);
+       padding: 12px 0 10px; margin-bottom: 16px; }
+.top-inner { max-width: 720px; margin: 0 auto; padding: 0 12px; }
+.top h1 { font-size: 17px; margin: 0 0 2px; }
+.meta { color: var(--ink-2); font-size: 12px; margin: 0 0 10px;
+        font-variant-numeric: tabular-nums; }
+.meta .fresh { color: var(--ink); }
+.nav { display: flex; gap: 8px; flex-wrap: wrap; margin: 0; }
+.nav a { flex: 1 1 auto; min-width: 96px; text-align: center; padding: 7px 10px;
+         border: 1px solid var(--line); border-radius: 20px; background: var(--surface);
+         color: var(--ink-2); font-size: 14px; font-weight: 600; }
+.nav a:hover { border-color: var(--ink-3); text-decoration: none; }
+.nav a.cur { background: var(--series); border-color: var(--series); color: #fff; }
+
+/* 模块分节 = 白卡 */
+section { background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+          padding: 4px 16px 16px; margin: 0 0 10px; box-shadow: 0 1px 2px rgba(31,35,40,.04); }
+section > h2 { font-size: 15px; color: var(--hot); margin: 12px 0 2px; }
+section > .sub { color: var(--ink-2); font-size: 13px; margin: 0 0 14px; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+         gap: 10px; margin: 0 0 10px; }
+a.card { display: block; background: var(--surface); border: 1px solid var(--line);
+         border-radius: 12px; padding: 11px 13px; box-shadow: 0 1px 2px rgba(31,35,40,.04); }
+a.card:hover { border-color: var(--ink-3); text-decoration: none; }
+.card h3 { margin: 0 0 4px; font-size: 15px; font-weight: 600; color: var(--ink); }
+.card .d { color: var(--ink-2); font-size: 13px; margin: 0 0 10px; }
+.card .preview { font-size: 13px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.card .preview b { color: var(--ink); }
+.card .go { color: var(--link); font-size: 13px; margin-top: 8px; display: block; }
+
+/* Stat tiles —— 单个数字不该画成图 */
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1px;
+         background: var(--line); border: 1px solid var(--line); border-radius: 12px;
+         overflow: hidden; margin: 0 0 12px; box-shadow: 0 1px 2px rgba(31,35,40,.04); }
+.tile { background: var(--surface); padding: 12px 14px; }
+.tile .k { color: var(--ink-2); font-size: 12px; }
+.tile .v { font-size: 24px; font-weight: 600; margin-top: 2px; font-variant-numeric: tabular-nums; }
+.tile .v small { font-size: 13px; font-weight: 400; color: var(--ink-3); margin-left: 4px; }
+
+/* 条形图 */
+.bar-row { display: grid; grid-template-columns: minmax(150px, 280px) 1fr 96px; gap: 14px;
+           align-items: center; padding: 5px 4px; border-radius: 6px; }
+.bar-row:hover { background: var(--line-soft); }
+.bar-row .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13.5px;
+               color: var(--ink); }
+.bar-track { background: var(--line-soft); border-radius: 4px; height: 8px; }
+.bar { background: var(--series); height: 8px; border-radius: 0 4px 4px 0; min-width: 2px; display: block; }
+.bar.hot { background: var(--hot); }
+.delta { color: var(--ink-2); font-variant-numeric: tabular-nums; text-align: right; font-size: 13px; }
+
+/* 每日发现：列图 */
+.cols { display: flex; align-items: flex-end; gap: 2px; height: 116px; }
+.col { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end;
+       align-items: stretch; min-width: 0; border-radius: 3px 3px 0 0; }
+.col:hover { background: var(--line-soft); }
+.col .v { background: var(--series); width: 100%; border-radius: 3px 3px 0 0; min-height: 2px; }
+.axis { display: flex; justify-content: space-between; color: var(--ink-3);
+        font-size: 11px; margin-top: 8px; font-variant-numeric: tabular-nums; }
+.day { border-top: 1px solid var(--line-soft); padding: 10px 2px; }
+.day .dt { color: var(--ink-2); font-size: 13.5px; font-variant-numeric: tabular-nums; }
+.day .repos { color: var(--ink-3); font-size: 13px; margin-top: 2px; }
+.day .repos a { color: var(--ink-2); margin-right: 4px; }
+
+/* 表格（radar 式全边框、表头灰底） */
+.wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 12.5px; }
+th, td { border: 1px solid var(--line); padding: 5px 8px; text-align: left;
+         vertical-align: middle; }
+thead th { background: var(--bg); color: var(--ink-2); font-weight: 600; white-space: nowrap;
+           font-size: 12px; position: sticky; top: 0; }
+tbody tr.r:hover { background: var(--line-soft); }
+td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+td.pos { color: var(--pos); }
+.spark { display: block; }
+.pill { display: inline-block; border-radius: 6px; background: var(--line-soft);
+        padding: 1px 7px; font-size: 12px; font-weight: 700; color: var(--ink-2);
+        white-space: nowrap; }
+.pill.f { background: var(--series-soft); color: var(--link); }
+.dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+       background: var(--hot); margin-right: 7px; vertical-align: 1px; }
+.one { color: var(--ink-2); font-size: 13px; }
+
+/* 可展开行：默认只留摘要列，详情收进点击展开的下一行 */
+tr.r { cursor: pointer; }
+tr.r:focus-visible { outline: 2px solid var(--series); outline-offset: -2px; }
+.car { display: inline-block; color: var(--ink-3); font-size: 11px;
+       transition: transform .15s ease; }
+tr.r.open .car { transform: rotate(90deg); color: var(--ink-2); }
+tr.detail > td { background: var(--bg); padding: 12px 14px; cursor: default; }
+.dl { display: grid; grid-template-columns: 88px 1fr; gap: 5px 18px; margin: 0; }
+.dl dt { color: var(--ink-3); font-size: 12.5px; }
+.dl dd { margin: 0; color: var(--ink-2); font-size: 13.5px; }
+.toggle-all { float: right; border: 1px solid var(--line); background: var(--surface);
+              color: var(--ink-2); border-radius: 20px; padding: 2px 12px;
+              font-size: 12px; cursor: pointer; font-family: inherit; }
+.toggle-all:hover { border-color: var(--ink-3); }
+
+table { table-layout: fixed; }
+th:nth-child(1), td:nth-child(1) { width: 32%; }
+th:nth-child(2), td:nth-child(2) { width: 96px; }
+th:nth-child(3), td:nth-child(3) { width: 104px; }
+th:nth-child(4), td:nth-child(4) { width: 84px; }
+th:nth-child(5), td:nth-child(5) { width: 88px; }
+th:nth-child(6), td:nth-child(6) { width: 128px; }
+th:nth-child(7), td:nth-child(7) { width: 30px; }
+td:nth-child(1) { overflow-wrap: anywhere; }
+.legend { display: flex; gap: 18px; align-items: center; color: var(--ink-3);
+          font-size: 12px; margin-top: 14px; }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px;
+            margin-right: 6px; vertical-align: -1px; }
+
+/* 日报正文（reports/*.html） */
+.report h1 { font-size: 20px; margin: 8px 0 8px; }
+.report h2 { font-size: 15px; color: var(--hot); margin: 18px 0 6px; }
+.report p { color: #4b5563; font-size: 14.5px; margin: 6px 0; }
+.report ul { margin: 6px 0 14px; padding-left: 22px; }
+.report li { margin: 3px 0; color: #4b5563; font-size: 14.5px; }
+.report table { table-layout: auto; font-size: 12.5px; display: block; overflow-x: auto; }
+.report code { background: var(--line-soft); border-radius: 4px; padding: 1px 5px; font-size: 12.5px; }
+.back { display: inline-block; margin: 6px 0 10px; font-size: 13px; }
+
+/* 每页顶部的一句话导读 */
+.lede { background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+        padding: 11px 13px; margin: 0 0 12px; color: #4b5563; font-size: 14px;
+        box-shadow: 0 1px 2px rgba(31,35,40,.04); }
+.lede b { color: var(--ink); }
+</style>
+</head>
+<body>
+<div class="top"><div class="top-inner">
+  <h1>Agent Discovery</h1>
+  <p class="meta"><span class="fresh">数据更新于 2026-10-22 00:10 UTC</span> · 每晚 22:00 UTC 自动更新</p>
+  <nav class="nav">
+  <a href="index.html">主页</a>
+  <a href="velocity.html">日均涨速</a>
+  <a href="movers.html">累计涨幅</a>
+  <a href="daily.html">每日新发现</a>
+  <a href="repos.html">全部追踪</a>
+  </nav>
+</div></div>
+<main>
+
+<section><a class="back" href="../daily.html">← 每日新发现</a>
+<div class="report"><h1>Agent Discovery · 2026-10-22</h1>
+<p>Found <strong>10 new repos</strong> across 14 queries + HN + trending.</p>
+<p>Sorted by fit-to-my-stack, then relevance score.</p>
+<h2>[score 8/10] [fit 4/10] omnara-ai/omnara  ·  ★2969</h2>
+<ul>
+<li><strong>类型</strong>: 多智能体框架</li>
+<li>The open-source managed agent platform. A self-hostable alternative to Claude Managed Agents and OpenAI&#x27;s Agents API.</li>
+<li><strong>是什么</strong>: 开源的托管型 agent 平台。</li>
+<li><strong>能做什么</strong>: 搭建和管理多个 AI agent，提供统一 API 调用接口。</li>
+<li><strong>大家怎么用</strong>: 本地或服务器部署，通过 API 创建、调度和管理后台运行的 agent。</li>
+<li><strong>举个例子</strong>: 用 API 创建一个 agent，让它定时去下载 GEO 数据库的新单细胞数据集。</li>
+<li><strong>和已有项目比</strong>: 比 K-Dense-AI/scientific-agent-skills 更偏底层基建，不够开箱即用。</li>
+<li><strong>重复情况</strong>: 和 archestra-ai/archestra 部分重叠，它更偏通用托管。</li>
+<li><strong>装不装</strong>: 观望：个人单机跑脚本够用，暂不需平台。</li>
+<li>Updated: 2026-10-21</li>
+<li>Source: <code>hn</code> · Query hit: <code>hn: Show HN: Omnara – Open-Source Alternative to Claude Managed </code></li>
+<li>HN: <a href="https://news.ycombinator.com/item?id=50183892">18 points</a></li>
+<li><a href="https://github.com/omnara-ai/omnara">https://github.com/omnara-ai/omnara</a></li>
+</ul>
+<h2>[score 7/10] [fit 2/10] archestra-ai/archestra  ·  ★4383</h2>
+<ul>
+<li><strong>类型</strong>: 多智能体框架</li>
+<li>Enterprise AI Platform with guardrails, MCP registry, gateway &amp; orchestrator</li>
+<li><strong>是什么</strong>: 带安全护栏和监控的企业级 AI 平台。</li>
+<li><strong>能做什么</strong>: 给企业搭安全、带权限控制的内部 AI 助手或 agent 调度系统。</li>
+<li><strong>大家怎么用</strong>: 配置 SSO 和权限后，接入大模型进行带沙箱的代码执行和监控。</li>
+<li><strong>举个例子</strong>: 在企业内网部署后，员工通过特定网关调用 AI 执行带权限审核的代码。</li>
+<li><strong>和已有项目比</strong>: 对科研者太重；ruvnet/ruflo 等轻量多智能体框架更合适。</li>
+<li><strong>重复情况</strong>: 和 omnara-ai/omnara 部分重叠，它更偏企业安全。</li>
+<li><strong>装不装</strong>: 不装：太重太企业，个人科研用不上。</li>
+<li>Updated: 2026-10-22</li>
+<li>Source: <code>hn</code> · Query hit: <code>hn: Archestra 1.4: OpenAPPA and Self Hosted Runtime for Claude C</code></li>
+<li>HN: <a href="https://news.ycombinator.com/item?id=50185318">8 points</a></li>
+<li><a href="https://github.com/archestra-ai/archestra">https://github.com/archestra-ai/archestra</a></li>
+</ul>
+<h2>emotixco/claude-skills-founder  ·  ★694</h2>
+<ul>
+<li>Claude Code skills for startup founders — product briefs, competitor analysis, pricing strategy, pitch decks, and GTM plans from your terminal</li>
+<li>Updated: 2026-10-21</li>
+<li>Source: <code>github</code> · Query hit: <code>claude code skill</code></li>
+<li><a href="https://github.com/emotixco/claude-skills-founder">https://github.com/emotixco/claude-skills-founder</a></li>
+</ul>
+<h2>域外雷达（不限领域的新建热门，未分析）</h2>
+<ul>
+<li><a href="https://github.com/ikow/php2shell-poc">ikow/php2shell-poc</a> · ★926 — CVE-2026-109618/109619 PHP session.upload_progress Exploit Research — POC &amp; Analysis</li>
+<li><a href="https://github.com/Noniv/web-ocean">Noniv/web-ocean</a> · ★845 — Real-time WebGPU ocean renderer written from scratch, no engine. FFT waves, whitecaps, sun glitter, physically based sunset sky with clouds, free camera. Built with Claude Code (Opus 5.5). Opens from a single 61 KB HTML file in Chrome.</li>
+<li><a href="https://github.com/cranebeaker/coop-anything">cranebeaker/coop-anything</a> · ★789 — Co-op Anything: point your AI agent at any single-player game and play it with friends (online and/or splitscreen!). MCP server and playbook to let you reverse engineer, fix, test, ship and share what it learns.</li>
+<li><a href="https://github.com/eagle-hq/EAGLE-4">eagle-hq/EAGLE-4</a> · ★721 — Official Inference Code of EAGLE-4</li>
+<li><a href="https://github.com/stackedlol/ascii-sharks">stackedlol/ascii-sharks</a> · ★716 — ascii shark components in typescript</li>
+</ul>
+<h2>GitHub Trending（日榜/周榜出圈项目，未分析）</h2>
+<ul>
+<li><a href="https://github.com/Graphify-Labs/graphify">Graphify-Labs/graphify</a> · ★131,608 — Turn any codebase, with its docs, SQL schemas, configs, and PDFs, into a queryable knowledge graph. A /graphify skill for Claude Code, Cursor, Codex, and Gemini CLI: local deterministic AST parsing, every edge explained, no vector store.</li>
+<li><a href="https://github.com/shiyu-coder/Kronos">shiyu-coder/Kronos</a> · ★42,816 — Kronos: A Foundation Model for the Language of Financial Markets</li>
+</ul>
+<h2>Trending since first seen</h2>
+<table><thead><tr><th>Repo</th><th>First seen</th><th>Stars then → now</th><th>Δ</th></tr></thead><tbody>
+<tr><td><a href="https://github.com/storytold/photocraft">storytold/photocraft</a></td><td>2026-10-05</td><td>733 → 70624</td><td>+69891</td></tr>
+<tr><td><a href="https://github.com/ayghri/i-have-adhd">ayghri/i-have-adhd</a></td><td>2026-07-19</td><td>3084 → 58166</td><td>+55082</td></tr>
+<tr><td><a href="https://github.com/JuliusBrussee/caveman">JuliusBrussee/caveman</a></td><td>2026-07-02</td><td>79188 → 114130</td><td>+34942</td></tr>
+<tr><td><a href="https://github.com/NandhaKishorM/laya">NandhaKishorM/laya</a></td><td>2026-09-19</td><td>1227 → 33856</td><td>+32629</td></tr>
+<tr><td><a href="https://github.com/blader/humanizer">blader/humanizer</a></td><td>2026-07-02</td><td>27141 → 59293</td><td>+32152</td></tr>
+<tr><td><a href="https://github.com/feder-cr/dots">feder-cr/dots</a></td><td>2026-10-01</td><td>1933 → 32206</td><td>+30273</td></tr>
+<tr><td><a href="https://github.com/Niko1221/Strata">Niko1221/Strata</a></td><td>2026-09-29</td><td>1086 → 29931</td><td>+28845</td></tr>
+<tr><td><a href="https://github.com/virgiliojr94/book-to-skill">virgiliojr94/book-to-skill</a></td><td>2026-07-02</td><td>7442 → 35595</td><td>+28153</td></tr>
+<tr><td><a href="https://github.com/browser-use/jev-ultrafast">browser-use/jev-ultrafast</a></td><td>2026-09-17</td><td>1947 → 23420</td><td>+21473</td></tr>
+<tr><td><a href="https://github.com/wheresryan22/anatomy">wheresryan22/anatomy</a></td><td>2026-10-11</td><td>265 → 18524</td><td>+18259</td></tr>
+</tbody></table></div></section>
+
+</main>
+</body>
+</html>
