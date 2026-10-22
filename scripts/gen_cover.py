@@ -47,16 +47,18 @@ IMAGE_MODEL = os.environ.get("IMAGE_MODEL") or "doubao-seedream-5-0-flash-260915
 # Seedream 3.0 的合法档位，放后面兜底；都失败再试 "2K" 令牌写法。
 SIZE_CANDIDATES = [os.environ.get("IMAGE_SIZE") or "1728x2304", "864x1152", "2K"]
 
-# 固定风格基底：单一清晰主体的等距 3D 物件隐喻。
-# 教训（2026-10-22 首版被用户否了）：不要"线框图/终端/界面截图"类主题——
-# 禁了文字之后界面图只剩一堆没人认识的抽象框框；必须让模型画"一个具体的东西"。
+# 固定风格基底：微观世界 × 流程画风的科学插画。
+# 教训：v1 抽象线框被否（看不懂）；v2 物件隐喻被否（脱离实际用途）；
+# v3 写实场景被否（不够科学感）。用户要的是"显微镜下的精密系统 +
+# 流程节点连线"这种期刊插图式的画面。
 STYLE_BASE = (
-    "竖版构图，深海军蓝到近黑渐变背景，画面中央只有一个清晰、巨大、"
-    "一眼可辨的立体主体，等距 3D 渲染风格，柔和体积光，青色与暖橙色边缘光，"
-    "细节精致有质感，电影级打光，周围大量留白。"
-    "绝对不要画电脑屏幕、终端、代码、窗口或任何软件界面，"
-    "把主题转化成一个具体的、现实中的物件隐喻。"
-    "no text, no watermark, no letters, no words. 主题："
+    "竖版构图，科学期刊封面级插画，微观世界风格：深邃藏蓝背景上呈现一个"
+    "被放大观测的精密微观系统，像显微镜下的生态——发光的核心装置位于画面"
+    "中央，若干功能模块环绕四周，模块之间用发光的流程管线与节点依次连接，"
+    "带有清晰的流程方向感与层次结构；青色荧光为主色调，暖橙色点缀关键节点，"
+    "等距视角，扁平化科技美学结合细腻立体质感，柔和辉光，细节丰富干净，"
+    "四周留白。绝对不要写实的办公室/人物场景，不要照片风。"
+    "no text, no watermark, no letters, no words. 微观系统的主题："
 )
 
 MAX_BYTES = 5 * 1024 * 1024  # 超过就降尺寸重存，Pages 上别挂太大的图
@@ -70,8 +72,9 @@ def info(msg: str) -> None:
     print(f"[INFO] {msg}", file=sys.stderr)
 
 
-def parse_xhs_md(path: Path) -> tuple[str, str, str] | None:
-    """从 xhs 草稿里抽 (H1 标题, 首图建议, 开篇段落)。抽不到首图建议返回 None。"""
+def parse_xhs_md(path: Path) -> tuple[str, str, str, str] | None:
+    """从 xhs 草稿里抽 (H1 标题, 首图建议, 开篇段落, 仓库名)。
+    抽不到首图建议返回 None；仓库名来自「> 项目：」行，抽不到为空串。"""
     if not path.exists():
         warn(f"草稿不存在：{path}")
         return None
@@ -83,29 +86,36 @@ def parse_xhs_md(path: Path) -> tuple[str, str, str] | None:
     idea = m.group(1).strip()
     h1 = re.search(r"^#\s+(.+)$", text, re.MULTILINE)
     title = h1.group(1).strip() if h1 else ""
+    repo = ""
+    m_repo = re.search(r"^>\s*项目[：:]\s*https?://github\.com/([\w.-]+/[\w.-]+)",
+                       text, re.MULTILINE)
+    if m_repo:
+        repo = m_repo.group(1).rstrip("/")
     intro = ""
     for para in re.split(r"\n\s*\n", text):
         para = para.strip()
         if para and not para.startswith(("#", ">", "---")):
             intro = para[:400]
             break
-    return title, idea, intro
+    return title, idea, intro, repo
 
 
 def scene_idea(title: str, idea: str, intro: str) -> str:
-    """把「首图建议」改写成真实使用场景（一次廉价 LLM 调用），失败则用原句。
+    """把「首图建议」改写成微观系统流程画面（一次廉价 LLM 调用），失败用原句。
 
     教训（2026-10-22）：直接拿 cover_idea 画出来的是抽象概念（玻璃舱插件），
-    和工具实际用途无关。封面应该画「这个工具被人真实使用的画面」。
+    和工具实际用途无关。封面应该画「这个工具的工作流程」的微观世界画面。
     """
     sys.path.insert(0, str(ROOT / "scripts"))
     try:
         import discover  # llm_chat；未配置 key 时返回 ""
         out = discover.llm_chat(
-            "你在给一篇工具深扒文章设计封面图。请把下面的项目介绍转化成一句"
-            "「图像生成用的场景描述」（中文，≤60字）：画出这个工具被人真实使用的"
-            "画面，主体是一个具体的人或物在动手用它解决它专治的问题；"
-            "不要屏幕/终端/窗口等界面，不要抽象符号和隐喻堆砌。"
+            "你在给一篇工具深扒文章设计封面图，画风是「微观世界里的精密系统 + "
+            "流程节点连线」的科学插画。请把下面的项目介绍转化成一句图像生成用的"
+            "场景描述（中文，≤60字）：把这个工具的工作过程想象成一个微观系统——"
+            "它处理的对象是什么、经过哪几个关键环节，每个环节画成一个发光模块，"
+            "模块之间用管线连接成流程。只描述画面里有什么元素和它们怎么连，"
+            "不要解释概念，不要抽象口号。"
             f"\n\n文章标题：{title}\n项目介绍：{intro}\n原首图建议：{idea}"
             "\n\n只输出场景描述一句，不要其他内容。",
             max_tokens=150, json_mode=False,
@@ -205,8 +215,8 @@ def find_latin_font() -> str | None:
     return None
 
 
-def overlay_text(png: bytes, title: str, date: str) -> bytes:
-    """PIL 叠字：标题左上角、日期左下角，垫半透明色块保证可读。
+def overlay_text(png: bytes, title: str, date: str, repo: str = "") -> bytes:
+    """PIL 叠字：标题左上角、日期左下角、仓库名右下角，垫半透明色块保证可读。
     中英文混排：ASCII 走西文字体，其余走 CJK 字体（有的 CJK 字体不含
     Latin 字形，单字体渲染会出豆腐块）。找不到 CJK 字体就只出底图。"""
     from PIL import Image, ImageDraw, ImageFont  # 延迟导入：没装 PIL 时底图还能出
@@ -267,6 +277,13 @@ def overlay_text(png: bytes, title: str, date: str) -> bytes:
     d.rectangle([pad - 12, dy - 8, pad + dw + 12, dy + dh + 8],
                 fill=(6, 12, 28, 160))
     draw_mixed(pad, dy, date, f_lat_d, f_cjk_d, (140, 200, 255, 255))
+    # 仓库名（owner/repo，纯 ASCII）做成右下角的小标签，让人知道画的是谁
+    if repo:
+        rw = textlen(repo, f_lat_d, f_cjk_d)
+        rx = w - pad - rw
+        d.rectangle([rx - 12, dy - 8, rx + rw + 12, dy + dh + 8],
+                    fill=(6, 12, 28, 160))
+        draw_mixed(rx, dy, repo, f_lat_d, f_cjk_d, (255, 190, 120, 255))
     out_img = Image.alpha_composite(img.convert("RGBA"), layer).convert("RGB")
     # 控大小：超 5MB 就缩到 864 宽重存
     out = io.BytesIO()
@@ -296,7 +313,7 @@ def main() -> int:
     parsed = parse_xhs_md(PUBLISH / f"{args.date}-xhs.md")
     if not parsed:
         return 0  # 抽不到首图建议不是错误，WARN 过了直接退
-    title, idea, intro = parsed
+    title, idea, intro, repo = parsed
     scene = scene_idea(title, idea, intro)
     if scene != idea:
         info(f"场景改写：{scene}")
@@ -306,7 +323,7 @@ def main() -> int:
         return 0  # 生图失败只 WARN，不出文件也不炸流水线
 
     try:
-        png = overlay_text(png, title, args.date)
+        png = overlay_text(png, title, args.date, repo)
     except ImportError:
         warn("没装 PIL（pip install pillow），跳过叠字只出底图")
     except Exception as e:  # 叠字是锦上添花，任何异常都不该炸流水线
