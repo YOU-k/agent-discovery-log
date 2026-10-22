@@ -70,8 +70,8 @@ def info(msg: str) -> None:
     print(f"[INFO] {msg}", file=sys.stderr)
 
 
-def parse_xhs_md(path: Path) -> tuple[str, str] | None:
-    """从 xhs 草稿里抽 (H1 标题, 首图建议)。抽不到首图建议返回 None。"""
+def parse_xhs_md(path: Path) -> tuple[str, str, str] | None:
+    """从 xhs 草稿里抽 (H1 标题, 首图建议, 开篇段落)。抽不到首图建议返回 None。"""
     if not path.exists():
         warn(f"草稿不存在：{path}")
         return None
@@ -83,7 +83,38 @@ def parse_xhs_md(path: Path) -> tuple[str, str] | None:
     idea = m.group(1).strip()
     h1 = re.search(r"^#\s+(.+)$", text, re.MULTILINE)
     title = h1.group(1).strip() if h1 else ""
-    return title, idea
+    intro = ""
+    for para in re.split(r"\n\s*\n", text):
+        para = para.strip()
+        if para and not para.startswith(("#", ">", "---")):
+            intro = para[:400]
+            break
+    return title, idea, intro
+
+
+def scene_idea(title: str, idea: str, intro: str) -> str:
+    """把「首图建议」改写成真实使用场景（一次廉价 LLM 调用），失败则用原句。
+
+    教训（2026-10-22）：直接拿 cover_idea 画出来的是抽象概念（玻璃舱插件），
+    和工具实际用途无关。封面应该画「这个工具被人真实使用的画面」。
+    """
+    sys.path.insert(0, str(ROOT / "scripts"))
+    try:
+        import discover  # llm_chat；未配置 key 时返回 ""
+        out = discover.llm_chat(
+            "你在给一篇工具深扒文章设计封面图。请把下面的项目介绍转化成一句"
+            "「图像生成用的场景描述」（中文，≤60字）：画出这个工具被人真实使用的"
+            "画面，主体是一个具体的人或物在动手用它解决它专治的问题；"
+            "不要屏幕/终端/窗口等界面，不要抽象符号和隐喻堆砌。"
+            f"\n\n文章标题：{title}\n项目介绍：{intro}\n原首图建议：{idea}"
+            "\n\n只输出场景描述一句，不要其他内容。",
+            max_tokens=150, json_mode=False,
+        )
+        if out and len(out.strip()) >= 8:
+            return out.strip().strip('"')
+    except Exception as e:  # 场景改写是增强，任何失败都落回原句
+        warn(f"场景改写失败，用原首图建议：{e}")
+    return idea
 
 
 def call_images_api(prompt: str) -> bytes | None:
@@ -265,9 +296,12 @@ def main() -> int:
     parsed = parse_xhs_md(PUBLISH / f"{args.date}-xhs.md")
     if not parsed:
         return 0  # 抽不到首图建议不是错误，WARN 过了直接退
-    title, idea = parsed
+    title, idea, intro = parsed
+    scene = scene_idea(title, idea, intro)
+    if scene != idea:
+        info(f"场景改写：{scene}")
 
-    png = call_images_api(STYLE_BASE + idea)
+    png = call_images_api(STYLE_BASE + scene)
     if not png:
         return 0  # 生图失败只 WARN，不出文件也不炸流水线
 
