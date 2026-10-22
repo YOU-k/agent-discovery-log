@@ -26,6 +26,13 @@ jobs:
         with:
           python-version: "3.11"
 
+      # XHS 封面叠字需要 CJK 字体（gen_cover.py 找不到字体只 WARN 不炸，
+      # 但装上了标题才能叠上去）；PIL 用来叠字和控图大小
+      - name: Install CJK font + Pillow (XHS cover)
+        run: |
+          sudo apt-get install -y fonts-noto-cjk
+          pip install --quiet pillow
+
       - name: Install deps (optional Claude scoring)
         run: |
           if [ -n "$ANTHROPIC_API_KEY" ]; then
@@ -69,6 +76,7 @@ jobs:
           LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
           LLM_BASE_URL: ${{ vars.LLM_BASE_URL }}
           LLM_MODEL: ${{ vars.LLM_MODEL }}
+          IMAGE_MODEL: ${{ vars.IMAGE_MODEL }}
           TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
           FEISHU_WEBHOOK: ${{ secrets.FEISHU_WEBHOOK }}
           FEISHU_KEYWORD: ${{ vars.FEISHU_KEYWORD }}

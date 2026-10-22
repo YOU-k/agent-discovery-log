@@ -27,6 +27,7 @@ import datetime as dt
 import json
 import os
 import re
+import subprocess
 import sys
 import urllib.parse
 import urllib.request
@@ -317,6 +318,28 @@ def render_md(draft: dict[str, Any], full_name: str, total: int, style_name: str
     )
 
 
+def try_gen_cover(date: str) -> str | None:
+    """夜班封面：调 scripts/gen_cover.py，成功就返回 Pages 公开链接。
+    封面是锦上添花——任何失败只 WARN，绝不挡住文案发送。
+    Pages 部署有 1-2 分钟延迟，链接短暂 404 可接受。"""
+    try:
+        r = subprocess.run(
+            [sys.executable, str(ROOT / "scripts" / "gen_cover.py"), "--date", date],
+            capture_output=True, text=True, timeout=600,
+        )
+        if r.stderr:
+            print(r.stderr.rstrip(), file=sys.stderr)
+        if r.returncode != 0:
+            print(f"[WARN] gen_cover exited {r.returncode}", file=sys.stderr)
+            return None
+    except (OSError, subprocess.SubprocessError) as e:
+        print(f"[WARN] gen_cover failed: {e}", file=sys.stderr)
+        return None
+    if not (PUBLISH / f"{date}-cover.png").exists():
+        return None
+    return f"https://you-k.github.io/agent-discovery-log/covers/{date}-cover.png"
+
+
 def post_feishu(md: str) -> int:
     if not WEBHOOK:
         print("[INFO] FEISHU_WEBHOOK not set — skipping", file=sys.stderr)
@@ -408,6 +431,9 @@ def main() -> int:
         covered.append(full_name)
         save_covered(covered)
     print(f"[INFO] wrote {out.relative_to(ROOT)}", file=sys.stderr)
+    cover_url = try_gen_cover(dt.date.today().isoformat())
+    if cover_url:
+        md += f"> 封面：{cover_url}\n"
     return post_feishu(md)
 
 
