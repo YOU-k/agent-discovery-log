@@ -16,7 +16,7 @@ Usage:
 Env:
     ARK_API_KEY / LLM_API_KEY    — 生图 key（CI 里就是 LLM_API_KEY）
     ARK_BASE_URL / LLM_BASE_URL  — 默认 https://ark.cn-beijing.volces.com/api/v3
-    IMAGE_MODEL                  — 默认 doubao-seedream-4-5-251128
+    IMAGE_MODEL                  — 默认 doubao-seedream-5-0-flash-260915
     IMAGE_SIZE                   — 默认 1728x2304（3:4 竖版）
 """
 from __future__ import annotations
@@ -41,7 +41,7 @@ DOCS_COVERS = ROOT / "docs" / "covers"
 BASE_URL = (os.environ.get("ARK_BASE_URL") or os.environ.get("LLM_BASE_URL")
             or "https://ark.cn-beijing.volces.com/api/v3").rstrip("/")
 API_KEY = os.environ.get("ARK_API_KEY") or os.environ.get("LLM_API_KEY") or ""
-IMAGE_MODEL = os.environ.get("IMAGE_MODEL") or "doubao-seedream-4-5-251128"
+IMAGE_MODEL = os.environ.get("IMAGE_MODEL") or "doubao-seedream-5-0-flash-260915"
 
 # 3:4 竖版。Seedream 4.x 的显式尺寸下限在 1280 边长量级，864x1152 是
 # Seedream 3.0 的合法档位，放后面兜底；都失败再试 "2K" 令牌写法。
