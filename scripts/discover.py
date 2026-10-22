@@ -60,6 +60,10 @@ QUERIES: list[tuple[str, int]] = [
     # awesome-list 专属通道（主通道在本地用 NOISE_RE 降噪，见 is_noise）
     ("awesome agent skills", 4),
     ("awesome llm agents", 4),
+    # 巨头兜底：名字就叫 *skills* 的大库往往零 topics、描述极简
+    # （mattpocock/skills 30 万★，描述里连 "agent skills" 都没有），
+    # 词汇驱动查询结构性漏它们；in:name 正好补上。实测头名 mattpocock/skills 300k。
+    ("skills in:name", 6),
     # 新生项目通道：主查询按 stars 排序永远偏向老项目，用 created:> 滚动窗口捞新
     ("claude code skill created:>{created_since}", 8),
     ("claude code subagent created:>{created_since}", 8),
