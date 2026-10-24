@@ -45,5 +45,6 @@
   "kishormorol/cli-faq-shortcuts",
   "headroomlabs-ai/headroom",
   "anthropics/claude-plugins-official",
-  "luongnv89/claude-howto"
+  "luongnv89/claude-howto",
+  "rbartoli/agent-usage-guard"
 ]

@@ -170,7 +170,7 @@ td:nth-child(1) { overflow-wrap: anywhere; }
 <body>
 <div class="top"><div class="top-inner">
   <h1>Agent Discovery</h1>
-  <p class="meta"><span class="fresh">数据更新于 2026-10-23 00:08 UTC</span> · 每晚 22:00 UTC 自动更新</p>
+  <p class="meta"><span class="fresh">数据更新于 2026-10-24 00:00 UTC</span> · 每晚 22:00 UTC 自动更新</p>
   <nav class="nav">
   <a href="index.html">主页</a>
   <a href="velocity.html">日均涨速</a>
@@ -182,68 +182,85 @@ td:nth-child(1) { overflow-wrap: anywhere; }
 <main>
 
 <section><a class="back" href="../daily.html">← 每日新发现</a>
-<div class="report"><h1>Agent Discovery · 2026-10-23</h1>
-<p>Found <strong>12 new repos</strong> across 15 queries + HN + trending.</p>
+<div class="report"><h1>Agent Discovery · 2026-10-24</h1>
+<p>Found <strong>14 new repos</strong> across 15 queries + HN + trending.</p>
 <p>Sorted by fit-to-my-stack, then relevance score.</p>
-<h2>[score 9/10] [fit 8/10] rbartoli/agent-usage-guard  ·  ★44</h2>
-<ul>
-<li><strong>类型</strong>: Claude Code mod/工具</li>
-<li>A Claude Code mod that holds subagent fan-out, heavy-context prompts and retry loops before they spend your usage window. It reads your plan&#x27;s usage, counts agents across every session, and asks in Claude Code&#x27;s own dialog.</li>
-<li><strong>是什么</strong>: 防止Claude Code子智能体烧光额度的守卫</li>
-<li><strong>能做什么</strong>: 跑生信流程时拦无意义的agent并发和重试，省token</li>
-<li><strong>大家怎么用</strong>: 装成mod，自动监控上下文和agent数，超限前弹窗问你</li>
-<li><strong>举个例子</strong>: 让Claude跑多样本分析时，它拦住第5个并发agent问你确认</li>
-<li><strong>和已有项目比</strong>: 专管agent调用和token消耗拦截，比压缩上下文工具更治本</li>
-<li><strong>重复情况</strong>: 和 caveman, headroom 部分重叠，但专管防超支</li>
-<li><strong>装不装</strong>: 装：防Claude跑生信数据烧光额度</li>
-<li>Updated: 2026-10-23</li>
-<li>Source: <code>hn</code> · Query hit: <code>hn: Show HN: agent-usage-guard – a Claude Code mod to protect yo</code></li>
-<li>HN: <a href="https://news.ycombinator.com/item?id=50198936">20 points</a></li>
-<li><a href="https://github.com/rbartoli/agent-usage-guard">https://github.com/rbartoli/agent-usage-guard</a></li>
-</ul>
-<h2>[score 8/10] [fit 2/10] rossark0/rossark-motion-skill  ·  ★274</h2>
+<h2>[score 7/10] [fit 3/10] actionow-ai/vvv  ·  ★247</h2>
 <ul>
 <li><strong>类型</strong>: Claude Code skill</li>
-<li>Turn any SVG into a professional 60 fps animation. A Claude Code skill that brings anything drawn to life: live faces, full-body acting and whole scenes, in React Native and SwiftUI.</li>
-<li><strong>是什么</strong>: 把SVG图变成60帧动画的技能</li>
-<li><strong>能做什么</strong>: 做APP时给画的SVG图加呼吸、眨眼等动效</li>
-<li><strong>大家怎么用</strong>: npx安装技能，让Claude把SVG生成带动作的动画代码</li>
-<li><strong>举个例子</strong>: 把画的细胞SVG丢给Claude，生成RNA在里面流动的动画代码</li>
-<li><strong>和已有项目比</strong>: 比gsap更专精人物表情，但在生信科研里完全用不上</li>
-<li><strong>重复情况</strong>: 和 greensock/gsap-skills 部分重叠，都做动画</li>
-<li><strong>装不装</strong>: 不装：科研PPT用不上高级UI动画</li>
-<li>Updated: 2026-10-22</li>
+<li>Build a video template once, reuse it across coding agents. Editable Remotion templates and an Agent Skill for Claude Code, Codex and 25+ agents.</li>
+<li><strong>是什么</strong>: 给AI agent用的可编辑视频模板。</li>
+<li><strong>能做什么</strong>: 用AI批量生成或修改视频内容。</li>
+<li><strong>大家怎么用</strong>: 定义Remotion视频模板，让AI替换其中的文字和图片。</li>
+<li><strong>举个例子</strong>: 用Claude输入文本，基于模板生成一个带配音的科研汇报视频。</li>
+<li><strong>和已有项目比</strong>: 比hyperframes更偏模板化复用，适合做汇报视频但科研优先级低。</li>
+<li><strong>重复情况</strong>: 和 heygen-com/hyperframes 部分重叠</li>
+<li><strong>装不装</strong>: 观望：科研PPT用不到视频模板</li>
+<li>Updated: 2026-10-23</li>
 <li>Source: <code>github</code> · Query hit: <code>claude code skill created:&gt;2026-08-24</code></li>
-<li><a href="https://github.com/rossark0/rossark-motion-skill">https://github.com/rossark0/rossark-motion-skill</a></li>
+<li><a href="https://github.com/actionow-ai/vvv">https://github.com/actionow-ai/vvv</a></li>
+</ul>
+<h2>[score 8/10] [fit 2/10] Ryze-AI-Adgent/open-seo-mcp-skills  ·  ★6821</h2>
+<ul>
+<li><strong>类型</strong>: Claude Code skill / MCP</li>
+<li>Free SEO MCP server + open-source SEO and GEO skills for Claude: keyword research, rank tracking, audits, backlinks, AI visibility on your real GSC/GA4/ads data. claude mcp add ryze --transport http https://connector.get-ryze.ai/mcp</li>
+<li><strong>是什么</strong>: 免费的SEO和GEO数据MCP服务器技能。</li>
+<li><strong>能做什么</strong>: 做关键词研究、排名追踪、网站SEO审计。</li>
+<li><strong>大家怎么用</strong>: 连接Google账号，让Claude分析搜索数据并优化SEO。</li>
+<li><strong>举个例子</strong>: 输入博客网址，Claude分析搜索词排名并给出优化建议。</li>
+<li><strong>和已有项目比</strong>: 相比其他技能包专注SEO，对科研博客有点用但非刚需。</li>
+<li><strong>重复情况</strong>: 和 backtrue/thinkwithblack-skill 营销方面部分重叠</li>
+<li><strong>装不装</strong>: 不装：搞SEO不如专心写论文</li>
+<li>Updated: 2026-10-23</li>
+<li>Source: <code>github</code> · Query hit: <code>skills in:name</code></li>
+<li><a href="https://github.com/Ryze-AI-Adgent/open-seo-mcp-skills">https://github.com/Ryze-AI-Adgent/open-seo-mcp-skills</a></li>
+</ul>
+<h2>[score 8/10] [fit 1/10] backtrue/thinkwithblack-skill  ·  ★237</h2>
+<ul>
+<li><strong>类型</strong>: 资源合集 / Claude Code skill</li>
+<li>365 free AI marketing skills (zh-TW/en) for ChatGPT, Claude, Gemini, Claude Code &amp; Cursor — copywriting, ads budget, margin, CRM, email. 365 個免費 AI 行銷 Skills</li>
+<li><strong>是什么</strong>: 365个免费的AI营销技能包。</li>
+<li><strong>能做什么</strong>: 写广告文案、算广告预算和毛利、客户回购分析。</li>
+<li><strong>大家怎么用</strong>: 用npx安装，或上传Markdown让AI按营销方法解决商业问题。</li>
+<li><strong>举个例子</strong>: 输入产品信息，AI自动套用技能生成卖点文案和预算表。</li>
+<li><strong>和已有项目比</strong>: 与已有的PM技能类似，但聚焦营销，对科研论文毫无用处。</li>
+<li><strong>重复情况</strong>: 和 phuryn/pm-skills 部分重叠</li>
+<li><strong>装不装</strong>: 不装：科研不搞营销</li>
+<li>Updated: 2026-10-23</li>
+<li>Source: <code>github</code> · Query hit: <code>claude code skill created:&gt;2026-08-24</code></li>
+<li><a href="https://github.com/backtrue/thinkwithblack-skill">https://github.com/backtrue/thinkwithblack-skill</a></li>
+</ul>
+<ul>
+<li>1llu50ry/mcp-gamehacking · ★259 — 同类跟进 of <a href="https://github.com/K-Dense-AI/claude-skills-mcp">K-Dense-AI/claude-skills-mcp</a></li>
 </ul>
 <h2>域外雷达（不限领域的新建热门，未分析）</h2>
 <ul>
-<li><a href="https://github.com/9bie/php2shell-bypass-aslr-exp">9bie/php2shell-bypass-aslr-exp</a> · ★953 — A php2shell exploit that requires no modifications to the official version, and does not require display_errors or limit_memory.</li>
-<li><a href="https://github.com/eness/php2shell-CVE-2026-109618-CVE-2026-109619-PoC">eness/php2shell-CVE-2026-109618-CVE-2026-109619-PoC</a> · ★886 — Proof-of-Concept (PoC) exploit for php2shell (CVE-2026-109618 / CVE-2026-109619), demonstrating remote code execution in vulnerable PHP environments. For security research and educational purposes only.</li>
-<li><a href="https://github.com/openai/php2shell-checker">openai/php2shell-checker</a> · ★813 — </li>
-<li><a href="https://github.com/UniXNU/UniXNU">UniXNU/UniXNU</a> · ★769 — Run iOS and macOS on non-Apple ARM64 hardware through UEFI.</li>
-<li><a href="https://github.com/colinhacks/reylo">colinhacks/reylo</a> · ★659 — Import .sql files into TypeScript with full type inference and zero codegen.</li>
+<li><a href="https://github.com/EthanArbuckle/fairplay-decrypt">EthanArbuckle/fairplay-decrypt</a> · ★1561 — Offline FairPlay App Store IPA decryption with independent key derivation</li>
+<li><a href="https://github.com/oosexgang/hackios-xnu-kernel">oosexgang/hackios-xnu-kernel</a> · ★1081 — </li>
+<li><a href="https://github.com/wesbos/3d-model-anything">wesbos/3d-model-anything</a> · ★1069 — Capture iPhone LiDAR and photos, reconstruct editable Three.js rooms, and explore them in a browser.</li>
+<li><a href="https://github.com/xevrion/hatchzip">xevrion/hatchzip</a> · ★955 — Extract huge archives in place: the archive shrinks as your files hatch, so you only need room for the output. ZIP, 7z, tar, split archives.</li>
 </ul>
 <h2>GitHub Trending（日榜/周榜出圈项目，未分析）</h2>
 <ul>
-<li><a href="https://github.com/luongnv89/claude-howto">luongnv89/claude-howto</a> · ★43,177 — A visual, example-driven guide to Claude Code — from basic concepts to advanced agents, with copy-paste templates that bring immediate value.</li>
-<li><a href="https://github.com/anthropics/knowledge-work-plugins">anthropics/knowledge-work-plugins</a> · ★31,574 — Open source repository of plugins primarily intended for knowledge workers to use in Claude Cowork</li>
-<li><a href="https://github.com/fastapi/fastapi">fastapi/fastapi</a> · ★103,729 — FastAPI framework, high performance, easy to learn, fast to code, ready for production</li>
-<li><a href="https://github.com/php/php-src">php/php-src</a> · ★41,141 — The PHP Interpreter</li>
-<li><a href="https://github.com/Meloong-Git/PCL">Meloong-Git/PCL</a> · ★8,682 — Minecraft 启动器 Plain Craft Launcher（PCL）。</li>
+<li><a href="https://github.com/NVIDIA/OpenShell">NVIDIA/OpenShell</a> · ★18,767 — OpenShell is the safe, private runtime for autonomous AI agents.</li>
+<li><a href="https://github.com/elie222/rakazo">elie222/rakazo</a> · ★5,441 — Open-source Grok Bot alternative. Choose your own model and sandbox.</li>
+<li><a href="https://github.com/OpenBMB/VoxCPM">OpenBMB/VoxCPM</a> · ★40,244 — VoxCPM2: Tokenizer-Free TTS for Multilingual Speech Generation, Creative Voice Design, and True-to-Life Cloning</li>
+<li><a href="https://github.com/SnailSploit/Claude-Red">SnailSploit/Claude-Red</a> · ★8,463 — claude-red is a curated library of offensive security skills designed for the Claude skills system. Each skill is a structured SKILL.md file that primes Claude with expert-level methodology for a specific attack surface — from SQLi to shellcode, EDR evasion to exploit development.</li>
+<li><a href="https://github.com/Renhuai123/ziwei-doushu">Renhuai123/ziwei-doushu</a> · ★6,843 — 紫微斗数开源排盘引擎 — 基于倪海厦《天纪》体系，含完整排盘算法、四化系统、格局知识库、古籍原文数据</li>
+<li><a href="https://github.com/nodejs/node">nodejs/node</a> · ★122,853 — Node.js JavaScript runtime ✨🐢🚀✨</li>
 </ul>
 <h2>Trending since first seen</h2>
 <table><thead><tr><th>Repo</th><th>First seen</th><th>Stars then → now</th><th>Δ</th></tr></thead><tbody>
-<tr><td><a href="https://github.com/storytold/photocraft">storytold/photocraft</a></td><td>2026-10-05</td><td>733 → 71349</td><td>+70616</td></tr>
-<tr><td><a href="https://github.com/ayghri/i-have-adhd">ayghri/i-have-adhd</a></td><td>2026-07-19</td><td>3084 → 58336</td><td>+55252</td></tr>
-<tr><td><a href="https://github.com/JuliusBrussee/caveman">JuliusBrussee/caveman</a></td><td>2026-07-02</td><td>79188 → 114408</td><td>+35220</td></tr>
-<tr><td><a href="https://github.com/NandhaKishorM/laya">NandhaKishorM/laya</a></td><td>2026-09-19</td><td>1227 → 33986</td><td>+32759</td></tr>
-<tr><td><a href="https://github.com/blader/humanizer">blader/humanizer</a></td><td>2026-07-02</td><td>27141 → 59651</td><td>+32510</td></tr>
-<tr><td><a href="https://github.com/feder-cr/dots">feder-cr/dots</a></td><td>2026-10-01</td><td>1933 → 32218</td><td>+30285</td></tr>
-<tr><td><a href="https://github.com/Niko1221/Strata">Niko1221/Strata</a></td><td>2026-09-29</td><td>1086 → 30599</td><td>+29513</td></tr>
-<tr><td><a href="https://github.com/virgiliojr94/book-to-skill">virgiliojr94/book-to-skill</a></td><td>2026-07-02</td><td>7442 → 35747</td><td>+28305</td></tr>
-<tr><td><a href="https://github.com/Gathin23/tv-vibehack">Gathin23/tv-vibehack</a></td><td>2026-10-18</td><td>1882 → 23974</td><td>+22092</td></tr>
-<tr><td><a href="https://github.com/browser-use/jev-ultrafast">browser-use/jev-ultrafast</a></td><td>2026-09-17</td><td>1947 → 23495</td><td>+21548</td></tr>
+<tr><td><a href="https://github.com/storytold/photocraft">storytold/photocraft</a></td><td>2026-10-05</td><td>733 → 71952</td><td>+71219</td></tr>
+<tr><td><a href="https://github.com/ayghri/i-have-adhd">ayghri/i-have-adhd</a></td><td>2026-07-19</td><td>3084 → 58473</td><td>+55389</td></tr>
+<tr><td><a href="https://github.com/JuliusBrussee/caveman">JuliusBrussee/caveman</a></td><td>2026-07-02</td><td>79188 → 114627</td><td>+35439</td></tr>
+<tr><td><a href="https://github.com/NandhaKishorM/laya">NandhaKishorM/laya</a></td><td>2026-09-19</td><td>1227 → 34103</td><td>+32876</td></tr>
+<tr><td><a href="https://github.com/blader/humanizer">blader/humanizer</a></td><td>2026-07-02</td><td>27141 → 59994</td><td>+32853</td></tr>
+<tr><td><a href="https://github.com/feder-cr/dots">feder-cr/dots</a></td><td>2026-10-01</td><td>1933 → 32229</td><td>+30296</td></tr>
+<tr><td><a href="https://github.com/Niko1221/Strata">Niko1221/Strata</a></td><td>2026-09-29</td><td>1086 → 31164</td><td>+30078</td></tr>
+<tr><td><a href="https://github.com/virgiliojr94/book-to-skill">virgiliojr94/book-to-skill</a></td><td>2026-07-02</td><td>7442 → 35876</td><td>+28434</td></tr>
+<tr><td><a href="https://github.com/Gathin23/tv-vibehack">Gathin23/tv-vibehack</a></td><td>2026-10-18</td><td>1882 → 27886</td><td>+26004</td></tr>
+<tr><td><a href="https://github.com/Gathin23/cleanyourtv">Gathin23/cleanyourtv</a></td><td>2026-10-20</td><td>5244 → 27886</td><td>+22642</td></tr>
 </tbody></table></div></section>
 
 </main>
