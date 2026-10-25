@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent Discovery · 日报 2026-10-25</title>
+<style>
+/* 与 radar 站（/data/yy_data/radar/docs）同一套设计系统，逐项对齐：
+   GitHub Primer 风 —— #f6f8fa 底、白卡 + #d0d7de 边、12px 圆角、轻微投影、
+   sticky 顶栏 + 胶囊 tab、移动优先 720px、仅浅色。
+   蓝 #1f6feb = 数据序列，绿 #1a7f37 = 「自动关注」，不混用。 */
+:root {
+  color-scheme: light;
+  --bg: #f6f8fa;
+  --surface: #ffffff;
+  --line: #d0d7de;
+  --line-soft: #eaeef2;
+  --ink: #1f2328;
+  --ink-2: #57606a;
+  --ink-3: #8c959f;
+  --series: #1f6feb;
+  --series-soft: #ddf4ff;
+  --hot: #1a7f37;
+  --hot-soft: #dafbe1;
+  --pos: #1a7f37;
+  --purple: #8250df;
+  --link: #0969da;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 16px/1.7 -apple-system, "PingFang SC", "Noto Sans SC", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+main { max-width: 720px; margin: 0 auto; padding: 0 12px 80px; }
+a { color: var(--link); text-decoration: none; }
+a:active { opacity: .7; }
+a:hover { text-decoration: underline; text-underline-offset: 2px; }
+
+/* sticky 顶栏 + 胶囊 tab（与 radar 一致） */
+.top { position: sticky; top: 0; z-index: 9; background: rgba(246,248,250,.94);
+       backdrop-filter: blur(8px); border-bottom: 1px solid var(--line);
+       padding: 12px 0 10px; margin-bottom: 16px; }
+.top-inner { max-width: 720px; margin: 0 auto; padding: 0 12px; }
+.top h1 { font-size: 17px; margin: 0 0 2px; }
+.meta { color: var(--ink-2); font-size: 12px; margin: 0 0 10px;
+        font-variant-numeric: tabular-nums; }
+.meta .fresh { color: var(--ink); }
+.nav { display: flex; gap: 8px; flex-wrap: wrap; margin: 0; }
+.nav a { flex: 1 1 auto; min-width: 96px; text-align: center; padding: 7px 10px;
+         border: 1px solid var(--line); border-radius: 20px; background: var(--surface);
+         color: var(--ink-2); font-size: 14px; font-weight: 600; }
+.nav a:hover { border-color: var(--ink-3); text-decoration: none; }
+.nav a.cur { background: var(--series); border-color: var(--series); color: #fff; }
+
+/* 模块分节 = 白卡 */
+section { background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+          padding: 4px 16px 16px; margin: 0 0 10px; box-shadow: 0 1px 2px rgba(31,35,40,.04); }
+section > h2 { font-size: 15px; color: var(--hot); margin: 12px 0 2px; }
+section > .sub { color: var(--ink-2); font-size: 13px; margin: 0 0 14px; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+         gap: 10px; margin: 0 0 10px; }
+a.card { display: block; background: var(--surface); border: 1px solid var(--line);
+         border-radius: 12px; padding: 11px 13px; box-shadow: 0 1px 2px rgba(31,35,40,.04); }
+a.card:hover { border-color: var(--ink-3); text-decoration: none; }
+.card h3 { margin: 0 0 4px; font-size: 15px; font-weight: 600; color: var(--ink); }
+.card .d { color: var(--ink-2); font-size: 13px; margin: 0 0 10px; }
+.card .preview { font-size: 13px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.card .preview b { color: var(--ink); }
+.card .go { color: var(--link); font-size: 13px; margin-top: 8px; display: block; }
+
+/* Stat tiles —— 单个数字不该画成图 */
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1px;
+         background: var(--line); border: 1px solid var(--line); border-radius: 12px;
+         overflow: hidden; margin: 0 0 12px; box-shadow: 0 1px 2px rgba(31,35,40,.04); }
+.tile { background: var(--surface); padding: 12px 14px; }
+.tile .k { color: var(--ink-2); font-size: 12px; }
+.tile .v { font-size: 24px; font-weight: 600; margin-top: 2px; font-variant-numeric: tabular-nums; }
+.tile .v small { font-size: 13px; font-weight: 400; color: var(--ink-3); margin-left: 4px; }
+
+/* 条形图 */
+.bar-row { display: grid; grid-template-columns: minmax(150px, 280px) 1fr 96px; gap: 14px;
+           align-items: center; padding: 5px 4px; border-radius: 6px; }
+.bar-row:hover { background: var(--line-soft); }
+.bar-row .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13.5px;
+               color: var(--ink); }
+.bar-track { background: var(--line-soft); border-radius: 4px; height: 8px; }
+.bar { background: var(--series); height: 8px; border-radius: 0 4px 4px 0; min-width: 2px; display: block; }
+.bar.hot { background: var(--hot); }
+.delta { color: var(--ink-2); font-variant-numeric: tabular-nums; text-align: right; font-size: 13px; }
+
+/* 每日发现：列图 */
+.cols { display: flex; align-items: flex-end; gap: 2px; height: 116px; }
+.col { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end;
+       align-items: stretch; min-width: 0; border-radius: 3px 3px 0 0; }
+.col:hover { background: var(--line-soft); }
+.col .v { background: var(--series); width: 100%; border-radius: 3px 3px 0 0; min-height: 2px; }
+.axis { display: flex; justify-content: space-between; color: var(--ink-3);
+        font-size: 11px; margin-top: 8px; font-variant-numeric: tabular-nums; }
+.day { border-top: 1px solid var(--line-soft); padding: 10px 2px; }
+.day .dt { color: var(--ink-2); font-size: 13.5px; font-variant-numeric: tabular-nums; }
+.day .repos { color: var(--ink-3); font-size: 13px; margin-top: 2px; }
+.day .repos a { color: var(--ink-2); margin-right: 4px; }
+
+/* 表格（radar 式全边框、表头灰底） */
+.wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 12.5px; }
+th, td { border: 1px solid var(--line); padding: 5px 8px; text-align: left;
+         vertical-align: middle; }
+thead th { background: var(--bg); color: var(--ink-2); font-weight: 600; white-space: nowrap;
+           font-size: 12px; position: sticky; top: 0; }
+tbody tr.r:hover { background: var(--line-soft); }
+td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+td.pos { color: var(--pos); }
+.spark { display: block; }
+.pill { display: inline-block; border-radius: 6px; background: var(--line-soft);
+        padding: 1px 7px; font-size: 12px; font-weight: 700; color: var(--ink-2);
+        white-space: nowrap; }
+.pill.f { background: var(--series-soft); color: var(--link); }
+.dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+       background: var(--hot); margin-right: 7px; vertical-align: 1px; }
+.one { color: var(--ink-2); font-size: 13px; }
+
+/* 可展开行：默认只留摘要列，详情收进点击展开的下一行 */
+tr.r { cursor: pointer; }
+tr.r:focus-visible { outline: 2px solid var(--series); outline-offset: -2px; }
+.car { display: inline-block; color: var(--ink-3); font-size: 11px;
+       transition: transform .15s ease; }
+tr.r.open .car { transform: rotate(90deg); color: var(--ink-2); }
+tr.detail > td { background: var(--bg); padding: 12px 14px; cursor: default; }
+.dl { display: grid; grid-template-columns: 88px 1fr; gap: 5px 18px; margin: 0; }
+.dl dt { color: var(--ink-3); font-size: 12.5px; }
+.dl dd { margin: 0; color: var(--ink-2); font-size: 13.5px; }
+.toggle-all { float: right; border: 1px solid var(--line); background: var(--surface);
+              color: var(--ink-2); border-radius: 20px; padding: 2px 12px;
+              font-size: 12px; cursor: pointer; font-family: inherit; }
+.toggle-all:hover { border-color: var(--ink-3); }
+
+table { table-layout: fixed; }
+th:nth-child(1), td:nth-child(1) { width: 32%; }
+th:nth-child(2), td:nth-child(2) { width: 96px; }
+th:nth-child(3), td:nth-child(3) { width: 104px; }
+th:nth-child(4), td:nth-child(4) { width: 84px; }
+th:nth-child(5), td:nth-child(5) { width: 88px; }
+th:nth-child(6), td:nth-child(6) { width: 128px; }
+th:nth-child(7), td:nth-child(7) { width: 30px; }
+td:nth-child(1) { overflow-wrap: anywhere; }
+.legend { display: flex; gap: 18px; align-items: center; color: var(--ink-3);
+          font-size: 12px; margin-top: 14px; }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px;
+            margin-right: 6px; vertical-align: -1px; }
+
+/* 日报正文（reports/*.html） */
+.report h1 { font-size: 20px; margin: 8px 0 8px; }
+.report h2 { font-size: 15px; color: var(--hot); margin: 18px 0 6px; }
+.report p { color: #4b5563; font-size: 14.5px; margin: 6px 0; }
+.report ul { margin: 6px 0 14px; padding-left: 22px; }
+.report li { margin: 3px 0; color: #4b5563; font-size: 14.5px; }
+.report table { table-layout: auto; font-size: 12.5px; display: block; overflow-x: auto; }
+.report code { background: var(--line-soft); border-radius: 4px; padding: 1px 5px; font-size: 12.5px; }
+.back { display: inline-block; margin: 6px 0 10px; font-size: 13px; }
+
+/* 每页顶部的一句话导读 */
+.lede { background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+        padding: 11px 13px; margin: 0 0 12px; color: #4b5563; font-size: 14px;
+        box-shadow: 0 1px 2px rgba(31,35,40,.04); }
+.lede b { color: var(--ink); }
+</style>
+</head>
+<body>
+<div class="top"><div class="top-inner">
+  <h1>Agent Discovery</h1>
+  <p class="meta"><span class="fresh">数据更新于 2026-10-25 23:32 UTC</span> · 每晚 22:00 UTC 自动更新</p>
+  <nav class="nav">
+  <a href="index.html">主页</a>
+  <a href="velocity.html">日均涨速</a>
+  <a href="movers.html">累计涨幅</a>
+  <a href="daily.html">每日新发现</a>
+  <a href="repos.html">全部追踪</a>
+  </nav>
+</div></div>
+<main>
+
+<section><a class="back" href="../daily.html">← 每日新发现</a>
+<div class="report"><h1>Agent Discovery · 2026-10-25</h1>
+<p>Found <strong>21 new repos</strong> across 15 queries + HN + trending + census.</p>
+<p>Sorted by fit-to-my-stack, then relevance score.</p>
+<h2>[score 8/10] [fit 7/10] lillyguisnet/sam3-segmentation  ·  ★75</h2>
+<ul>
+<li><strong>类型</strong>: Claude Code skill</li>
+<li>Agent skill: outline, mask and count objects in photos with Meta&#x27;s SAM 3 on your own NVIDIA GPU, with review, exports and a viewer. Works with Claude Code, Codex, Cursor, Pi and other Agent Skills clients.</li>
+<li><strong>是什么</strong>: 用Meta的SAM3模型在本地GPU上给照片抠图、描边和计数的技能。</li>
+<li><strong>能做什么</strong>: 处理显微镜下的细胞或组织切片图像，自动分割和计数。</li>
+<li><strong>大家怎么用</strong>: 告诉Claude“圈出所有细胞核”，它调用本地SAM3跑分割并导出掩膜。</li>
+<li><strong>举个例子</strong>: 给它一张病理切片图，让它圈出肿瘤区域并算面积，结果导出为掩膜图。</li>
+<li><strong>和已有项目比</strong>: 填补了本地AI图像分割技能空白，对生物图像分析非常实用。</li>
+<li><strong>重复情况</strong>: 无重复</li>
+<li><strong>装不装</strong>: 装：处理病理或细胞图像好帮手</li>
+<li>Updated: 2026-10-25</li>
+<li>Source: <code>census</code> · Query hit: <code>census: claude code skill</code></li>
+<li><a href="https://github.com/lillyguisnet/sam3-segmentation">https://github.com/lillyguisnet/sam3-segmentation</a></li>
+</ul>
+<h2>[score 8/10] [fit 6/10] EricJujianZou/rederive  ·  ★235</h2>
+<ul>
+<li><strong>类型</strong>: Claude Code skill</li>
+<li>Learn a codebase by re-deriving its design decisions yourself. A Claude Code skill.</li>
+<li><strong>是什么</strong>: Claude技能，通过让你从零推导设计决策来学习一个新代码库。</li>
+<li><strong>能做什么</strong>: 看懂scanpy或scvi等大型生信库源码，理解其底层逻辑。</li>
+<li><strong>大家怎么用</strong>: 安装后指向某个仓库，它会像老师一样问你问题引导你设计出那个库。</li>
+<li><strong>举个例子</strong>: 让它带你推导anndata的数据结构设计，一步步搞懂为什么要这么写。</li>
+<li><strong>和已有项目比</strong>: 相比 graphify 转图谱，它更侧重通过苏格拉底式提问建立深刻理解。</li>
+<li><strong>重复情况</strong>: 无重复</li>
+<li><strong>装不装</strong>: 装：读生信源码好帮手</li>
+<li>Updated: 2026-10-25</li>
+<li>Source: <code>github</code> · Query hit: <code>claude code skill created:&gt;2026-08-26</code></li>
+<li><a href="https://github.com/EricJujianZou/rederive">https://github.com/EricJujianZou/rederive</a></li>
+</ul>
+<h2>[score 8/10] [fit 5/10] t3dotgg/tstack  ·  ★54</h2>
+<ul>
+<li><strong>类型</strong>: Claude Code skill</li>
+<li>The agent skills I use every day. Works with Claude Code and Codex.</li>
+<li><strong>是什么</strong>: 作者日常用的Agent技能集，主打自动审查代码并提交PR。</li>
+<li><strong>能做什么</strong>: 写算法时让AI自动审查代码、提交PR并盯着CI测试通过。</li>
+<li><strong>大家怎么用</strong>: 说句“full send”，它自动跑完检查、提交PR、等待合并全流程。</li>
+<li><strong>举个例子</strong>: 写完scanpy分析脚本后说“full send”，它自动建PR并跑完测试。</li>
+<li><strong>和已有项目比</strong>: 相比单个技能，它整合了代码审查、PR提交和多模型对比，适合团队开发。</li>
+<li><strong>重复情况</strong>: 和 VoltAgent/awesome-agent-skills 部分重叠</li>
+<li><strong>装不装</strong>: 观望：偏敏捷开发和提交PR，科研单人开发不太需要</li>
+<li>Updated: 2026-10-25</li>
+<li>Source: <code>census</code> · Query hit: <code>census: claude code skill</code></li>
+<li><a href="https://github.com/t3dotgg/tstack">https://github.com/t3dotgg/tstack</a></li>
+</ul>
+<h2>[score 8/10] [fit 5/10] YogurtJ/pivane  ·  ★50</h2>
+<ul>
+<li><strong>类型</strong>: 工具/Agent客户端</li>
+<li>Self-hosted web workspace for the Pi coding agent on desktop, tablet &amp; phone: subagents, scheduled tasks, MCP, memory and a bring-your-own image/video/speech lab. 自托管 AI 编程 Agent 网页工作台：多 Agent、定时任务、MCP、记忆与多媒体，电脑/平板/手机随时接着用。</li>
+<li><strong>是什么</strong>: 自托管Pi编程代理的网页控制台，支持多子代理和定时任务。</li>
+<li><strong>能做什么</strong>: 想在iPad上远程管理跑在实验室服务器上的AI编程代理。</li>
+<li><strong>大家怎么用</strong>: 服务器上跑着Pivane，用手机浏览器看进度、建定时任务跑生信脚本。</li>
+<li><strong>举个例子</strong>: 在iPad上给服务器发个定时任务，让AI每晚自动下载新上传的测序数据。</li>
+<li><strong>和已有项目比</strong>: 相比 t3code 它支持定时任务和多媒体处理，偏重本地自托管全流程。</li>
+<li><strong>重复情况</strong>: 和 stablyai/orca, pingdotgg/t3code 部分重叠</li>
+<li><strong>装不装</strong>: 观望：本地跑生信用终端最直接</li>
+<li>Updated: 2026-10-25</li>
+<li>Source: <code>github</code> · Query hit: <code>claude code subagent created:&gt;2026-08-26</code></li>
+<li><a href="https://github.com/YogurtJ/pivane">https://github.com/YogurtJ/pivane</a></li>
+</ul>
+<h2>[score 7/10] [fit 5/10] abdiraimov-otabek/dashboard-design-skill  ·  ★118</h2>
+<ul>
+<li><strong>类型</strong>: Claude Code skill</li>
+<li>A Claude Code skill for clean, honest dashboard UI: KPI tiles, charts, date pickers, ranked lists, states, layouts and a screenshot QA pass. Distilled from 127 shipped dashboards.</li>
+<li><strong>是什么</strong>: 让Claude具备高级UI设计师品味，专做数据看板设计的技能。</li>
+<li><strong>能做什么</strong>: 给生信流程写个监控网页，或做单细胞数据展示看板。</li>
+<li><strong>大家怎么用</strong>: 让Claude Code做看板时加载该技能，产出带KPI和图表的UI并自检。</li>
+<li><strong>举个例子</strong>: 输入“做个看板展示各细胞群差异基因数量”，它生成带图表的网页。</li>
+<li><strong>和已有项目比</strong>: 相比 pbakaus/impeccable 的大前端规范，它专精于数据看板，对生信展示更实用。</li>
+<li><strong>重复情况</strong>: 和 pbakaus/impeccable 部分重叠，都是前端设计技能</li>
+<li><strong>装不装</strong>: 观望：偶尔做网页看板才用</li>
+<li>Updated: 2026-10-25</li>
+<li>Source: <code>census</code> · Query hit: <code>census: claude code skill</code></li>
+<li><a href="https://github.com/abdiraimov-otabek/dashboard-design-skill">https://github.com/abdiraimov-otabek/dashboard-design-skill</a></li>
+</ul>
+<h2>[score 7/10] [fit 5/10] ItsssssJack/claude-video-2  ·  ★56</h2>
+<ul>
+<li><strong>类型</strong>: Claude Code skill</li>
+<li>Claude Video 2.0: make studio-quality motion graphics with Claude Code. Free skill with a gallery of 21 looks.</li>
+<li><strong>是什么</strong>: 用Claude Code生成高质量动态图形和短视频的技能。</li>
+<li><strong>能做什么</strong>: 做组会汇报时生成炫酷的机制动画或生信流程动态演示。</li>
+<li><strong>大家怎么用</strong>: 选个风格回答五个问题，Claude写出图形代码并渲染成MP4。</li>
+<li><strong>举个例子</strong>: 输入“生成细胞转录过程动画”，它写代码渲染出一段MP4视频。</li>
+<li><strong>和已有项目比</strong>: 相比 ppt-master 的幻灯片，它侧重生成视频动画，汇报时更吸睛但非必需。</li>
+<li><strong>重复情况</strong>: 和 hugohe3/ppt-master 部分重叠</li>
+<li><strong>装不装</strong>: 观望：做PPT一般够了，不需要动态视频</li>
+<li>Updated: 2026-10-25</li>
+<li>Source: <code>census</code> · Query hit: <code>census: claude code skill</code></li>
+<li><a href="https://github.com/ItsssssJack/claude-video-2">https://github.com/ItsssssJack/claude-video-2</a></li>
+</ul>
+<h2>[score 9/10] [fit 4/10] microsoft/Agensh  ·  ★285</h2>
+<ul>
+<li><strong>类型</strong>: 多智能体框架</li>
+<li>A Decentralized, Scalable Multiagent Harness</li>
+<li><strong>是什么</strong>: 微软出的多智能体调度框架，支持上千个agent协同工作。</li>
+<li><strong>能做什么</strong>: 需要大规模并行跑AI任务时，让多个agent自己分配任务。</li>
+<li><strong>大家怎么用</strong>: 定义任务，agents自己认领子任务、共享信息并异步合并。</li>
+<li><strong>举个例子</strong>: 给一千个基因各派一个agent查文献总结功能，最后合并成报告。</li>
+<li><strong>和已有项目比</strong>: 比 ruvnet/ruflo 更去中心化和海量扩展，适合超大规模并行，科研暂用不上。</li>
+<li><strong>重复情况</strong>: 和 ruvnet/ruflo, TauricResearch/TradingAgents 重叠</li>
+<li><strong>装不装</strong>: 观望：单机跑单细胞分析够了</li>
+<li>Updated: 2026-10-25</li>
+<li>Source: <code>hn</code> · Query hit: <code>hn: Show HN: Agentsh – A Decentralized, Scalable Multiagent Harn</code></li>
+<li>HN: <a href="https://news.ycombinator.com/item?id=50223759">8 points</a></li>
+<li><a href="https://github.com/microsoft/Agensh">https://github.com/microsoft/Agensh</a></li>
+</ul>
+<h2>[score 8/10] [fit 4/10] tomtomsatnav/agent-orchestration-standard  ·  ★90</h2>
+<ul>
+<li><strong>类型</strong>: 工具/Agent监控</li>
+<li>A live, local-first dashboard for Claude Code sessions: project graph of agents, tokens, tool feed, replay, alerts. Plugin + terminal UI + MCP server. Includes the AOS-1 agent orchestration spec.</li>
+<li><strong>是什么</strong>: Claude Code会话的实时监控看板和编排规范，显示代理与token消耗。</li>
+<li><strong>能做什么</strong>: 需要监控复杂多智能体任务时可用来追踪token和运行状态。</li>
+<li><strong>大家怎么用</strong>: 在本地跑个dashboard，网页上看Claude各个子agent的实时状态。</li>
+<li><strong>举个例子</strong>: 跑大任务时看网页图，监控哪个子agent卡住或token花超了。</li>
+<li><strong>和已有项目比</strong>: 相比 stablyai/orca 提供了更细粒度的只读监控和图可视化，但较重。</li>
+<li><strong>重复情况</strong>: 和 ruvnet/ruflo, stablyai/orca 部分重叠</li>
+<li><strong>装不装</strong>: 观望：单机开发用不到监控看板</li>
+<li>Updated: 2026-10-25</li>
+<li>Source: <code>census</code> · Query hit: <code>census: agent orchestration</code></li>
+<li><a href="https://github.com/tomtomsatnav/agent-orchestration-standard">https://github.com/tomtomsatnav/agent-orchestration-standard</a></li>
+</ul>
+<h2>[score 7/10] [fit 3/10] paulip114/sre-practice-skills  ·  ★61</h2>
+<ul>
+<li><strong>类型</strong>: Claude Code skill</li>
+<li>SRE Practice Skills for Claude Code</li>
+<li><strong>是什么</strong>: 教Claude执行SRE规范（设SLO、写报警、复盘事故等）的技能。</li>
+<li><strong>能做什么</strong>: 给生信服务器写监控和报警脚本，或者做故障复盘。</li>
+<li><strong>大家怎么用</strong>: 让Claude帮你按Google SRE标准配置服务器报警规则。</li>
+<li><strong>举个例子</strong>: 告诉Claude服务器经常跑满内存，它按SRE标准写个报警脚本。</li>
+<li><strong>和已有项目比</strong>: 相比安全审计技能，它侧重稳定性和事故处理，科研运维不太需要。</li>
+<li><strong>重复情况</strong>: 和 cloudflare/security-audit-skill 部分重叠</li>
+<li><strong>装不装</strong>: 不装：科研不用运维SRE规范</li>
+<li>Updated: 2026-10-25</li>
+<li>Source: <code>census</code> · Query hit: <code>census: claude code skill</code></li>
+<li><a href="https://github.com/paulip114/sre-practice-skills">https://github.com/paulip114/sre-practice-skills</a></li>
+</ul>
+<h2>[score 7/10] [fit 2/10] ethanplusai/astro-conversion-kit  ·  ★73</h2>
+<ul>
+<li><strong>类型</strong>: Claude Code skill</li>
+<li>Agent Skills that convert a WordPress site (or any live site) into a static Astro site with URL, SEO, content and pixel parity, then take it through launch. Works in Claude Code, Codex and any agent that reads SKILL.md.</li>
+<li><strong>是什么</strong>: 把WordPress等动态网站转成Astro静态网站的Claude技能。</li>
+<li><strong>能做什么</strong>: 顶多想把课题组老网站转成静态站方便维护。</li>
+<li><strong>大家怎么用</strong>: 给Claude网址，它抓取页面并生成一套Astro静态代码。</li>
+<li><strong>举个例子</strong>: 输入实验室旧网站网址，它自动生成静态网页代码方便部署。</li>
+<li><strong>和已有项目比</strong>: 无可比对象，专为网站重构设计的垂直技能，科研场景几乎为零。</li>
+<li><strong>重复情况</strong>: 无重复</li>
+<li><strong>装不装</strong>: 不装：科研不需要把网站变成静态代码</li>
+<li>Updated: 2026-10-25</li>
+<li>Source: <code>census</code> · Query hit: <code>census: claude code skill</code></li>
+<li><a href="https://github.com/ethanplusai/astro-conversion-kit">https://github.com/ethanplusai/astro-conversion-kit</a></li>
+</ul>
+<h2>[score 7/10] [fit 1/10] Jakeschincariol/console-skill  ·  ★115</h2>
+<ul>
+<li><strong>类型</strong>: Claude Code skill</li>
+<li>11 Claude skills that port PlayStation 2 games you own to PC: reverse engineer the code, rebuild the graphics and backend, any controller, play it anywhere, then mod it however you want.</li>
+<li><strong>是什么</strong>: 11个Claude技能，把PS2游戏反编译并移植到PC上运行。</li>
+<li><strong>能做什么</strong>: 只用于游戏逆向工程，与生物信息无关。</li>
+<li><strong>大家怎么用</strong>: 丢个PS2游戏光盘镜像进去，Claude自动反编译并重写成PC程序。</li>
+<li><strong>举个例子</strong>: 丢个老游戏进去，它把MIPS代码变成C++让你在电脑上玩。</li>
+<li><strong>和已有项目比</strong>: 相比 ghidra 的通用逆向，这极度垂直于PS2游戏，科研无用。</li>
+<li><strong>重复情况</strong>: 和 NationalSecurityAgency/ghidra 部分重叠</li>
+<li><strong>装不装</strong>: 不装：和科研毫不相干</li>
+<li>Updated: 2026-10-25</li>
+<li>Source: <code>census</code> · Query hit: <code>census: claude code skill</code></li>
+<li><a href="https://github.com/Jakeschincariol/console-skill">https://github.com/Jakeschincariol/console-skill</a></li>
+</ul>
+<h2>[score 6/10] [fit 1/10] DenisSergeevitch/ex-ussr-kinship-research  ·  ★531</h2>
+<ul>
+<li><strong>类型</strong>: Claude Code skill</li>
+<li>Evidence-first genealogy skill for AI agents (Codex, Claude Code): church books, civil, military, deportation and repression records across the former USSR. Replies in your language.</li>
+<li><strong>是什么</strong>: 帮助AI查阅前苏联时代户籍、教堂等档案做家族史研究的技能。</li>
+<li><strong>能做什么</strong>: 仅用于个人家谱追溯，跟生信科研无关。</li>
+<li><strong>大家怎么用</strong>: 在Claude中输入祖先信息，它会去档案库搜索并生成家谱报告。</li>
+<li><strong>举个例子</strong>: 输入太爷爷名字，它会去档案里找出生和婚姻证明并整理。</li>
+<li><strong>和已有项目比</strong>: 无完全可比对象，虽是高度专业化的agent技能，但与科研栈零交集。</li>
+<li><strong>重复情况</strong>: 无重复</li>
+<li><strong>装不装</strong>: 不装：家谱研究与科研无关</li>
+<li>Updated: 2026-10-25</li>
+<li>Source: <code>github</code> · Query hit: <code>claude code skill created:&gt;2026-08-26</code></li>
+<li><a href="https://github.com/DenisSergeevitch/ex-ussr-kinship-research">https://github.com/DenisSergeevitch/ex-ussr-kinship-research</a></li>
+</ul>
+<ul>
+<li>llm-xiaoye/douyin-to-obsidian · ★203 — 同类跟进 of <a href="https://github.com/kepano/obsidian-skills">kepano/obsidian-skills</a></li>
+</ul>
+<ul>
+<li>hassan-algo/open-sesame · ★90 — 同类跟进 of <a href="https://github.com/open-multi-agent/open-multi-agent">open-multi-agent/open-multi-agent</a></li>
+</ul>
+<h2>域外雷达（不限领域的新建热门，未分析）</h2>
+<ul>
+<li><a href="https://github.com/JustAResearcher/gpu-unlock-ada">JustAResearcher/gpu-unlock-ada</a> · ★2563 — GPU tensor unlock source for RTX 4090 and experimental RTX 4070 Ti SUPER; firmware generated locally</li>
+<li><a href="https://github.com/Snapintosh/Snapintosh">Snapintosh/Snapintosh</a> · ★942 — EL2 hypervisor and toolchain that boots macOS on the ASUS A16 (Snapdragon X2 Elite), with an Adreno Metal/IOGPU stack</li>
+<li><a href="https://github.com/assetnote/php2shell-scanner">assetnote/php2shell-scanner</a> · ★899 — High fidelity scanner for php2shell (CVE-2026-109618 and CVE-2026-109619)</li>
+</ul>
+<h2>GitHub Trending（日榜/周榜出圈项目，未分析）</h2>
+<ul>
+<li><a href="https://github.com/pingdotgg/t3code">pingdotgg/t3code</a> · ★30,114 — </li>
+<li><a href="https://github.com/JetBrains/thinkrail">JetBrains/thinkrail</a> · ★1,652 — Vibe code with pi in a lightweight, real IDE that customises itself around the way you work — The Vibe You Need</li>
+<li><a href="https://github.com/coollabsio/coolify">coollabsio/coolify</a> · ★64,333 — An open-source, self-hostable PaaS alternative to Vercel, Heroku &amp; Netlify that lets you easily deploy static sites, databases, full-stack applications and 360+ one-click services on your own servers.</li>
+<li><a href="https://github.com/AgriciDaniel/claude-seo">AgriciDaniel/claude-seo</a> · ★20,817 — Universal SEO skill for Claude Code. 26 sub-skills + 19 sub-agents covering technical SEO, E-E-A-T, schema, GEO/AEO, agent readiness (Lighthouse Agentic Browsing, WebMCP, llms.txt), backlinks, local SEO, e-commerce, international SEO, Google APIs, and PDF/Excel reporting. 9 optional extensions for live SEO data.</li>
+</ul>
+<h2>Trending since first seen</h2>
+<table><thead><tr><th>Repo</th><th>First seen</th><th>Stars then → now</th><th>Δ</th></tr></thead><tbody>
+<tr><td><a href="https://github.com/storytold/photocraft">storytold/photocraft</a></td><td>2026-10-05</td><td>733 → 72817</td><td>+72084</td></tr>
+<tr><td><a href="https://github.com/ayghri/i-have-adhd">ayghri/i-have-adhd</a></td><td>2026-07-19</td><td>3084 → 58714</td><td>+55630</td></tr>
+<tr><td><a href="https://github.com/JuliusBrussee/caveman">JuliusBrussee/caveman</a></td><td>2026-07-02</td><td>79188 → 115041</td><td>+35853</td></tr>
+<tr><td><a href="https://github.com/blader/humanizer">blader/humanizer</a></td><td>2026-07-02</td><td>27141 → 60574</td><td>+33433</td></tr>
+<tr><td><a href="https://github.com/NandhaKishorM/laya">NandhaKishorM/laya</a></td><td>2026-09-19</td><td>1227 → 34301</td><td>+33074</td></tr>
+<tr><td><a href="https://github.com/Gathin23/tv-vibehack">Gathin23/tv-vibehack</a></td><td>2026-10-18</td><td>1882 → 34904</td><td>+33022</td></tr>
+<tr><td><a href="https://github.com/Niko1221/Strata">Niko1221/Strata</a></td><td>2026-09-29</td><td>1086 → 32744</td><td>+31658</td></tr>
+<tr><td><a href="https://github.com/feder-cr/dots">feder-cr/dots</a></td><td>2026-10-01</td><td>1933 → 32243</td><td>+30310</td></tr>
+<tr><td><a href="https://github.com/morluto/rea">morluto/rea</a></td><td>2026-10-21</td><td>354479 → 384470</td><td>+29991</td></tr>
+<tr><td><a href="https://github.com/Gathin23/cleanyourtv">Gathin23/cleanyourtv</a></td><td>2026-10-20</td><td>5244 → 34904</td><td>+29660</td></tr>
+</tbody></table></div></section>
+
+</main>
+</body>
+</html>

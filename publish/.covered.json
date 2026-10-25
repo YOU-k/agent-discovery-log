@@ -47,5 +47,6 @@
   "anthropics/claude-plugins-official",
   "luongnv89/claude-howto",
   "rbartoli/agent-usage-guard",
-  "anthropics/knowledge-work-plugins"
+  "anthropics/knowledge-work-plugins",
+  "FreedomIntelligence/OpenClaw-Medical-Skills"
 ]
