@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent Discovery · 日报 2026-10-30</title>
+<style>
+/* 与 radar 站（/data/yy_data/radar/docs）同一套设计系统，逐项对齐：
+   GitHub Primer 风 —— #f6f8fa 底、白卡 + #d0d7de 边、12px 圆角、轻微投影、
+   sticky 顶栏 + 胶囊 tab、移动优先 720px、仅浅色。
+   蓝 #1f6feb = 数据序列，绿 #1a7f37 = 「自动关注」，不混用。 */
+:root {
+  color-scheme: light;
+  --bg: #f6f8fa;
+  --surface: #ffffff;
+  --line: #d0d7de;
+  --line-soft: #eaeef2;
+  --ink: #1f2328;
+  --ink-2: #57606a;
+  --ink-3: #8c959f;
+  --series: #1f6feb;
+  --series-soft: #ddf4ff;
+  --hot: #1a7f37;
+  --hot-soft: #dafbe1;
+  --pos: #1a7f37;
+  --purple: #8250df;
+  --link: #0969da;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 16px/1.7 -apple-system, "PingFang SC", "Noto Sans SC", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+main { max-width: 720px; margin: 0 auto; padding: 0 12px 80px; }
+a { color: var(--link); text-decoration: none; }
+a:active { opacity: .7; }
+a:hover { text-decoration: underline; text-underline-offset: 2px; }
+
+/* sticky 顶栏 + 胶囊 tab（与 radar 一致） */
+.top { position: sticky; top: 0; z-index: 9; background: rgba(246,248,250,.94);
+       backdrop-filter: blur(8px); border-bottom: 1px solid var(--line);
+       padding: 12px 0 10px; margin-bottom: 16px; }
+.top-inner { max-width: 720px; margin: 0 auto; padding: 0 12px; }
+.top h1 { font-size: 17px; margin: 0 0 2px; }
+.meta { color: var(--ink-2); font-size: 12px; margin: 0 0 10px;
+        font-variant-numeric: tabular-nums; }
+.meta .fresh { color: var(--ink); }
+.nav { display: flex; gap: 8px; flex-wrap: wrap; margin: 0; }
+.nav a { flex: 1 1 auto; min-width: 96px; text-align: center; padding: 7px 10px;
+         border: 1px solid var(--line); border-radius: 20px; background: var(--surface);
+         color: var(--ink-2); font-size: 14px; font-weight: 600; }
+.nav a:hover { border-color: var(--ink-3); text-decoration: none; }
+.nav a.cur { background: var(--series); border-color: var(--series); color: #fff; }
+
+/* 模块分节 = 白卡 */
+section { background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+          padding: 4px 16px 16px; margin: 0 0 10px; box-shadow: 0 1px 2px rgba(31,35,40,.04); }
+section > h2 { font-size: 15px; color: var(--hot); margin: 12px 0 2px; }
+section > .sub { color: var(--ink-2); font-size: 13px; margin: 0 0 14px; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+         gap: 10px; margin: 0 0 10px; }
+a.card { display: block; background: var(--surface); border: 1px solid var(--line);
+         border-radius: 12px; padding: 11px 13px; box-shadow: 0 1px 2px rgba(31,35,40,.04); }
+a.card:hover { border-color: var(--ink-3); text-decoration: none; }
+.card h3 { margin: 0 0 4px; font-size: 15px; font-weight: 600; color: var(--ink); }
+.card .d { color: var(--ink-2); font-size: 13px; margin: 0 0 10px; }
+.card .preview { font-size: 13px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.card .preview b { color: var(--ink); }
+.card .go { color: var(--link); font-size: 13px; margin-top: 8px; display: block; }
+
+/* Stat tiles —— 单个数字不该画成图 */
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1px;
+         background: var(--line); border: 1px solid var(--line); border-radius: 12px;
+         overflow: hidden; margin: 0 0 12px; box-shadow: 0 1px 2px rgba(31,35,40,.04); }
+.tile { background: var(--surface); padding: 12px 14px; }
+.tile .k { color: var(--ink-2); font-size: 12px; }
+.tile .v { font-size: 24px; font-weight: 600; margin-top: 2px; font-variant-numeric: tabular-nums; }
+.tile .v small { font-size: 13px; font-weight: 400; color: var(--ink-3); margin-left: 4px; }
+
+/* 条形图 */
+.bar-row { display: grid; grid-template-columns: minmax(150px, 280px) 1fr 96px; gap: 14px;
+           align-items: center; padding: 5px 4px; border-radius: 6px; }
+.bar-row:hover { background: var(--line-soft); }
+.bar-row .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13.5px;
+               color: var(--ink); }
+.bar-track { background: var(--line-soft); border-radius: 4px; height: 8px; }
+.bar { background: var(--series); height: 8px; border-radius: 0 4px 4px 0; min-width: 2px; display: block; }
+.bar.hot { background: var(--hot); }
+.delta { color: var(--ink-2); font-variant-numeric: tabular-nums; text-align: right; font-size: 13px; }
+
+/* 每日发现：列图 */
+.cols { display: flex; align-items: flex-end; gap: 2px; height: 116px; }
+.col { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end;
+       align-items: stretch; min-width: 0; border-radius: 3px 3px 0 0; }
+.col:hover { background: var(--line-soft); }
+.col .v { background: var(--series); width: 100%; border-radius: 3px 3px 0 0; min-height: 2px; }
+.axis { display: flex; justify-content: space-between; color: var(--ink-3);
+        font-size: 11px; margin-top: 8px; font-variant-numeric: tabular-nums; }
+.day { border-top: 1px solid var(--line-soft); padding: 10px 2px; }
+.day .dt { color: var(--ink-2); font-size: 13.5px; font-variant-numeric: tabular-nums; }
+.day .repos { color: var(--ink-3); font-size: 13px; margin-top: 2px; }
+.day .repos a { color: var(--ink-2); margin-right: 4px; }
+
+/* 表格（radar 式全边框、表头灰底） */
+.wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 12.5px; }
+th, td { border: 1px solid var(--line); padding: 5px 8px; text-align: left;
+         vertical-align: middle; }
+thead th { background: var(--bg); color: var(--ink-2); font-weight: 600; white-space: nowrap;
+           font-size: 12px; position: sticky; top: 0; }
+tbody tr.r:hover { background: var(--line-soft); }
+td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+td.pos { color: var(--pos); }
+.spark { display: block; }
+.pill { display: inline-block; border-radius: 6px; background: var(--line-soft);
+        padding: 1px 7px; font-size: 12px; font-weight: 700; color: var(--ink-2);
+        white-space: nowrap; }
+.pill.f { background: var(--series-soft); color: var(--link); }
+.dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+       background: var(--hot); margin-right: 7px; vertical-align: 1px; }
+.one { color: var(--ink-2); font-size: 13px; }
+
+/* 可展开行：默认只留摘要列，详情收进点击展开的下一行 */
+tr.r { cursor: pointer; }
+tr.r:focus-visible { outline: 2px solid var(--series); outline-offset: -2px; }
+.car { display: inline-block; color: var(--ink-3); font-size: 11px;
+       transition: transform .15s ease; }
+tr.r.open .car { transform: rotate(90deg); color: var(--ink-2); }
+tr.detail > td { background: var(--bg); padding: 12px 14px; cursor: default; }
+.dl { display: grid; grid-template-columns: 88px 1fr; gap: 5px 18px; margin: 0; }
+.dl dt { color: var(--ink-3); font-size: 12.5px; }
+.dl dd { margin: 0; color: var(--ink-2); font-size: 13.5px; }
+.toggle-all { float: right; border: 1px solid var(--line); background: var(--surface);
+              color: var(--ink-2); border-radius: 20px; padding: 2px 12px;
+              font-size: 12px; cursor: pointer; font-family: inherit; }
+.toggle-all:hover { border-color: var(--ink-3); }
+
+table { table-layout: fixed; }
+th:nth-child(1), td:nth-child(1) { width: 32%; }
+th:nth-child(2), td:nth-child(2) { width: 96px; }
+th:nth-child(3), td:nth-child(3) { width: 104px; }
+th:nth-child(4), td:nth-child(4) { width: 84px; }
+th:nth-child(5), td:nth-child(5) { width: 88px; }
+th:nth-child(6), td:nth-child(6) { width: 128px; }
+th:nth-child(7), td:nth-child(7) { width: 30px; }
+td:nth-child(1) { overflow-wrap: anywhere; }
+.legend { display: flex; gap: 18px; align-items: center; color: var(--ink-3);
+          font-size: 12px; margin-top: 14px; }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px;
+            margin-right: 6px; vertical-align: -1px; }
+
+/* 日报正文（reports/*.html） */
+.report h1 { font-size: 20px; margin: 8px 0 8px; }
+.report h2 { font-size: 15px; color: var(--hot); margin: 18px 0 6px; }
+.report p { color: #4b5563; font-size: 14.5px; margin: 6px 0; }
+.report ul { margin: 6px 0 14px; padding-left: 22px; }
+.report li { margin: 3px 0; color: #4b5563; font-size: 14.5px; }
+.report table { table-layout: auto; font-size: 12.5px; display: block; overflow-x: auto; }
+.report code { background: var(--line-soft); border-radius: 4px; padding: 1px 5px; font-size: 12.5px; }
+.back { display: inline-block; margin: 6px 0 10px; font-size: 13px; }
+
+/* 每页顶部的一句话导读 */
+.lede { background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+        padding: 11px 13px; margin: 0 0 12px; color: #4b5563; font-size: 14px;
+        box-shadow: 0 1px 2px rgba(31,35,40,.04); }
+.lede b { color: var(--ink); }
+</style>
+</head>
+<body>
+<div class="top"><div class="top-inner">
+  <h1>Agent Discovery</h1>
+  <p class="meta"><span class="fresh">数据更新于 2026-10-30 01:20 UTC</span> · 每晚 22:00 UTC 自动更新</p>
+  <nav class="nav">
+  <a href="index.html">主页</a>
+  <a href="velocity.html">日均涨速</a>
+  <a href="movers.html">累计涨幅</a>
+  <a href="daily.html">每日新发现</a>
+  <a href="repos.html">全部追踪</a>
+  </nav>
+</div></div>
+<main>
+
+<section><a class="back" href="../daily.html">← 每日新发现</a>
+<div class="report"><h1>Agent Discovery · 2026-10-30</h1>
+<p>Found <strong>13 new repos</strong> across 15 queries + HN + trending.</p>
+<p>Sorted by fit-to-my-stack, then relevance score.</p>
+<h2>[score 7/10] [fit 8/10] Zenobia000/iSpan_python-FE_DM-cookbooks  ·  ★68</h2>
+<ul>
+<li><strong>类型</strong>: 资源合集 / Claude Code skill</li>
+<li>Hypothread｜問脈 — Research-first data science skills for Claude Code, Codex &amp; OpenCode. Frame questions, explore evidence, hand off decisions.</li>
+<li><strong>是什么</strong>: 数据挖掘与特征工程实战课程及对应AI技能。</li>
+<li><strong>能做什么</strong>: 学习从EDA到大模型前处理的特征工程方法，辅助处理生信数据。</li>
+<li><strong>大家怎么用</strong>: 用 uv 跑课程代码，或将相关技能作为Agent分析数据的提示词参考。</li>
+<li><strong>举个例子</strong>: 让Claude参考这些技能，对单细胞表达矩阵做特征工程并解释筛选逻辑。</li>
+<li><strong>和已有项目比</strong>: 结合了传统ML和现代大模型前处理，比纯科研技能更偏底层特征构建。</li>
+<li><strong>重复情况</strong>: 和 K-Dense-AI/scientific-agent-skills 部分重叠，偏数据科学</li>
+<li><strong>装不装</strong>: 观望：可借鉴数据特征工程思路做单细胞特征</li>
+<li>Updated: 2026-10-29</li>
+<li>Source: <code>github</code> · Query hit: <code>science skills</code></li>
+<li><a href="https://github.com/Zenobia000/iSpan_python-FE_DM-cookbooks">https://github.com/Zenobia000/iSpan_python-FE_DM-cookbooks</a></li>
+</ul>
+<h2>[score 9/10] [fit 5/10] cablate/model-relay  ·  ★86</h2>
+<ul>
+<li><strong>类型</strong>: Claude Code skill / 工具</li>
+<li>Per-window model switcher, subagent router, and automatic 429 failover for Claude Code — switch any window with /provider, delegate subagents across models, and keep Remote Control &amp; statuslines working.</li>
+<li><strong>是什么</strong>: Claude Code的模型切换和限流自动重试工具。</li>
+<li><strong>能做什么</strong>: 当Claude遇到用量限制自动切备用模型，或把简单任务分派给便宜模型。</li>
+<li><strong>大家怎么用</strong>: 在Claude Code里用/provider切换，自动处理429报错并重试。</li>
+<li><strong>举个例子</strong>: 生信大流程报429限流，它自动切到备用模型继续跑，不用手动重开。</li>
+<li><strong>和已有项目比</strong>: 填补了多模型热切换和限流容错的空白，保障长时间流程不中断。</li>
+<li><strong>重复情况</strong>: 无重复</li>
+<li><strong>装不装</strong>: 装：解决跑大流程时模型限流断线问题</li>
+<li>Updated: 2026-10-30</li>
+<li>Source: <code>github</code> · Query hit: <code>claude code subagent created:&gt;2026-08-31</code></li>
+<li><a href="https://github.com/cablate/model-relay">https://github.com/cablate/model-relay</a></li>
+</ul>
+<h2>[score 8/10] [fit 3/10] feimacode/open-design-agent-kit  ·  ★460</h2>
+<ul>
+<li><strong>类型</strong>: Claude Code skill / 资源合集</li>
+<li>Pro-grade UI design built into the coding agent you already use — GitHub Copilot Chat, Claude Code, Codex, Cursor. 270+ design skills, 150+ brand design systems, 160+ remixable examples. No desktop app, no daemon, no API keys — just files in your repo.</li>
+<li><strong>是什么</strong>: 给AI编程助手加的前端UI设计技能和模板库。</li>
+<li><strong>能做什么</strong>: 做科研实验室主页、交互式数据展示面板或演示网页。</li>
+<li><strong>大家怎么用</strong>: 在仓库里装上这些skill文件，让Claude Code等按设计系统帮你写前端页面。</li>
+<li><strong>举个例子</strong>: 跟Claude Code说“用这套品牌做一个展示单细胞结果的dashboard”，它生成带设计的网页。</li>
+<li><strong>和已有项目比</strong>: 提供了海量现成品牌设计系统，比单个审美技能更体系化。</li>
+<li><strong>重复情况</strong>: 和 pbakaus/impeccable, Leonxlnx/taste-skill 部分重叠</li>
+<li><strong>装不装</strong>: 观望：做科研汇报网页或海报时可一用</li>
+<li>Updated: 2026-10-30</li>
+<li>Source: <code>github</code> · Query hit: <code>claude code skill created:&gt;2026-08-31</code></li>
+<li><a href="https://github.com/feimacode/open-design-agent-kit">https://github.com/feimacode/open-design-agent-kit</a></li>
+</ul>
+<ul>
+<li>1llu50ry/mcp-reverse · ★429 — 同类跟进 of <a href="https://github.com/P4nda0s/reverse-skills">P4nda0s/reverse-skills</a></li>
+</ul>
+<h2>域外雷达（不限领域的新建热门，未分析）</h2>
+<ul>
+<li><a href="https://github.com/aschmelyun/print-my-profile-pic">aschmelyun/print-my-profile-pic</a> · ★949 — Say cheese! Star this repo and your profile picture gets printed out on a receipt printer.</li>
+<li><a href="https://github.com/smithjohn78390/tongjiang-lab">smithjohn78390/tongjiang-lab</a> · ★945 — Free interactive 3D science lessons for high school · 铜匠实验室 · https://lab.tongjiang.app</li>
+<li><a href="https://github.com/daveebbelaar/bama">daveebbelaar/bama</a> · ★782 — BAMA: Build Any Mac App. Agent skills to research, clone, design, build, optimize, and test native macOS apps with Swift and SwiftUI.</li>
+<li><a href="https://github.com/qybaihe/bla">qybaihe/bla</a> · ★778 — 🛡️ BLA (Blind LLM Agents) — Adversarial defense shield that protects binaries, Electron apps, JS bundles, Python, and WebAssembly against AI reverse-engineering agents like REA. Poison -&gt; Exhaust -&gt; Hallucinate.</li>
+<li><a href="https://github.com/anonnerdfrenzy/survival-llm">anonnerdfrenzy/survival-llm</a> · ★768 — A free AI assistant and survival library that runs on your own computer, with no internet needed. Shows the source of every answer.</li>
+</ul>
+<h2>GitHub Trending（日榜/周榜出圈项目，未分析）</h2>
+<ul>
+<li><a href="https://github.com/thedotmack/claude-mem">thedotmack/claude-mem</a> · ★104,818 — Persistent Context Across Sessions for Every Agent –  Captures everything your agent does during sessions, compresses it with AI, and injects relevant context back into future sessions. Works with Claude Code, OpenClaw, Codex, Gemini, Hermes, Copilot, OpenCode + More</li>
+<li><a href="https://github.com/milind-soni/OpenMausBot">milind-soni/OpenMausBot</a> · ★7,490 — Open-source Grok Bot alternative with a virtual machine that bots can use</li>
+<li><a href="https://github.com/Donchitos/Claude-Code-Game-Studios">Donchitos/Claude-Code-Game-Studios</a> · ★29,222 — Turn Claude Code into a full game dev studio — 49 AI agents, 72 workflow skills, and a complete coordination system mirroring real studio hierarchy.</li>
+<li><a href="https://github.com/CopilotKit/OpenBot">CopilotKit/OpenBot</a> · ★8,163 — Open-source AI coworkers that each get a computer of their own: a browser, files and tools, with every action decided before it happens and recorded after. Bring any AG-UI agent.</li>
+</ul>
+<h2>Trending since first seen</h2>
+<table><thead><tr><th>Repo</th><th>First seen</th><th>Stars then → now</th><th>Δ</th></tr></thead><tbody>
+<tr><td><a href="https://github.com/storytold/photocraft">storytold/photocraft</a></td><td>2026-10-05</td><td>733 → 74847</td><td>+74114</td></tr>
+<tr><td><a href="https://github.com/ayghri/i-have-adhd">ayghri/i-have-adhd</a></td><td>2026-07-19</td><td>3084 → 59371</td><td>+56287</td></tr>
+<tr><td><a href="https://github.com/morluto/rea">morluto/rea</a></td><td>2026-10-21</td><td>354479 → 407969</td><td>+53490</td></tr>
+<tr><td><a href="https://github.com/Gathin23/tv-vibehack">Gathin23/tv-vibehack</a></td><td>2026-10-18</td><td>1882 → 45526</td><td>+43644</td></tr>
+<tr><td><a href="https://github.com/Gathin23/cleanyourtv">Gathin23/cleanyourtv</a></td><td>2026-10-20</td><td>5244 → 45526</td><td>+40282</td></tr>
+<tr><td><a href="https://github.com/JuliusBrussee/caveman">JuliusBrussee/caveman</a></td><td>2026-07-02</td><td>79188 → 116113</td><td>+36925</td></tr>
+<tr><td><a href="https://github.com/blader/humanizer">blader/humanizer</a></td><td>2026-07-02</td><td>27141 → 62368</td><td>+35227</td></tr>
+<tr><td><a href="https://github.com/Niko1221/Strata">Niko1221/Strata</a></td><td>2026-09-29</td><td>1086 → 36005</td><td>+34919</td></tr>
+<tr><td><a href="https://github.com/NandhaKishorM/laya">NandhaKishorM/laya</a></td><td>2026-09-19</td><td>1227 → 34644</td><td>+33417</td></tr>
+<tr><td><a href="https://github.com/feder-cr/dots">feder-cr/dots</a></td><td>2026-10-01</td><td>1933 → 32300</td><td>+30367</td></tr>
+</tbody></table></div></section>
+
+</main>
+</body>
+</html>
