@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent Discovery · 日报 2026-11-08</title>
+<style>
+/* 与 radar 站（/data/yy_data/radar/docs）同一套设计系统，逐项对齐：
+   GitHub Primer 风 —— #f6f8fa 底、白卡 + #d0d7de 边、12px 圆角、轻微投影、
+   sticky 顶栏 + 胶囊 tab、移动优先 720px、仅浅色。
+   蓝 #1f6feb = 数据序列，绿 #1a7f37 = 「自动关注」，不混用。 */
+:root {
+  color-scheme: light;
+  --bg: #f6f8fa;
+  --surface: #ffffff;
+  --line: #d0d7de;
+  --line-soft: #eaeef2;
+  --ink: #1f2328;
+  --ink-2: #57606a;
+  --ink-3: #8c959f;
+  --series: #1f6feb;
+  --series-soft: #ddf4ff;
+  --hot: #1a7f37;
+  --hot-soft: #dafbe1;
+  --pos: #1a7f37;
+  --purple: #8250df;
+  --link: #0969da;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 16px/1.7 -apple-system, "PingFang SC", "Noto Sans SC", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+main { max-width: 720px; margin: 0 auto; padding: 0 12px 80px; }
+a { color: var(--link); text-decoration: none; }
+a:active { opacity: .7; }
+a:hover { text-decoration: underline; text-underline-offset: 2px; }
+
+/* sticky 顶栏 + 胶囊 tab（与 radar 一致） */
+.top { position: sticky; top: 0; z-index: 9; background: rgba(246,248,250,.94);
+       backdrop-filter: blur(8px); border-bottom: 1px solid var(--line);
+       padding: 12px 0 10px; margin-bottom: 16px; }
+.top-inner { max-width: 720px; margin: 0 auto; padding: 0 12px; }
+.top h1 { font-size: 17px; margin: 0 0 2px; }
+.meta { color: var(--ink-2); font-size: 12px; margin: 0 0 10px;
+        font-variant-numeric: tabular-nums; }
+.meta .fresh { color: var(--ink); }
+.nav { display: flex; gap: 8px; flex-wrap: wrap; margin: 0; }
+.nav a { flex: 1 1 auto; min-width: 96px; text-align: center; padding: 7px 10px;
+         border: 1px solid var(--line); border-radius: 20px; background: var(--surface);
+         color: var(--ink-2); font-size: 14px; font-weight: 600; }
+.nav a:hover { border-color: var(--ink-3); text-decoration: none; }
+.nav a.cur { background: var(--series); border-color: var(--series); color: #fff; }
+
+/* 模块分节 = 白卡 */
+section { background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+          padding: 4px 16px 16px; margin: 0 0 10px; box-shadow: 0 1px 2px rgba(31,35,40,.04); }
+section > h2 { font-size: 15px; color: var(--hot); margin: 12px 0 2px; }
+section > .sub { color: var(--ink-2); font-size: 13px; margin: 0 0 14px; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+         gap: 10px; margin: 0 0 10px; }
+a.card { display: block; background: var(--surface); border: 1px solid var(--line);
+         border-radius: 12px; padding: 11px 13px; box-shadow: 0 1px 2px rgba(31,35,40,.04); }
+a.card:hover { border-color: var(--ink-3); text-decoration: none; }
+.card h3 { margin: 0 0 4px; font-size: 15px; font-weight: 600; color: var(--ink); }
+.card .d { color: var(--ink-2); font-size: 13px; margin: 0 0 10px; }
+.card .preview { font-size: 13px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.card .preview b { color: var(--ink); }
+.card .go { color: var(--link); font-size: 13px; margin-top: 8px; display: block; }
+
+/* Stat tiles —— 单个数字不该画成图 */
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1px;
+         background: var(--line); border: 1px solid var(--line); border-radius: 12px;
+         overflow: hidden; margin: 0 0 12px; box-shadow: 0 1px 2px rgba(31,35,40,.04); }
+.tile { background: var(--surface); padding: 12px 14px; }
+.tile .k { color: var(--ink-2); font-size: 12px; }
+.tile .v { font-size: 24px; font-weight: 600; margin-top: 2px; font-variant-numeric: tabular-nums; }
+.tile .v small { font-size: 13px; font-weight: 400; color: var(--ink-3); margin-left: 4px; }
+
+/* 条形图 */
+.bar-row { display: grid; grid-template-columns: minmax(150px, 280px) 1fr 96px; gap: 14px;
+           align-items: center; padding: 5px 4px; border-radius: 6px; }
+.bar-row:hover { background: var(--line-soft); }
+.bar-row .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13.5px;
+               color: var(--ink); }
+.bar-track { background: var(--line-soft); border-radius: 4px; height: 8px; }
+.bar { background: var(--series); height: 8px; border-radius: 0 4px 4px 0; min-width: 2px; display: block; }
+.bar.hot { background: var(--hot); }
+.delta { color: var(--ink-2); font-variant-numeric: tabular-nums; text-align: right; font-size: 13px; }
+
+/* 每日发现：列图 */
+.cols { display: flex; align-items: flex-end; gap: 2px; height: 116px; }
+.col { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end;
+       align-items: stretch; min-width: 0; border-radius: 3px 3px 0 0; }
+.col:hover { background: var(--line-soft); }
+.col .v { background: var(--series); width: 100%; border-radius: 3px 3px 0 0; min-height: 2px; }
+.axis { display: flex; justify-content: space-between; color: var(--ink-3);
+        font-size: 11px; margin-top: 8px; font-variant-numeric: tabular-nums; }
+.day { border-top: 1px solid var(--line-soft); padding: 10px 2px; }
+.day .dt { color: var(--ink-2); font-size: 13.5px; font-variant-numeric: tabular-nums; }
+.day .repos { color: var(--ink-3); font-size: 13px; margin-top: 2px; }
+.day .repos a { color: var(--ink-2); margin-right: 4px; }
+
+/* 表格（radar 式全边框、表头灰底） */
+.wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 12.5px; }
+th, td { border: 1px solid var(--line); padding: 5px 8px; text-align: left;
+         vertical-align: middle; }
+thead th { background: var(--bg); color: var(--ink-2); font-weight: 600; white-space: nowrap;
+           font-size: 12px; position: sticky; top: 0; }
+tbody tr.r:hover { background: var(--line-soft); }
+td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+td.pos { color: var(--pos); }
+.spark { display: block; }
+.pill { display: inline-block; border-radius: 6px; background: var(--line-soft);
+        padding: 1px 7px; font-size: 12px; font-weight: 700; color: var(--ink-2);
+        white-space: nowrap; }
+.pill.f { background: var(--series-soft); color: var(--link); }
+.dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+       background: var(--hot); margin-right: 7px; vertical-align: 1px; }
+.one { color: var(--ink-2); font-size: 13px; }
+
+/* 可展开行：默认只留摘要列，详情收进点击展开的下一行 */
+tr.r { cursor: pointer; }
+tr.r:focus-visible { outline: 2px solid var(--series); outline-offset: -2px; }
+.car { display: inline-block; color: var(--ink-3); font-size: 11px;
+       transition: transform .15s ease; }
+tr.r.open .car { transform: rotate(90deg); color: var(--ink-2); }
+tr.detail > td { background: var(--bg); padding: 12px 14px; cursor: default; }
+.dl { display: grid; grid-template-columns: 88px 1fr; gap: 5px 18px; margin: 0; }
+.dl dt { color: var(--ink-3); font-size: 12.5px; }
+.dl dd { margin: 0; color: var(--ink-2); font-size: 13.5px; }
+.toggle-all { float: right; border: 1px solid var(--line); background: var(--surface);
+              color: var(--ink-2); border-radius: 20px; padding: 2px 12px;
+              font-size: 12px; cursor: pointer; font-family: inherit; }
+.toggle-all:hover { border-color: var(--ink-3); }
+
+table { table-layout: fixed; }
+th:nth-child(1), td:nth-child(1) { width: 32%; }
+th:nth-child(2), td:nth-child(2) { width: 96px; }
+th:nth-child(3), td:nth-child(3) { width: 104px; }
+th:nth-child(4), td:nth-child(4) { width: 84px; }
+th:nth-child(5), td:nth-child(5) { width: 88px; }
+th:nth-child(6), td:nth-child(6) { width: 128px; }
+th:nth-child(7), td:nth-child(7) { width: 30px; }
+td:nth-child(1) { overflow-wrap: anywhere; }
+.legend { display: flex; gap: 18px; align-items: center; color: var(--ink-3);
+          font-size: 12px; margin-top: 14px; }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px;
+            margin-right: 6px; vertical-align: -1px; }
+
+/* 日报正文（reports/*.html） */
+.report h1 { font-size: 20px; margin: 8px 0 8px; }
+.report h2 { font-size: 15px; color: var(--hot); margin: 18px 0 6px; }
+.report p { color: #4b5563; font-size: 14.5px; margin: 6px 0; }
+.report ul { margin: 6px 0 14px; padding-left: 22px; }
+.report li { margin: 3px 0; color: #4b5563; font-size: 14.5px; }
+.report table { table-layout: auto; font-size: 12.5px; display: block; overflow-x: auto; }
+.report code { background: var(--line-soft); border-radius: 4px; padding: 1px 5px; font-size: 12.5px; }
+.back { display: inline-block; margin: 6px 0 10px; font-size: 13px; }
+
+/* 每页顶部的一句话导读 */
+.lede { background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+        padding: 11px 13px; margin: 0 0 12px; color: #4b5563; font-size: 14px;
+        box-shadow: 0 1px 2px rgba(31,35,40,.04); }
+.lede b { color: var(--ink); }
+</style>
+</head>
+<body>
+<div class="top"><div class="top-inner">
+  <h1>Agent Discovery</h1>
+  <p class="meta"><span class="fresh">数据更新于 2026-11-08 00:55 UTC</span> · 每晚 22:00 UTC 自动更新</p>
+  <nav class="nav">
+  <a href="index.html">主页</a>
+  <a href="velocity.html">日均涨速</a>
+  <a href="movers.html">累计涨幅</a>
+  <a href="daily.html">每日新发现</a>
+  <a href="repos.html">全部追踪</a>
+  </nav>
+</div></div>
+<main>
+
+<section><a class="back" href="../daily.html">← 每日新发现</a>
+<div class="report"><h1>Agent Discovery · 2026-11-08</h1>
+<p>Found <strong>27 new repos</strong> across 15 queries + HN + trending + census.</p>
+<p>Sorted by stars (no LLM scoring; set LLM_API_KEY to enable).</p>
+<h2>minorun365/minorun-marp-skill  ·  ★417</h2>
+<ul>
+<li>Marpで登壇スライドを作るClaude Codeスキル</li>
+<li>Updated: 2026-11-08</li>
+<li>Source: <code>github</code> · Query hit: <code>claude code skill created:&gt;2026-09-09</code></li>
+<li><a href="https://github.com/minorun365/minorun-marp-skill">https://github.com/minorun365/minorun-marp-skill</a></li>
+</ul>
+<h2>imraywang/ray-sticker-shop  ·  ★359</h2>
+<ul>
+<li>一张照片或角色图，生成一整套形象一致的动态表情包和微信投稿素材（Claude Code / Codex skill）</li>
+<li>Updated: 2026-11-07</li>
+<li>Source: <code>github</code> · Query hit: <code>claude code skill created:&gt;2026-09-09</code></li>
+<li><a href="https://github.com/imraywang/ray-sticker-shop">https://github.com/imraywang/ray-sticker-shop</a></li>
+</ul>
+<h2>drost-ai/tinker-ai-skill  ·  ★107</h2>
+<ul>
+<li>Agent Skill for fine-tuning an agentic model on your own Claude Code sessions with Tinker. Works in Claude Code, Codex and OpenCode.</li>
+<li>Updated: 2026-11-08</li>
+<li>Source: <code>census</code> · Query hit: <code>census: claude code skill</code></li>
+<li><a href="https://github.com/drost-ai/tinker-ai-skill">https://github.com/drost-ai/tinker-ai-skill</a></li>
+</ul>
+<h2>leodavincs/kalem  ·  ★107</h2>
+<ul>
+<li>Claude Code skill: her sahnenin kendi kalemi var. Videoyu sahnelere böler, her sahneye uygun motoru seçer (Paper.js, PixiJS, HyperFrames, Three.js, Manim).</li>
+<li>Updated: 2026-11-07</li>
+<li>Source: <code>census</code> · Query hit: <code>census: claude code skill</code></li>
+<li><a href="https://github.com/leodavincs/kalem">https://github.com/leodavincs/kalem</a></li>
+</ul>
+<h2>JDhruv14/ascii-diorama  ·  ★95</h2>
+<ul>
+<li>Claude Code skill for tilt-shift ASCII miniature videos rendered with Three.js</li>
+<li>Updated: 2026-11-07</li>
+<li>Source: <code>census</code> · Query hit: <code>census: claude code skill</code></li>
+<li><a href="https://github.com/JDhruv14/ascii-diorama">https://github.com/JDhruv14/ascii-diorama</a></li>
+</ul>
+<h2>Nyxera0x/cutaway  ·  ★85</h2>
+<ul>
+<li>A Claude Code skill that turns one picture into a 3D object that takes itself apart: built in three.js from code, checked against the picture, filmed at 60 fps with a synced score.</li>
+<li>Updated: 2026-11-08</li>
+<li>Source: <code>census</code> · Query hit: <code>census: claude code skill</code></li>
+<li><a href="https://github.com/Nyxera0x/cutaway">https://github.com/Nyxera0x/cutaway</a></li>
+</ul>
+<h2>Kemerd/claude-hardware-in-the-loop  ·  ★82</h2>
+<ul>
+<li>Agent-driven hardware-in-the-loop engineering method: Claude Code skill, swarm orchestration, generator-first KiCad PCB pipeline, CadQuery CAD, firmware-in-the-loop, web CAD/PCB viewer. Source-available (HIL-ASA-1.0).</li>
+<li>Updated: 2026-11-08</li>
+<li>Source: <code>census</code> · Query hit: <code>census: claude code skill</code></li>
+<li><a href="https://github.com/Kemerd/claude-hardware-in-the-loop">https://github.com/Kemerd/claude-hardware-in-the-loop</a></li>
+</ul>
+<ul>
+<li>albertirgi/replica · ★71 — 同类跟进 of <a href="https://github.com/Jakeschincariol/replica-skill">Jakeschincariol/replica-skill</a></li>
+</ul>
+<h2>LeiteZ/fluxo-de-edicao  ·  ★70</h2>
+<ul>
+<li>Skill para o Claude Code que te guia a montar o seu fluxo de edição de vídeo</li>
+<li>Updated: 2026-11-08</li>
+<li>Source: <code>census</code> · Query hit: <code>census: claude code skill</code></li>
+<li><a href="https://github.com/LeiteZ/fluxo-de-edicao">https://github.com/LeiteZ/fluxo-de-edicao</a></li>
+</ul>
+<h2>Galehashoid/flow-map-resp  ·  ★69</h2>
+<ul>
+<li>A Claude Code skill that turns your pipeline into an animated metro map, replayed from what a real run recorded. Retries as loop arcs, parallel work as rails, checks as hubs with spokes. React + SVG, your colours, light and dark.</li>
+<li>Updated: 2026-11-07</li>
+<li>Source: <code>census</code> · Query hit: <code>census: claude code skill</code></li>
+<li><a href="https://github.com/Galehashoid/flow-map-resp">https://github.com/Galehashoid/flow-map-resp</a></li>
+</ul>
+<h2>brewed-ops/talking-explainer  ·  ★68</h2>
+<ul>
+<li>A Claude Code skill that turns a topic into a narrated motion-design explainer, presented by a cartoon that lip-syncs to your voice.</li>
+<li>Updated: 2026-11-07</li>
+<li>Source: <code>census</code> · Query hit: <code>census: claude code skill</code></li>
+<li><a href="https://github.com/brewed-ops/talking-explainer">https://github.com/brewed-ops/talking-explainer</a></li>
+</ul>
+<h2>BehindProxySolar/exasol-rpocket-agent-skills  ·  ★68</h2>
+<ul>
+<li>Exasol skills for AI agents. Optimized for Claude Code and OpenAI Codex 🤖</li>
+<li>Updated: 2026-11-07</li>
+<li>Source: <code>census</code> · Query hit: <code>census: claude code skill</code></li>
+<li><a href="https://github.com/BehindProxySolar/exasol-rpocket-agent-skills">https://github.com/BehindProxySolar/exasol-rpocket-agent-skills</a></li>
+</ul>
+<h2>Vespermagnet/jet-reports-skill-rpocket  ·  ★67</h2>
+<ul>
+<li>Claude Code skill: describe a Jet Reports workbook, get a ready-to-run .xlsx (for example NAV / Business Central)</li>
+<li>Updated: 2026-11-07</li>
+<li>Source: <code>census</code> · Query hit: <code>census: claude code skill</code></li>
+<li><a href="https://github.com/Vespermagnet/jet-reports-skill-rpocket">https://github.com/Vespermagnet/jet-reports-skill-rpocket</a></li>
+</ul>
+<h2>TechTideOhio/binnacle  ·  ★64</h2>
+<ul>
+<li>TideOS Eval Kit: The Evaluator Agent - Unified, zero-FFI, pure-Rust orchestrator for the 15-tool eval stack</li>
+<li>Updated: 2026-11-07</li>
+<li>Source: <code>census</code> · Query hit: <code>census: agent orchestration</code></li>
+<li><a href="https://github.com/TechTideOhio/binnacle">https://github.com/TechTideOhio/binnacle</a></li>
+</ul>
+<h2>riverenpaw2708/vibe-resp-skill  ·  ★63</h2>
+<ul>
+<li>vibe-* is a collection of Claude Code CLI skills. Each skill is a structured instruction set that tells Claude Code exactly what to do at a specific moment in a project — how to plan it, build it, review it, test it, deploy it, and hand it off.</li>
+<li>Updated: 2026-11-07</li>
+<li>Source: <code>census</code> · Query hit: <code>census: claude code skill</code></li>
+<li><a href="https://github.com/riverenpaw2708/vibe-resp-skill">https://github.com/riverenpaw2708/vibe-resp-skill</a></li>
+</ul>
+<h2>域外雷达（不限领域的新建热门，未分析）</h2>
+<ul>
+<li><a href="https://github.com/NotRexed/Hookshot">NotRexed/Hookshot</a> · ★1831 — A Native Recompilation Of The Legend Of Zelda: Ocarina Of Time Nintendo Switch 2 Remake</li>
+<li><a href="https://github.com/JenkinWoo/sheeridVerify">JenkinWoo/sheeridVerify</a> · ★1667 — </li>
+<li><a href="https://github.com/livliv-dev/player">livliv-dev/player</a> · ★1200 — A lightweight 2.5D character player for the web, with lip sync and webcam face tracking.</li>
+<li><a href="https://github.com/mmdoctor/google-pro-helper">mmdoctor/google-pro-helper</a> · ★1140 — </li>
+<li><a href="https://github.com/Sandflow-ai/sand3d">Sandflow-ai/sand3d</a> · ★1053 — 3D modeling in Python, built for LLMs.</li>
+</ul>
+<h2>GitHub Trending（日榜/周榜出圈项目，未分析）</h2>
+<ul>
+<li><a href="https://github.com/sherlock-project/sherlock">sherlock-project/sherlock</a> · ★100,470 — Hunt down social media accounts by username across social networks</li>
+<li><a href="https://github.com/tailwindlabs/tailwindcss">tailwindlabs/tailwindcss</a> · ★98,471 — A utility-first CSS framework for rapid UI development.</li>
+<li><a href="https://github.com/vercel-labs/agent-browser">vercel-labs/agent-browser</a> · ★46,829 — Browser automation CLI for AI agents</li>
+<li><a href="https://github.com/meta/astryx">meta/astryx</a> · ★14,530 — An open source design system that&#x27;s fully customizable and agent ready</li>
+<li><a href="https://github.com/ranxianglei/billion-context">ranxianglei/billion-context</a> · ★4,611 — A context-compression plugin for month-long single sessions (billions of tokens) ,small context windows (a 100K context is enough) and token savings (5x fewer tokens) .上下文压缩插件，月级长会话会话， 兼顾小窗口(100k上下文足矣)省token(省5倍token) . billion-context is all you need</li>
+<li><a href="https://github.com/mbillow/localthings">mbillow/localthings</a> · ★1,061 — Control your Samsung appliances from Home Assistant over your home network, with no cloud account.</li>
+<li><a href="https://github.com/dsx-ai-factory/nvke">dsx-ai-factory/nvke</a> · ★559 — NVIDIA Kubernetes Engine (NVKE). A management plane for GPU Kubernetes on bare metal.</li>
+</ul>
+<h2>Trending since first seen</h2>
+<table><thead><tr><th>Repo</th><th>First seen</th><th>Stars then → now</th><th>Δ</th></tr></thead><tbody>
+<tr><td><a href="https://github.com/morluto/rea">morluto/rea</a></td><td>2026-10-21</td><td>354479 → 441054</td><td>+86575</td></tr>
+<tr><td><a href="https://github.com/storytold/photocraft">storytold/photocraft</a></td><td>2026-10-05</td><td>733 → 77741</td><td>+77008</td></tr>
+<tr><td><a href="https://github.com/ayghri/i-have-adhd">ayghri/i-have-adhd</a></td><td>2026-07-19</td><td>3084 → 60434</td><td>+57350</td></tr>
+<tr><td><a href="https://github.com/Gathin23/tv-vibehack">Gathin23/tv-vibehack</a></td><td>2026-10-18</td><td>1882 → 53927</td><td>+52045</td></tr>
+<tr><td><a href="https://github.com/Gathin23/cleanyourtv">Gathin23/cleanyourtv</a></td><td>2026-10-20</td><td>5244 → 53927</td><td>+48683</td></tr>
+<tr><td><a href="https://github.com/Niko1221/Strata">Niko1221/Strata</a></td><td>2026-09-29</td><td>1086 → 41512</td><td>+40426</td></tr>
+<tr><td><a href="https://github.com/JuliusBrussee/caveman">JuliusBrussee/caveman</a></td><td>2026-07-02</td><td>79188 → 118172</td><td>+38984</td></tr>
+<tr><td><a href="https://github.com/blader/humanizer">blader/humanizer</a></td><td>2026-07-02</td><td>27141 → 65996</td><td>+38855</td></tr>
+<tr><td><a href="https://github.com/NandhaKishorM/laya">NandhaKishorM/laya</a></td><td>2026-09-19</td><td>1227 → 35182</td><td>+33955</td></tr>
+<tr><td><a href="https://github.com/yetone/magpie">yetone/magpie</a></td><td>2026-09-26</td><td>1012 → 31821</td><td>+30809</td></tr>
+</tbody></table></div></section>
+
+</main>
+</body>
+</html>
