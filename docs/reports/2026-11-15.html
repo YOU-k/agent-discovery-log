@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent Discovery · 日报 2026-11-15</title>
+<style>
+/* 与 radar 站（/data/yy_data/radar/docs）同一套设计系统，逐项对齐：
+   GitHub Primer 风 —— #f6f8fa 底、白卡 + #d0d7de 边、12px 圆角、轻微投影、
+   sticky 顶栏 + 胶囊 tab、移动优先 720px、仅浅色。
+   蓝 #1f6feb = 数据序列，绿 #1a7f37 = 「自动关注」，不混用。 */
+:root {
+  color-scheme: light;
+  --bg: #f6f8fa;
+  --surface: #ffffff;
+  --line: #d0d7de;
+  --line-soft: #eaeef2;
+  --ink: #1f2328;
+  --ink-2: #57606a;
+  --ink-3: #8c959f;
+  --series: #1f6feb;
+  --series-soft: #ddf4ff;
+  --hot: #1a7f37;
+  --hot-soft: #dafbe1;
+  --pos: #1a7f37;
+  --purple: #8250df;
+  --link: #0969da;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 16px/1.7 -apple-system, "PingFang SC", "Noto Sans SC", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+main { max-width: 720px; margin: 0 auto; padding: 0 12px 80px; }
+a { color: var(--link); text-decoration: none; }
+a:active { opacity: .7; }
+a:hover { text-decoration: underline; text-underline-offset: 2px; }
+
+/* sticky 顶栏 + 胶囊 tab（与 radar 一致） */
+.top { position: sticky; top: 0; z-index: 9; background: rgba(246,248,250,.94);
+       backdrop-filter: blur(8px); border-bottom: 1px solid var(--line);
+       padding: 12px 0 10px; margin-bottom: 16px; }
+.top-inner { max-width: 720px; margin: 0 auto; padding: 0 12px; }
+.top h1 { font-size: 17px; margin: 0 0 2px; }
+.meta { color: var(--ink-2); font-size: 12px; margin: 0 0 10px;
+        font-variant-numeric: tabular-nums; }
+.meta .fresh { color: var(--ink); }
+.nav { display: flex; gap: 8px; flex-wrap: wrap; margin: 0; }
+.nav a { flex: 1 1 auto; min-width: 96px; text-align: center; padding: 7px 10px;
+         border: 1px solid var(--line); border-radius: 20px; background: var(--surface);
+         color: var(--ink-2); font-size: 14px; font-weight: 600; }
+.nav a:hover { border-color: var(--ink-3); text-decoration: none; }
+.nav a.cur { background: var(--series); border-color: var(--series); color: #fff; }
+
+/* 模块分节 = 白卡 */
+section { background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+          padding: 4px 16px 16px; margin: 0 0 10px; box-shadow: 0 1px 2px rgba(31,35,40,.04); }
+section > h2 { font-size: 15px; color: var(--hot); margin: 12px 0 2px; }
+section > .sub { color: var(--ink-2); font-size: 13px; margin: 0 0 14px; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+         gap: 10px; margin: 0 0 10px; }
+a.card { display: block; background: var(--surface); border: 1px solid var(--line);
+         border-radius: 12px; padding: 11px 13px; box-shadow: 0 1px 2px rgba(31,35,40,.04); }
+a.card:hover { border-color: var(--ink-3); text-decoration: none; }
+.card h3 { margin: 0 0 4px; font-size: 15px; font-weight: 600; color: var(--ink); }
+.card .d { color: var(--ink-2); font-size: 13px; margin: 0 0 10px; }
+.card .preview { font-size: 13px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.card .preview b { color: var(--ink); }
+.card .go { color: var(--link); font-size: 13px; margin-top: 8px; display: block; }
+
+/* Stat tiles —— 单个数字不该画成图 */
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1px;
+         background: var(--line); border: 1px solid var(--line); border-radius: 12px;
+         overflow: hidden; margin: 0 0 12px; box-shadow: 0 1px 2px rgba(31,35,40,.04); }
+.tile { background: var(--surface); padding: 12px 14px; }
+.tile .k { color: var(--ink-2); font-size: 12px; }
+.tile .v { font-size: 24px; font-weight: 600; margin-top: 2px; font-variant-numeric: tabular-nums; }
+.tile .v small { font-size: 13px; font-weight: 400; color: var(--ink-3); margin-left: 4px; }
+
+/* 条形图 */
+.bar-row { display: grid; grid-template-columns: minmax(150px, 280px) 1fr 96px; gap: 14px;
+           align-items: center; padding: 5px 4px; border-radius: 6px; }
+.bar-row:hover { background: var(--line-soft); }
+.bar-row .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13.5px;
+               color: var(--ink); }
+.bar-track { background: var(--line-soft); border-radius: 4px; height: 8px; }
+.bar { background: var(--series); height: 8px; border-radius: 0 4px 4px 0; min-width: 2px; display: block; }
+.bar.hot { background: var(--hot); }
+.delta { color: var(--ink-2); font-variant-numeric: tabular-nums; text-align: right; font-size: 13px; }
+
+/* 每日发现：列图 */
+.cols { display: flex; align-items: flex-end; gap: 2px; height: 116px; }
+.col { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end;
+       align-items: stretch; min-width: 0; border-radius: 3px 3px 0 0; }
+.col:hover { background: var(--line-soft); }
+.col .v { background: var(--series); width: 100%; border-radius: 3px 3px 0 0; min-height: 2px; }
+.axis { display: flex; justify-content: space-between; color: var(--ink-3);
+        font-size: 11px; margin-top: 8px; font-variant-numeric: tabular-nums; }
+.day { border-top: 1px solid var(--line-soft); padding: 10px 2px; }
+.day .dt { color: var(--ink-2); font-size: 13.5px; font-variant-numeric: tabular-nums; }
+.day .repos { color: var(--ink-3); font-size: 13px; margin-top: 2px; }
+.day .repos a { color: var(--ink-2); margin-right: 4px; }
+
+/* 表格（radar 式全边框、表头灰底） */
+.wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 12.5px; }
+th, td { border: 1px solid var(--line); padding: 5px 8px; text-align: left;
+         vertical-align: middle; }
+thead th { background: var(--bg); color: var(--ink-2); font-weight: 600; white-space: nowrap;
+           font-size: 12px; position: sticky; top: 0; }
+tbody tr.r:hover { background: var(--line-soft); }
+td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+td.pos { color: var(--pos); }
+.spark { display: block; }
+.pill { display: inline-block; border-radius: 6px; background: var(--line-soft);
+        padding: 1px 7px; font-size: 12px; font-weight: 700; color: var(--ink-2);
+        white-space: nowrap; }
+.pill.f { background: var(--series-soft); color: var(--link); }
+.dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+       background: var(--hot); margin-right: 7px; vertical-align: 1px; }
+.one { color: var(--ink-2); font-size: 13px; }
+
+/* 可展开行：默认只留摘要列，详情收进点击展开的下一行 */
+tr.r { cursor: pointer; }
+tr.r:focus-visible { outline: 2px solid var(--series); outline-offset: -2px; }
+.car { display: inline-block; color: var(--ink-3); font-size: 11px;
+       transition: transform .15s ease; }
+tr.r.open .car { transform: rotate(90deg); color: var(--ink-2); }
+tr.detail > td { background: var(--bg); padding: 12px 14px; cursor: default; }
+.dl { display: grid; grid-template-columns: 88px 1fr; gap: 5px 18px; margin: 0; }
+.dl dt { color: var(--ink-3); font-size: 12.5px; }
+.dl dd { margin: 0; color: var(--ink-2); font-size: 13.5px; }
+.toggle-all { float: right; border: 1px solid var(--line); background: var(--surface);
+              color: var(--ink-2); border-radius: 20px; padding: 2px 12px;
+              font-size: 12px; cursor: pointer; font-family: inherit; }
+.toggle-all:hover { border-color: var(--ink-3); }
+
+table { table-layout: fixed; }
+th:nth-child(1), td:nth-child(1) { width: 32%; }
+th:nth-child(2), td:nth-child(2) { width: 96px; }
+th:nth-child(3), td:nth-child(3) { width: 104px; }
+th:nth-child(4), td:nth-child(4) { width: 84px; }
+th:nth-child(5), td:nth-child(5) { width: 88px; }
+th:nth-child(6), td:nth-child(6) { width: 128px; }
+th:nth-child(7), td:nth-child(7) { width: 30px; }
+td:nth-child(1) { overflow-wrap: anywhere; }
+.legend { display: flex; gap: 18px; align-items: center; color: var(--ink-3);
+          font-size: 12px; margin-top: 14px; }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px;
+            margin-right: 6px; vertical-align: -1px; }
+
+/* 日报正文（reports/*.html） */
+.report h1 { font-size: 20px; margin: 8px 0 8px; }
+.report h2 { font-size: 15px; color: var(--hot); margin: 18px 0 6px; }
+.report p { color: #4b5563; font-size: 14.5px; margin: 6px 0; }
+.report ul { margin: 6px 0 14px; padding-left: 22px; }
+.report li { margin: 3px 0; color: #4b5563; font-size: 14.5px; }
+.report table { table-layout: auto; font-size: 12.5px; display: block; overflow-x: auto; }
+.report code { background: var(--line-soft); border-radius: 4px; padding: 1px 5px; font-size: 12.5px; }
+.back { display: inline-block; margin: 6px 0 10px; font-size: 13px; }
+
+/* 每页顶部的一句话导读 */
+.lede { background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+        padding: 11px 13px; margin: 0 0 12px; color: #4b5563; font-size: 14px;
+        box-shadow: 0 1px 2px rgba(31,35,40,.04); }
+.lede b { color: var(--ink); }
+</style>
+</head>
+<body>
+<div class="top"><div class="top-inner">
+  <h1>Agent Discovery</h1>
+  <p class="meta"><span class="fresh">数据更新于 2026-11-15 01:16 UTC</span> · 每晚 22:00 UTC 自动更新</p>
+  <nav class="nav">
+  <a href="index.html">主页</a>
+  <a href="velocity.html">日均涨速</a>
+  <a href="movers.html">累计涨幅</a>
+  <a href="daily.html">每日新发现</a>
+  <a href="repos.html">全部追踪</a>
+  </nav>
+</div></div>
+<main>
+
+<section><a class="back" href="../daily.html">← 每日新发现</a>
+<div class="report"><h1>Agent Discovery · 2026-11-15</h1>
+<p>Found <strong>32 new repos</strong> across 15 queries + HN + trending + census.</p>
+<p>Sorted by stars (no LLM scoring; set LLM_API_KEY to enable).</p>
+<ul>
+<li>obsidianmd/obsidian-skills · ★52605 — 同类跟进 of <a href="https://github.com/kepano/obsidian-skills">kepano/obsidian-skills</a></li>
+</ul>
+<h2>janestreet/agent_skills  ·  ★8640</h2>
+<ul>
+<li>Agent skills</li>
+<li>Updated: 2026-11-15</li>
+<li>Source: <code>github</code> · Query hit: <code>skills in:name</code></li>
+<li><a href="https://github.com/janestreet/agent_skills">https://github.com/janestreet/agent_skills</a></li>
+</ul>
+<h2>alexeyw/lot-map  ·  ★833</h2>
+<ul>
+<li>A live map beside the chat that shows what Claude Code is doing: tool calls, model steps, hooks, skills and subagents light up as they happen. Local only, in 7 languages.</li>
+<li>Updated: 2026-11-15</li>
+<li>Source: <code>github</code> · Query hit: <code>claude code skill created:&gt;2026-09-16</code></li>
+<li><a href="https://github.com/alexeyw/lot-map">https://github.com/alexeyw/lot-map</a></li>
+</ul>
+<h2>phuryn/product-engineering  ·  ★597</h2>
+<ul>
+<li>45 agent skills from shipping three live products: decide what to build, build it with Claude Code or Codex, have a second model review it, release it.</li>
+<li>Updated: 2026-11-15</li>
+<li>Source: <code>github</code> · Query hit: <code>claude code skill created:&gt;2026-09-16</code></li>
+<li><a href="https://github.com/phuryn/product-engineering">https://github.com/phuryn/product-engineering</a></li>
+</ul>
+<h2>Moh4696/cinematic-skill  ·  ★408</h2>
+<ul>
+<li>Agent skill for narrated cinematic films built entirely from code: one continuous camera over photos, maps and cards, timed to the voice. Claude Code, Codex, Cursor, Gemini CLI.</li>
+<li>Updated: 2026-11-15</li>
+<li>Source: <code>github</code> · Query hit: <code>claude code skill created:&gt;2026-09-16</code></li>
+<li><a href="https://github.com/Moh4696/cinematic-skill">https://github.com/Moh4696/cinematic-skill</a></li>
+</ul>
+<h2>op7418/guizang-game-skill  ·  ★340</h2>
+<ul>
+<li>歸藏 Game Skill：让 AI 从零做出能在浏览器里玩的 3D 动作游戏，附可玩演示《雾锁山门》。Agent skill for Claude Code / Codex that builds a playable browser 3D action game with AI-generated assets (three.js, single-HTML). Playable demo included.</li>
+<li>Updated: 2026-11-14</li>
+<li>Source: <code>census</code> · Query hit: <code>census: claude code skill</code></li>
+<li><a href="https://github.com/op7418/guizang-game-skill">https://github.com/op7418/guizang-game-skill</a></li>
+</ul>
+<h2>threerocks/article2media  ·  ★314</h2>
+<ul>
+<li>把一篇文章或一条视频（抖音、B 站、YouTube，先转逐字稿）一键做成小红书图文、杂志长图、公众号排版和 AI 配音口播短视频的开源 Claude Code / Codex Skill。21 套主题，自动验收，零 npm 依赖。</li>
+<li>Updated: 2026-11-14</li>
+<li>Source: <code>census</code> · Query hit: <code>census: claude code skill</code></li>
+<li><a href="https://github.com/threerocks/article2media">https://github.com/threerocks/article2media</a></li>
+</ul>
+<h2>Aquariuswonder/rpocket-OptionsCommander  ·  ★81</h2>
+<ul>
+<li>Multi-agent trading platform on an Alpaca paper account: a CLI places orders on request; scheduled routines manage trailing stops, alerts and daily records. Agents on Microsoft Agent Framework. Research uses walk-forward, out-of-sample and multiple-testing checks; no tested signal (MACD+RSI, TSMOM, GEX) has an edge yet. Not financial advice.</li>
+<li>Updated: 2026-11-14</li>
+<li>Source: <code>census</code> · Query hit: <code>census: multi-agent framework</code></li>
+<li><a href="https://github.com/Aquariuswonder/rpocket-OptionsCommander">https://github.com/Aquariuswonder/rpocket-OptionsCommander</a></li>
+</ul>
+<h2>hajdu-patrik/trirouter  ·  ★72</h2>
+<ul>
+<li>AI-powered multi-model workspace and routing system for Claude, Codex and other LLM agents. Provides intelligent prompt routing, agent orchestration, evaluation workflows, CLI integrations, MCP tooling and developer productivity automation.</li>
+<li>Updated: 2026-11-15</li>
+<li>Source: <code>github</code> · Query hit: <code>agent orchestration cli created:&gt;2026-09-16</code></li>
+<li><a href="https://github.com/hajdu-patrik/trirouter">https://github.com/hajdu-patrik/trirouter</a></li>
+</ul>
+<h2>CodeAlive-AI/pragmatic-orchestration  ·  ★71</h2>
+<ul>
+<li>Pragmatic multi-agent orchestration: independent review and steerable delegation across Codex, Claude Code, OpenCode, Grok Build, Gemini, and Devin CLI — porch CLI + Agent Skills</li>
+<li>Updated: 2026-11-14</li>
+<li>Source: <code>github</code> · Query hit: <code>agent orchestration cli created:&gt;2026-09-16</code></li>
+<li><a href="https://github.com/CodeAlive-AI/pragmatic-orchestration">https://github.com/CodeAlive-AI/pragmatic-orchestration</a></li>
+</ul>
+<h2>mankidev/antialgorithm  ·  ★61</h2>
+<ul>
+<li>Claude Code skill that steers the model away from its first, most average pick in creative work: names, copy, ideas, posters, UI.</li>
+<li>Updated: 2026-11-15</li>
+<li>Source: <code>census</code> · Query hit: <code>census: claude code skill</code></li>
+<li><a href="https://github.com/mankidev/antialgorithm">https://github.com/mankidev/antialgorithm</a></li>
+</ul>
+<h2>timwuhaotian/killi  ·  ★55</h2>
+<ul>
+<li>Open-source AI coding agent for your terminal, written in Rust. One 7 MB native binary for Apple Silicon Macs, ~18 MB RAM, 70–90% prompt-cache hits. Works with OpenAI, Anthropic and any compatible LLM; MCP, subagents, plan mode, skills, hooks, AGENTS.md. A lightweight Claude Code / Codex CLI alternative.</li>
+<li>Updated: 2026-11-13</li>
+<li>Source: <code>github</code> · Query hit: <code>claude code subagent created:&gt;2026-09-16</code></li>
+<li><a href="https://github.com/timwuhaotian/killi">https://github.com/timwuhaotian/killi</a></li>
+</ul>
+<h2>EriOmeganet/agent-wallet-guard-resp-plus  ·  ★51</h2>
+<ul>
+<li>Claude Code skill for safe AI wallet and trade agents with spend limits, send checks, and key care. Built on affaan-m/ECC by @affaan-m.</li>
+<li>Updated: 2026-11-14</li>
+<li>Source: <code>census</code> · Query hit: <code>census: claude code skill</code></li>
+<li><a href="https://github.com/EriOmeganet/agent-wallet-guard-resp-plus">https://github.com/EriOmeganet/agent-wallet-guard-resp-plus</a></li>
+</ul>
+<h2>域外雷达（不限领域的新建热门，未分析）</h2>
+<ul>
+<li><a href="https://github.com/Kianuni/Erosion-CN">Kianuni/Erosion-CN</a> · ★2058 — iOS / iPadOS 系统配置与 MobileGestalt 研究工具箱（简体中文防白苹果安全加固版）</li>
+<li><a href="https://github.com/apex-compute/ANR">apex-compute/ANR</a> · ★1842 — Apex Neural Rendering (ANR) by Apex Compute</li>
+<li><a href="https://github.com/deepseek-ai/chat-demo">deepseek-ai/chat-demo</a> · ★1759 — Chat Demo</li>
+<li><a href="https://github.com/HybridRobotics/supermimic">HybridRobotics/supermimic</a> · ★1501 — Humanoid whole-body motion tracking with one differentiable world model.</li>
+<li><a href="https://github.com/FrigadeHQ/yogurt">FrigadeHQ/yogurt</a> · ★1493 — Private AI meeting notes that stay on your computer. A free, open-source alternative to Granola for Mac, Windows and Linux.</li>
+</ul>
+<h2>GitHub Trending（日榜/周榜出圈项目，未分析）</h2>
+<ul>
+<li><a href="https://github.com/louislam/uptime-kuma">louislam/uptime-kuma</a> · ★94,245 — A fancy self-hosted monitoring tool</li>
+<li><a href="https://github.com/ChromeDevTools/chrome-devtools-mcp">ChromeDevTools/chrome-devtools-mcp</a> · ★56,315 — Chrome DevTools for coding agents</li>
+<li><a href="https://github.com/alibaba/open-code-review">alibaba/open-code-review</a> · ★51,449 — Secure, fast, efficient, battle-tested at Alibaba&#x27;s scale. Hybrid architecture code review tool: deterministic pipelines + LLM Agent, precise line-level comments, built-in multi-language ruleset (NPE, thread-safety, XSS, SQL injection), OpenAI &amp; Anthropic compatible.</li>
+<li><a href="https://github.com/QwenLM/qwen-code">QwenLM/qwen-code</a> · ★30,350 — An open-source AI coding agent that lives in your terminal.</li>
+<li><a href="https://github.com/dream-num/univer">dream-num/univer</a> · ★24,506 — Build your own AI office with Univer Office SDK. Bring editing, calculation, collaboration, and file processing into your product for people and AI agents. Built on an extensible open-source core.</li>
+<li><a href="https://github.com/google/elephant-goldfish-model">google/elephant-goldfish-model</a> · ★19,205 — Open-source plugin for designing and reviewing software with agents</li>
+<li><a href="https://github.com/ag-ui-protocol/ag-ui">ag-ui-protocol/ag-ui</a> · ★17,372 — AG-UI: the Agent-User Interaction Protocol. Bring Agents into Frontend Applications.</li>
+<li><a href="https://github.com/we-promise/sure">we-promise/sure</a> · ★15,321 — The personal finance app for everyone (by everyone)</li>
+<li><a href="https://github.com/backnotprop/plannotator">backnotprop/plannotator</a> · ★11,141 — The workspace to stay in the loop and on top of agents - shape, decide, plan, annotate, review code, share with team, and send all feedback to agents with one click. </li>
+<li><a href="https://github.com/GoogleChrome/modern-web-guidance-src">GoogleChrome/modern-web-guidance-src</a> · ★6,068 — Keep your coding agent up to date with the latest web best practices</li>
+<li><a href="https://github.com/martin-olivier/airgorah">martin-olivier/airgorah</a> · ★5,878 — A WiFi security auditing software</li>
+<li><a href="https://github.com/Likely7/Veyra-NRVideo">Likely7/Veyra-NRVideo</a> · ★2,279 — Bring PS5 GTA6 to 120FPS with DLSS 5. An advanced Windows video player and capture enhancement tool featuring real-time preview for videos, images, and capture card sources. Combine AI-powered Super Resolution, DLSS5 image enhancement, and Frame Generation to deliver a next-generation visual experience.</li>
+<li><a href="https://github.com/ashhart/TensorFold">ashhart/TensorFold</a> · ★2,165 — LLM Inference Engine for Metal, CUDA and Vulkan.</li>
+<li><a href="https://github.com/Tencent/LoopForge">Tencent/LoopForge</a> · ★916 — Self-hosted workflows for coding-agent delivery. Orchestrate CodeBuddy, Codex and Claude Code with scripts and human approval gates. Includes Local workflows for coding assistants.</li>
+</ul>
+<h2>Trending since first seen</h2>
+<table><thead><tr><th>Repo</th><th>First seen</th><th>Stars then → now</th><th>Δ</th></tr></thead><tbody>
+<tr><td><a href="https://github.com/morluto/rea">morluto/rea</a></td><td>2026-10-21</td><td>354479 → 459928</td><td>+105449</td></tr>
+<tr><td><a href="https://github.com/storytold/photocraft">storytold/photocraft</a></td><td>2026-10-05</td><td>733 → 79417</td><td>+78684</td></tr>
+<tr><td><a href="https://github.com/ayghri/i-have-adhd">ayghri/i-have-adhd</a></td><td>2026-07-19</td><td>3084 → 61204</td><td>+58120</td></tr>
+<tr><td><a href="https://github.com/Gathin23/tv-vibehack">Gathin23/tv-vibehack</a></td><td>2026-10-18</td><td>1882 → 57885</td><td>+56003</td></tr>
+<tr><td><a href="https://github.com/Gathin23/cleanyourtv">Gathin23/cleanyourtv</a></td><td>2026-10-20</td><td>5244 → 57885</td><td>+52641</td></tr>
+<tr><td><a href="https://github.com/Niko1221/Strata">Niko1221/Strata</a></td><td>2026-09-29</td><td>1086 → 44198</td><td>+43112</td></tr>
+<tr><td><a href="https://github.com/blader/humanizer">blader/humanizer</a></td><td>2026-07-02</td><td>27141 → 69142</td><td>+42001</td></tr>
+<tr><td><a href="https://github.com/JuliusBrussee/caveman">JuliusBrussee/caveman</a></td><td>2026-07-02</td><td>79188 → 120082</td><td>+40894</td></tr>
+<tr><td><a href="https://github.com/cloudflare/security-audit-skill">cloudflare/security-audit-skill</a></td><td>2026-10-21</td><td>35257 → 72645</td><td>+37388</td></tr>
+<tr><td><a href="https://github.com/yetone/magpie">yetone/magpie</a></td><td>2026-09-26</td><td>1012 → 36551</td><td>+35539</td></tr>
+</tbody></table></div></section>
+
+</main>
+</body>
+</html>
